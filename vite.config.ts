@@ -54,5 +54,11 @@ export default defineConfig({
     },
     jsPlugins: [{ name: "vite-plus", specifier: "vite-plus/oxlint-plugin" }],
   },
+  test: {
+    // ルートの vp test では何も動かさない。テストは vp run test（apps/web の中で vp test）で動かす。
+    // - 設定がないと、apps/web の設定（client の jsdom など）を読まずに、すべての *.test.ts を Node で動かす
+    // - projects で apps/web を指すと、Void の plugin がルートを自分のプロジェクトとみなし、ルートにファイルを作る
+    include: [],
+  },
   // run.cache は有効にしない。vp run のキャッシュが型チェックの入力の変化を検知できず、型エラーを見逃すことがある
 });

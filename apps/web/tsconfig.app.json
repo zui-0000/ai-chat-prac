@@ -1,0 +1,25 @@
+{
+  // .void/tsconfig.json（void prepare が生成）が paths で void/db・@schema の型を当てている。
+  // ここに paths を書くと extends 側の paths が丸ごと上書きされて消えるので、書かない
+  "extends": "./.void/tsconfig.json",
+  "compilerOptions": {
+    "target": "es2023",
+    "lib": ["ES2023", "DOM", "DOM.Iterable"],
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "moduleDetection": "force",
+    "types": ["void/env", "vite/client"],
+    "jsx": "react-jsx",
+    "strict": true,
+    "noEmit": true,
+    "skipLibCheck": true,
+    "verbatimModuleSyntax": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "erasableSyntaxOnly": true,
+    "noFallthroughCasesInSwitch": true
+  },
+  "include": ["src", "vite.config.ts", "void.config.ts"],
+  // テストは tsconfig.test.json で見る。ここで外すと、__tests__ の外に置いたテストは test・expect の型がなく型エラーになる
+  "exclude": ["src/**/__tests__"]
+}

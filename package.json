@@ -9,6 +9,9 @@
     "preview": "vp run web#preview",
     "typecheck": "vp run -r typecheck",
     "lint:deps": "vp run -r lint:deps",
+    "test": "vp run web#test",
+    "test:client": "vp run web#test:client",
+    "test:server": "vp run web#test:server",
     "db:generate": "vp run web#db:generate",
     "prepare": "vp config"
   },

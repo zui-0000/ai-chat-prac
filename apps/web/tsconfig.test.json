@@ -1,0 +1,11 @@
+{
+  // __tests__ のテストだけに、import せずに使う describe・test・expect の型を足す（vite.config.ts の globals: true）。
+  // アプリのコードには足さないので、アプリのコードで expect を書くと型エラーになる
+  "extends": "./tsconfig.app.json",
+  "compilerOptions": {
+    "types": ["void/env", "vite/client", "vite-plus/test/globals"]
+  },
+  "include": ["src/**/__tests__"],
+  // tsconfig.app.json の exclude を引き継がないため
+  "exclude": []
+}

@@ -6,7 +6,7 @@ AI チャットの画面を作る学習用リポジトリ。
 - API: [oRPC](https://orpc.dev/) の約束（contract）を先に書く
 - FE: React + TanStack Router + TanStack Query
 
-構成と、そう決めた理由は [docs/01 構成を決める](docs/01-構成を決める.md) にある。
+構成と、そう決めた理由は [docs/01 構成を決める](docs/01-構成を決める.md) にある。単体テストは [docs/02 単体テスト](docs/02-単体テスト.md)。
 
 ## 構成
 
@@ -47,6 +47,9 @@ vp hooks status                       # 「Hooks dir: .vite-hooks」と出れば
 | ビルドしたものを確かめる         | `vp run preview`                      | <http://localhost:4173/>。先に `vp run build` する                        |
 | lint + フォーマット + 型チェック | `vp check`                            | 確認だけ。`vp check --fix` で自動修正                                     |
 | 各パッケージの型チェック         | `vp run typecheck`                    | 各パッケージの `tsrs --noEmit`（TypeScript の Rust 版）                   |
+| 単体テストを実行する             | `vp run test`                         | `client`（jsdom）と `server`（Node）の両方。ルートの `vp test` は使わない |
+| client だけテストする            | `vp run test:client`                  | `apps/web/src/client` の `__tests__/`                                     |
+| server だけテストする            | `vp run test:server`                  | `apps/web/src/server` の `__tests__/`                                     |
 | import の向きを検査する          | `vp run lint:deps`                    | FE から BE を import していないか（`apps/web/.dependency-cruiser.jsonc`） |
 | 依存を足す                       | `vp add <名前> --filter <パッケージ>` | `<パッケージ>` は `web` か `@ai-chat/contract`。版は catalog に固定で入る |
 | DB のマイグレーションを作る      | `vp run db:generate`                  | `apps/web/src/server/db/schema.ts` から作る                               |

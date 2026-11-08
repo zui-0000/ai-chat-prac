@@ -24,13 +24,13 @@ TypeScript と JavaScript のファイルは `vpx <file>` で動かす（例: `v
 ## 作業のチェックリスト
 
 - [ ] リモートの変更を取り込んだ後と、作業を始める前に `vp install` を実行する
-- [ ] `vp check`（フォーマット・lint・型チェック）、`vp run typecheck`（各パッケージの `tsrs`）、`vp run lint:deps`（import の向き）で、変更を確かめる
+- [ ] `vp check`（フォーマット・lint・型チェック）、`vp run typecheck`（各パッケージの `tsrs`）、`vp run lint:deps`（import の向き）、`vp run test`（単体テスト）で、変更を確かめる
 - [ ] 確認に必要な `vite.config.ts` のタスクや `package.json` のスクリプトがあれば、`vp run <script>` で実行する
 - [ ] セットアップ・Node.js・パッケージマネージャーの動きがおかしいときは `vp env doctor` を実行し、相談するときにその出力を添える
 
 # このリポジトリの決まり
 
-構成と、そう決めた理由は `docs/01-構成を決める.md` にある。
+構成と、そう決めた理由は `docs/01-構成を決める.md` にある。単体テストは `docs/02-単体テスト.md`。
 
 ## コマンドはルートで実行する
 
@@ -51,7 +51,14 @@ TypeScript と JavaScript のファイルは `vpx <file>` で動かす（例: `v
 
 - FE と BE の間の API は、`packages/contract` に oRPC の約束（zod のスキーマ）として先に書く
 - BE は `src/server/rpc/router.ts` で `implement(contract)` して実装する。`src/server/routes/` に API のルートを増やさない（`/rpc` の受け口だけを置く）
-- `apps/web/tsconfig.json` に `paths` を書かない。`.void/tsconfig.json` の `paths`（`void/db`・`@schema`）が上書きされて消える
+- `apps/web/tsconfig.app.json` に `paths` を書かない。`.void/tsconfig.json` の `paths`（`void/db`・`@schema`）が上書きされて消える
+
+## 単体テスト
+
+- テストは `vp run test`（`test:client`・`test:server`）で動かす。ルートの組み込みの `vp test` は使わない。Void の plugin が今いる場所を自分のプロジェクトとみなすので、`apps/web` の中で動かす
+- 確かめるファイルと同じ階層の `__tests__/` に `<名前>.test.ts` で置く。`__tests__/` の外に置かない（`src/server/routes/` の下だと Void の API のルートになる）
+- `describe`・`test`・`expect`・`vi` は import しない（`globals: true`）。`it` ではなく `test` を使い、名前は日本語で「〜こと」
+- `src/client` のテストは jsdom、`src/server` のテストは Node（DOM なし）で動く
 
 ## 依存を足す
 

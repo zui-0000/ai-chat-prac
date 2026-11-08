@@ -1,23 +1,5 @@
 {
-  // .void/tsconfig.json（void prepare が生成）が paths で void/db・@schema の型を当てている。
-  // ここに paths を書くと extends 側の paths が丸ごと上書きされて消えるので、書かない
-  "extends": "./.void/tsconfig.json",
-  "compilerOptions": {
-    "target": "es2023",
-    "lib": ["ES2023", "DOM", "DOM.Iterable"],
-    "module": "esnext",
-    "moduleResolution": "bundler",
-    "moduleDetection": "force",
-    "types": ["void/env", "vite/client"],
-    "jsx": "react-jsx",
-    "strict": true,
-    "noEmit": true,
-    "skipLibCheck": true,
-    "verbatimModuleSyntax": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
-    "erasableSyntaxOnly": true,
-    "noFallthroughCasesInSwitch": true
-  },
-  "include": ["src", "vite.config.ts", "void.config.ts"]
+  // エディタがファイルごとに、どちらの tsconfig で見るかを見つけるための入口。型チェックは各 tsconfig を -p で指定する
+  "files": [],
+  "references": [{ "path": "./tsconfig.app.json" }, { "path": "./tsconfig.test.json" }]
 }

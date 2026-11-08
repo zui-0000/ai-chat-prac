@@ -26,6 +26,14 @@
       "to": { "path": "^src/client/" }
     },
     {
+      // テストの道具がアプリのコードとバンドルに入らないようにする
+      "name": "no-test-runner-in-app",
+      "comment": "アプリのコードから vite-plus/test を import しています。テストの道具は __tests__ の中だけで使ってください",
+      "severity": "error",
+      "from": { "path": "^src/", "pathNot": "/__tests__/" },
+      "to": { "path": "^vite-plus/test" }
+    },
+    {
       "name": "no-circular",
       "comment": "循環参照になっています。依存の輪を切ってください",
       "severity": "error",
@@ -41,6 +49,6 @@
     // TypeScript 7 には dependency-cruiser が使う JS の API がなく、既定の parser では 1 ファイルも読めずに「違反なし」で通ってしまう
     "parser": "swc",
     "doNotFollow": { "path": "node_modules" },
-    "tsConfig": { "fileName": "tsconfig.json" }
+    "tsConfig": { "fileName": "tsconfig.app.json" }
   }
 }
