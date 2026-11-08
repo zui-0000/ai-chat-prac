@@ -31,6 +31,11 @@ vp hooks status                       # 「Hooks dir: .vite-hooks」と出れば
 - `vp install` の途中で、`apps/web` の `postinstall` が `void prepare` を動かし、Void の型（`apps/web/.void/`）を作る
 - Cloudflare のアカウントは要らない。ローカルでは、Cloudflare のランタイムとローカルの D1 で動く
 
+### VS Code を使うとき
+
+1. 拡張機能の画面で `@recommended` と検索し、おすすめの拡張機能を入れる。TypeScript 7 をエディタで使うには、TypeScript Native Preview（`typescriptteam.native-preview`）が要る
+2. `.ts` のファイルを開き、コマンドパレットの「Select TypeScript Version...」で「Use Workspace Version」を選ぶ。エディタがリポジトリの版の TypeScript を使うようになる。ワークスペースごとに最初の 1 回だけ要る
+
 ## よく使うコマンド
 
 コマンドはすべてリポジトリのルートで実行する。パッケージのフォルダで実行すると、そのパッケージしか検査しない。

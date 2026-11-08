@@ -1,5 +1,10 @@
 {
   "npm.scriptRunner": "vp",
+  // TypeScript 7 には tsserver.js がないので、TypeScript の機能を TypeScript Native Preview の拡張機能に任せる
+  "js/ts.experimental.useTsgo": true,
+  // エディタの TypeScript を、リポジトリの版（catalog で固定）にそろえる。
+  // ワークスペースの設定なので、最初の 1 回だけ「Select TypeScript Version...」→「Use Workspace Version」で許可する
+  "js/ts.tsdk.path": "node_modules/typescript",
   "editor.defaultFormatter": "oxc.oxc-vscode",
   "[javascript]": {
     "editor.defaultFormatter": "oxc.oxc-vscode"
