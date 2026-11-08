@@ -1,0 +1,35 @@
+{
+  "name": "ai-chat-prac",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vp run web#dev",
+    "build": "vp run web#build",
+    "preview": "vp run web#preview",
+    "typecheck": "vp run -r typecheck",
+    "lint:deps": "vp run -r lint:deps",
+    "db:generate": "vp run web#db:generate",
+    "prepare": "vp config"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "catalog:",
+    "@commitlint/config-conventional": "catalog:",
+    "@commitlint/types": "catalog:",
+    "@types/node": "catalog:",
+    "typescript": "catalog:",
+    "vite-plus": "catalog:"
+  },
+  "devEngines": {
+    "packageManager": {
+      "name": "pnpm",
+      "version": "12.18.0",
+      "onFail": "download"
+    },
+    "runtime": {
+      "name": "node",
+      "version": "26.13.0",
+      "onFail": "error"
+    }
+  }
+}

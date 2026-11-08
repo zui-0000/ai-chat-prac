@@ -1,0 +1,18 @@
+// ルートの vite.config.ts のための tsconfig。各パッケージの tsconfig は自分のフォルダしか見ないため。
+// なくても vp check の結果は変わらなかったが、TS の既定が変わっても影響を受けないよう、設定を書いておく。
+// include を書かないと既定（**/*）で apps/ と packages/ まで拾うので、vite.config.ts だけに絞る
+{
+  "compilerOptions": {
+    "target": "es2023",
+    "lib": ["ES2023"],
+    "module": "nodenext",
+    "moduleResolution": "nodenext",
+    "types": ["node"],
+    "strict": true,
+    "noEmit": true,
+    "skipLibCheck": true,
+    "allowImportingTsExtensions": true,
+    "verbatimModuleSyntax": true
+  },
+  "include": ["vite.config.ts"]
+}

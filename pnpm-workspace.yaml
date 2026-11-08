@@ -1,0 +1,76 @@
+packages:
+  - apps/*
+  - packages/*
+
+# インストール時にスクリプトを実行してよいパッケージ
+# - workerd: ローカルで Worker を動かす Cloudflare のランタイム
+# - @swc/core: OS ごとのビルド済みバイナリを別パッケージで配るので、スクリプトは不要
+allowBuilds:
+  better-sqlite3: false
+  esbuild: true
+  sharp: true
+  workerd: true
+  "@swc/core": false
+
+# 依存の版は catalog で一元管理し、各 package.json には "catalog:" と書く。
+# vite と vite-plus は vp migrate が管理するので、手で変えない
+catalogMode: prefer
+# vp add で版を固定して書く（^ を付けない）。版が動くのを、上げたときだけにするため。
+# 範囲を指定して足したとき（vp add "pkg@^1.0.0"）は範囲のまま書かれるので、固定に直す
+savePrefix: ""
+
+catalog:
+  "@commitlint/cli": 21.2.4
+  "@commitlint/config-conventional": 21.2.4
+  "@commitlint/types": 21.2.3
+  "@orpc/client": 1.16.2
+  "@orpc/contract": 1.16.2
+  "@orpc/server": 1.16.2
+  "@orpc/tanstack-query": 1.16.2
+  "@swc/core": 1.16.22
+  "@tanstack/react-query": 5.107.1
+  "@tanstack/react-router": 1.170.46
+  "@tanstack/router-plugin": 1.168.48
+  "@types/node": 26.6.6
+  "@types/react": 19.3.0
+  "@types/react-dom": 19.3.0
+  "@vitejs/plugin-react": 6.2.1
+  dependency-cruiser: 18.7.2
+  oxc-transform-react: 0.156.0
+  react: 19.3.1
+  react-dom: 19.3.1
+  tsrs: 0.22.0-ts7.1.0-beta
+  typescript: 7.0.2
+  vite: npm:@voidzero-dev/vite-plus-core@1.5.0
+  vite-plus: 1.5.0
+  void: 1.6.2
+  zod: 4.6.7
+
+# vite を Vite+ の vite-plus-core に置き換える。版が vite の版と一致しないため、peer の検査を緩める
+overrides:
+  vite@*: "catalog:"
+
+peerDependencyRules:
+  allowAny:
+    - vite
+  allowedVersions:
+    vite: "*"
+
+# pnpm の版は Vite+ が devEngines.packageManager を見て決める。pnpm 自身には切り替えさせない
+pmOnFail: ignore
+
+# install・add のとき、1 つの版でワークスペース全体の範囲を満たせるなら、その版にまとめる（既定は false）。
+# 同じパッケージが複数の版で入るのを防ぐ。--filter で足しても、ほかのパッケージの lockfile の版が動くことがある
+autoDedupe: true
+
+# サプライチェーン攻撃への備え。公開から 1 日たっていない版は入れない。
+# 止まっても minimumReleaseAgeExclude には足さず、1 日たった版を使う（vp migrate が足すことがあるので、そのときは消す）
+minimumReleaseAge: 1440
+
+# 以前の版より公開の証明（provenance など）が弱い版は入れない
+trustPolicy: no-downgrade
+# 例外は版まで書き、上げるたびに確かめ直す
+# - tsrs: 名前の持ち主が移ったため、乗っ取りの疑いで止まる。
+#   provenance が github.com/oxc-project/tsrs の release.yml であることを確かめて許可した
+trustPolicyExclude:
+  - "tsrs@0.22.0-ts7.1.0-beta"

@@ -1,0 +1,2 @@
+# vite.config.ts の staged を、上から順に 1 つずつ実行する
+vp staged --no-concurrent

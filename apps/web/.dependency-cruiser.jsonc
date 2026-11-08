@@ -1,0 +1,46 @@
+// apps/web の中の import の向きを検査する。パッケージをまたぐ向きは package.json の依存で守る。
+// 標準の設定ファイル名に .jsonc は含まれないので、--config で指定して実行する（lint:deps）
+{
+  "forbidden": [
+    {
+      // import type も止める。FE が BE について知ってよいのは @ai-chat/contract だけ
+      "name": "client-not-to-server",
+      "comment": "src/client から src/server を import しています。FE からは @ai-chat/contract の約束だけを使ってください",
+      "severity": "error",
+      "from": { "path": "^src/client/" },
+      "to": { "path": "^src/server/" }
+    },
+    {
+      // @schema は Void が tsconfig の paths で当てた名前で、実体のファイルまで解決できない。場所のルールでは止まらないので、名前で止める
+      "name": "client-not-to-server-modules",
+      "comment": "src/client から BE 専用のモジュール（@schema・void/db・@orpc/server など）を import しています。FE からは @ai-chat/contract と @orpc/client だけを使ってください",
+      "severity": "error",
+      "from": { "path": "^src/client/" },
+      "to": { "path": "^(@schema(/|$)|void/db|void/schema-|@orpc/server)" }
+    },
+    {
+      "name": "server-not-to-client",
+      "comment": "src/server から src/client を import しています。BE から FE のコードは使わないでください",
+      "severity": "error",
+      "from": { "path": "^src/server/" },
+      "to": { "path": "^src/client/" }
+    },
+    {
+      "name": "no-circular",
+      "comment": "循環参照になっています。依存の輪を切ってください",
+      "severity": "error",
+      "from": {},
+      "to": {
+        "circular": true,
+        // 型だけの循環は実行時に消えるので許す
+        "viaOnly": { "dependencyTypesNot": ["type-only"] }
+      }
+    }
+  ],
+  "options": {
+    // TypeScript 7 には dependency-cruiser が使う JS の API がなく、既定の parser では 1 ファイルも読めずに「違反なし」で通ってしまう
+    "parser": "swc",
+    "doNotFollow": { "path": "node_modules" },
+    "tsConfig": { "fileName": "tsconfig.json" }
+  }
+}
