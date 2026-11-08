@@ -3,9 +3,9 @@
   // アプリのコードには足さないので、アプリのコードで expect を書くと型エラーになる
   "extends": "./tsconfig.app.json",
   "compilerOptions": {
-    "types": ["void/env", "vite/client", "vite-plus/test/globals"]
+    "types": ["void/env", "vite/client", "msw/vite/client", "vite-plus/test/globals"]
   },
-  "include": ["src/**/__tests__"],
+  "include": ["src/**/__tests__", "src/client/__setup__"],
   // tsconfig.app.json の exclude を引き継がないため
   "exclude": []
 }

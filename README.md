@@ -10,7 +10,7 @@ AI チャットの画面を作る学習用リポジトリ。
 
 ```text
 apps/web/              Void のアプリ
-├── src/client/        FE（ブラウザで動く）。TanStack Router のルートは src/client/routes
+├── src/client/        FE（ブラウザで動く）。TanStack Router のルートは src/client/routes、偽物の BE（MSW）は src/client/mocks
 └── src/server/        BE（Worker で動く）。Void はここだけを読む
 packages/contract/     FE と BE の約束（oRPC + zod）
 ```
@@ -38,23 +38,25 @@ vp hooks status                       # 「Hooks dir: .vite-hooks」と出れば
 
 コマンドはすべてリポジトリのルートで実行する。パッケージのフォルダで実行すると、そのパッケージしか検査しない。
 
-| やりたいこと                     | コマンド                              | 補足                                                                      |
-| -------------------------------- | ------------------------------------- | ------------------------------------------------------------------------- |
-| 開発サーバーを起動する           | `vp run dev`                          | FE と BE を両方起動する（下の「開発サーバー」）                           |
-| 本番用にビルドする               | `vp run build`                        | 出力先は `apps/web/dist/`                                                 |
-| ビルドしたものを確かめる         | `vp run preview`                      | <http://localhost:4173/>。先に `vp run build` する                        |
-| lint + フォーマット + 型チェック | `vp check`                            | 確認だけ。`vp check --fix` で自動修正                                     |
-| 各パッケージの型チェック         | `vp run typecheck`                    | 各パッケージの `tsrs --noEmit`（TypeScript の Rust 版）                   |
-| 単体テストを実行する             | `vp run test`                         | `client`（jsdom）と `server`（Node）の両方。ルートの `vp test` は使わない |
-| client だけテストする            | `vp run test:client`                  | `apps/web/src/client` の `__tests__/`                                     |
-| server だけテストする            | `vp run test:server`                  | `apps/web/src/server` の `__tests__/`                                     |
-| import の向きを検査する          | `vp run lint:deps`                    | FE から BE を import していないか（`apps/web/.dependency-cruiser.jsonc`） |
-| 依存を足す                       | `vp add <名前> --filter <パッケージ>` | `<パッケージ>` は `web` か `@ai-chat/contract`。版は catalog に固定で入る |
-| DB のマイグレーションを作る      | `vp run db:generate`                  | `apps/web/src/server/db/schema.ts` から作る                               |
+| やりたいこと                     | コマンド                              | 補足                                                                       |
+| -------------------------------- | ------------------------------------- | -------------------------------------------------------------------------- |
+| 開発サーバーを起動する           | `vp run dev`                          | 画面は偽物の BE（MSW）と話す（下の「開発サーバー」）                       |
+| 本番用にビルドする               | `vp run build`                        | 出力先は `apps/web/dist/`                                                  |
+| ビルドしたものを確かめる         | `vp run preview`                      | <http://localhost:4173/>。画面は本物の BE と話す。先に `vp run build` する |
+| lint + フォーマット + 型チェック | `vp check`                            | 確認だけ。`vp check --fix` で自動修正                                      |
+| 各パッケージの型チェック         | `vp run typecheck`                    | 各パッケージの `tsrs --noEmit`（TypeScript の Rust 版）                    |
+| 単体テストを実行する             | `vp run test`                         | `client`（jsdom）と `server`（Node）の両方。ルートの `vp test` は使わない  |
+| client だけテストする            | `vp run test:client`                  | `apps/web/src/client` の `__tests__/`                                      |
+| server だけテストする            | `vp run test:server`                  | `apps/web/src/server` の `__tests__/`                                      |
+| import の向きを検査する          | `vp run lint:deps`                    | FE から BE を import していないか（`apps/web/.dependency-cruiser.jsonc`）  |
+| 依存を足す                       | `vp add <名前> --filter <パッケージ>` | `<パッケージ>` は `web` か `@ai-chat/contract`。版は catalog に固定で入る  |
+| DB のマイグレーションを作る      | `vp run db:generate`                  | `apps/web/src/server/db/schema.ts` から作る                                |
 
 ### 開発サーバー
 
 `vp run dev` で、FE と BE が両方立ち上がる。開くのは <http://localhost:5173/> の 1 つだけでよい。
+
+**画面は、いつも偽物の BE（MSW、`apps/web/src/client/mocks`）と話す。** 本物の BE を画面から確かめるときは、`vp run build` してから `vp run preview` を使う。
 
 | 立ち上がるもの      | 動かすもの                                                   | ポート                         |
 | ------------------- | ------------------------------------------------------------ | ------------------------------ |
@@ -63,7 +65,18 @@ vp hooks status                       # 「Hooks dir: .vite-hooks」と出れば
 
 - Vite が入口になり、`/rpc` などの BE 宛てのリクエストを workerd に渡す。FE と BE が同じオリジンなので、CORS やプロキシの設定は要らない
 - BE は本番と同じ workerd で動くので、ローカルと Cloudflare での挙動がずれにくい
+- 本物の BE も立ち上がるが、画面の `/rpc` は MSW の Service Worker が先に返すので、本物には届かない
 - 起動時に DB のマイグレーションが自動で流れる。ローカルの D1 は `apps/web/.void/v3/d1/` の SQLite ファイル。このフォルダを消すと、次の起動でマイグレーションから作り直され、データが空に戻る
+
+### 失敗の画面を見る
+
+URL に `?scenario=<名前>` を付けると、MSW が失敗の応答を返す。コードは書き換えない。外して読み直せば元に戻る。
+
+```text
+http://localhost:5173/?scenario=message.create.error
+```
+
+名前は `<API>.<状態>`（例: `message.list.many`・`chat.stream.slow`）。各 API のシナリオは `apps/web/src/client/mocks/api/<API>/scenarios.ts` にある。知らない名前を付けると、正常系で動きつつ、使える名前の一覧をコンソールに出す。
 
 ## コミット時に自動で実行されること
 

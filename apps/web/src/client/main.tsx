@@ -15,7 +15,13 @@ declare module "@tanstack/react-router" {
 }
 
 const root = document.getElementById("root");
-if (!root) throw new Error("#root が見つかりません");
+if (!root) throw new Error("#root is not found.");
+
+if (import.meta.env.DEV) {
+  // 動的 import なので、本番のバンドルには入らない
+  const { startMocking } = await import("~/client/mocks/browser");
+  await startMocking();
+}
 
 createRoot(root).render(
   <StrictMode>

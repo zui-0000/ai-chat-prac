@@ -1,5 +1,6 @@
 import { tanstackRouter } from "@tanstack/router-plugin/vite";
 import react from "@vitejs/plugin-react";
+import { msw } from "msw/vite";
 import { defineConfig } from "vite-plus";
 import { voidPlugin } from "void";
 
@@ -29,6 +30,8 @@ export default defineConfig({
     }),
     react({ compiler: true }),
     voidPlugin(),
+    // 開発サーバーで MSW の Service Worker を配り、virtual:msw を使えるようにする
+    msw(),
   ],
   test: {
     // extends: true で plugins を引き継ぐ。@schema・void/db などの解決に Void の plugin が要る
@@ -39,6 +42,8 @@ export default defineConfig({
           ...unitTest,
           name: "client",
           include: ["src/client/**/__tests__/**/*.test.{ts,tsx}"],
+          // 偽物の BE（MSW）を立ち上げる
+          setupFiles: ["./src/client/__setup__/setup.ts"],
           // ブラウザで動くコードなので、DOM と localStorage を真似る
           environment: "jsdom",
         },

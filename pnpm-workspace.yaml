@@ -37,6 +37,7 @@ catalog:
   "@vitejs/plugin-react": 6.2.1
   dependency-cruiser: 18.7.2
   jsdom: 31.0.0
+  msw: 3.0.4
   oxc-transform-react: 0.156.0
   react: 19.3.1
   react-dom: 19.3.1
@@ -56,6 +57,9 @@ peerDependencyRules:
     - vite
   allowedVersions:
     vite: "*"
+    # void が使う @cloudflare/workers-auth は、テスト用の道具（test-helpers）だけのために msw 2.14.6 を
+    # optional の peer に持つ。void は test-helpers を使わないので、こちらの msw 3 との食い違いを許す
+    "@cloudflare/workers-auth>msw": "3"
 
 # pnpm の版は Vite+ が devEngines.packageManager を見て決める。pnpm 自身には切り替えさせない
 pmOnFail: ignore

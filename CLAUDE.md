@@ -30,7 +30,7 @@ TypeScript と JavaScript のファイルは `vpx <file>` で動かす（例: `v
 
 # このリポジトリの決まり
 
-構成と、そう決めた理由は `docs/01-構成を決める.md` にある。単体テストは `docs/02-単体テスト.md`、import のパスは `docs/03-import のパス.md`。
+構成と、そう決めた理由は `docs/01-構成を決める.md` にある。単体テストは `docs/02-単体テスト.md`、import のパスは `docs/03-import のパス.md`、MSW は `docs/04-MSW.md`。
 
 ## コマンドはルートで実行する
 
@@ -51,6 +51,18 @@ TypeScript と JavaScript のファイルは `vpx <file>` で動かす（例: `v
 
 - FE と BE の間の API は、`packages/contract` に oRPC の約束（zod のスキーマ）として先に書く
 - BE は `src/server/rpc/router.ts` で `implement(contract)` して実装する。`src/server/routes/` に API のルートを増やさない（`/rpc` の受け口だけを置く）
+- 約束に API を足したら、偽物にも足す（`src/client/mocks/api/` にフォルダを作り、`api/router.ts` に足す）。偽物も `implement(contract)` しているので、足し忘れると型エラーになる
+
+## 偽物の BE（MSW）
+
+- 偽物は `apps/web/src/client/mocks/` に置く。開発サーバーの画面は、いつも偽物と話す。本物の BE を画面から確かめるときは `vp run preview` を使う
+- 偽物は約束（`@ai-chat/contract`）だけを見て実装する。`src/server`・`void/db` を読まない（`vp run lint:deps` が止める）。偽物の中だけは `@orpc/server` を使ってよい
+- `src/client` から `src/client/mocks` を読んでよいのは `main.tsx`（`import.meta.env.DEV` の中の動的 import）とテストだけ。本番のバンドルに入れないため
+- `mocks/` の直下には入口（`browser.ts`・`node.ts`）だけを置く。外から読むのは入口だけで、テストは `node.ts` から `server`・`scenarios`・`resetMockData` を読む（`vp run lint:deps` が止める）。oRPC と MSW の繋ぎは `mocks/utils/` に置く（ファイル名は `orpc-` から始める）
+- API ごとに `src/client/mocks/api/<API>/` を作り、`handler.ts`（正常系）と `scenarios.ts`（失敗などの状態）を置く。フォルダの階層は約束と同じにする
+- シナリオは MSW のハンドラではなく、その API の実装（`os.<API>.handler()`）として書き、`satisfies Record<string, typeof handler>` を付ける。新しい API のシナリオは `src/client/mocks/api/scenarios.ts` の `named()` に足す
+- シナリオの名前は `<API>.<状態>`（`message.create.error`）。画面では `?scenario=<名前>`（1 つだけ）、テストでは `server.use(scenarios[名前])` で使う
+- 保管は、使う API がまとまっているコンテキストの直下に `data.ts` として置く（`api/message/data.ts`）。別のコンテキストからも、持ち主の `data.ts` を読む。テストごとに空に戻すものは `api/reset.ts` に足す
 
 ## import のパス
 

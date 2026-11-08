@@ -12,12 +12,40 @@
     },
     {
       // src/server の外にある BE 専用のモジュールを止める。比べるのは解決した後のパスで、
-      // void/db は tsconfig.app.json の paths で .void/db.d.ts に解決される（@schema は src/server の中なので上のルールで止まる）
+      // void/db は tsconfig.app.json の paths で .void/db.d.ts に解決される（@schema は src/server の中なので上のルールで止まる）。
+      // 偽物の BE（src/client/mocks）は、oRPC の約束を実装するために @orpc/server を使うので外す。void/db は下のルールで止める
       "name": "client-not-to-server-modules",
       "comment": "src/client から BE 専用のモジュール（void/db・@orpc/server など）を import しています。FE からは @ai-chat/contract と @orpc/client だけを使ってください",
       "severity": "error",
-      "from": { "path": "^src/client/" },
+      "from": { "path": "^src/client/", "pathNot": "^src/client/mocks/" },
       "to": { "path": "^(\\.void/db\\.d\\.ts$|void/db|void/schema-|@orpc/server)" }
+    },
+    {
+      // 偽物は約束（@ai-chat/contract）だけを見て実装する。本物の DB に寄りかかると、約束とのずれに気づけない
+      "name": "mocks-not-to-db",
+      "comment": "src/client/mocks から本物の DB（void/db など）を import しています。偽物は @ai-chat/contract の約束だけを見て実装してください",
+      "severity": "error",
+      "from": { "path": "^src/client/mocks/" },
+      "to": { "path": "^(\\.void/db\\.d\\.ts$|void/db|void/schema-)" }
+    },
+    {
+      // 偽物の BE（MSW）が本番のバンドルに入らないようにする。main.tsx は開発のときだけ動的 import で読む
+      "name": "client-not-to-mocks",
+      "comment": "src/client/mocks を import しています。偽物の BE を読んでよいのは main.tsx とテストだけです",
+      "severity": "error",
+      "from": {
+        "path": "^src/client/",
+        "pathNot": "(^src/client/main\\.tsx$|^src/client/mocks/|^src/client/__setup__/|/__tests__/)"
+      },
+      "to": { "path": "^src/client/mocks/" }
+    },
+    {
+      // 外から読むのを入口だけにして、mocks の中の並べ方を変えても外を直さずに済むようにする
+      "name": "mocks-entry-only",
+      "comment": "src/client/mocks の中のファイルを直接 import しています。外からは入口（browser.ts・node.ts）だけを読んでください",
+      "severity": "error",
+      "from": { "path": "^src/", "pathNot": "^src/client/mocks/" },
+      "to": { "path": "^src/client/mocks/", "pathNot": "^src/client/mocks/(browser|node)\\.ts$" }
     },
     {
       "name": "server-not-to-client",
@@ -29,10 +57,17 @@
     {
       // テストの道具がアプリのコードとバンドルに入らないようにする
       "name": "no-test-runner-in-app",
-      "comment": "アプリのコードから vite-plus/test を import しています。テストの道具は __tests__ の中だけで使ってください",
+      "comment": "アプリのコードから vite-plus/test を import しています。テストの道具は __tests__ と src/client/__setup__ の中だけで使ってください",
       "severity": "error",
-      "from": { "path": "^src/", "pathNot": "/__tests__/" },
+      "from": { "path": "^src/", "pathNot": "(/__tests__/|^src/client/__setup__/)" },
       "to": { "path": "^vite-plus/test" }
+    },
+    {
+      "name": "no-test-support-in-app",
+      "comment": "アプリのコードから src/client/__setup__ を import しています。テストの準備はテストからだけ使ってください",
+      "severity": "error",
+      "from": { "path": "^src/", "pathNot": "(/__tests__/|^src/client/__setup__/)" },
+      "to": { "path": "^src/client/__setup__/" }
     },
     {
       "name": "no-circular",

@@ -7,7 +7,7 @@
     "module": "esnext",
     "moduleResolution": "bundler",
     "moduleDetection": "force",
-    "types": ["void/env", "vite/client"],
+    "types": ["void/env", "vite/client", "msw/vite/client"],
     "jsx": "react-jsx",
     "strict": true,
     "noEmit": true,
@@ -28,6 +28,6 @@
     }
   },
   "include": ["src", "vite.config.ts", "void.config.ts"],
-  // テストは tsconfig.test.json で見る。ここで外すと、__tests__ の外に置いたテストは test・expect の型がなく型エラーになる
-  "exclude": ["src/**/__tests__"]
+  // テストとその準備は tsconfig.test.json で見る。ここで外すと、__tests__ の外に置いたテストは test・expect の型がなく型エラーになる
+  "exclude": ["src/**/__tests__", "src/client/__setup__"]
 }
