@@ -40,7 +40,7 @@ catalog:
   oxc-transform-react: 0.156.0
   react: 19.3.1
   react-dom: 19.3.1
-  tsrs: 0.22.0-ts7.1.0-beta
+  tsrs: 0.23.0-ts7.1.0-beta
   typescript: 7.0.2
   vite: npm:@voidzero-dev/vite-plus-core@1.5.0
   vite-plus: 1.5.0
@@ -74,4 +74,4 @@ trustPolicy: no-downgrade
 # - tsrs: 名前の持ち主が移ったため、乗っ取りの疑いで止まる。
 #   provenance が github.com/oxc-project/tsrs の release.yml であることを確かめて許可した
 trustPolicyExclude:
-  - "tsrs@0.22.0-ts7.1.0-beta"
+  - "tsrs@0.23.0-ts7.1.0-beta"

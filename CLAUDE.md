@@ -70,4 +70,4 @@ TypeScript と JavaScript のファイルは `vpx <file>` で動かす（例: `v
 - 依存はルートで `vp add <名前> --filter <パッケージ>`（`web` か `@ai-chat/contract`）で足す。版は `pnpm-workspace.yaml` の catalog に固定の版で入り（`savePrefix: ""`）、各 `package.json` には `catalog:` と書かれる
 - catalog の版は範囲（`^`・`~`）で書かない。範囲を指定して足したとき（`vp add "pkg@^1.0.0"`）は範囲のまま書かれるので、固定の版に直す
 - 公開から 1 日たっていない版は入らない（`minimumReleaseAge`）。止まったら除外せず、1 日たった版を使う
-- `tsrs` を上げるときは、新しい版の provenance が `github.com/oxc-project/tsrs` の `release.yml` であることを確かめてから、`trustPolicyExclude` の版を書き換える
+- `tsrs` を上げるときは、新しい版の provenance が `github.com/oxc-project/tsrs` の `release.yml` であることを確かめてから、`trustPolicyExclude` の版を書き換える。一度に新しい版だけにすると、lockfile の古い版が検査で止まるので、古い版と新しい版を `||` で並べて `vp install` し、lockfile から古い版が消えてから外す
