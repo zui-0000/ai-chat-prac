@@ -1,4 +1,3 @@
-// FE と BE の間の API の約束。FE は型だけを使い、BE は implement(contract) で実装する
 import { eventIterator, oc } from "@orpc/contract";
 import * as z from "zod";
 
@@ -9,6 +8,7 @@ export const MessageSchema = z.object({
 });
 export type Message = z.infer<typeof MessageSchema>;
 
+// FE と BE の間の API の約束。FE は型だけを使い、BE は implement(contract) で実装する
 export const contract = {
   message: {
     list: oc.output(z.array(MessageSchema)),

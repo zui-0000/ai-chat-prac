@@ -1,9 +1,9 @@
-// TODO: チャット画面に置き換える。今は oRPC の一覧・作成・ストリーミングの疎通確認用
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 
 import { client, orpc } from "~/client/orpc";
 
+// TODO: チャット画面に置き換える。今は oRPC の一覧・作成・ストリーミングの疎通確認用
 export const ChatPage = () => {
   const queryClient = useQueryClient();
   const messages = useQuery(orpc.message.list.queryOptions());
