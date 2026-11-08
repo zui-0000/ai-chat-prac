@@ -11,12 +11,13 @@
       "to": { "path": "^src/server/" }
     },
     {
-      // @schema は Void が tsconfig の paths で当てた名前で、実体のファイルまで解決できない。場所のルールでは止まらないので、名前で止める
+      // src/server の外にある BE 専用のモジュールを止める。比べるのは解決した後のパスで、
+      // void/db は tsconfig.app.json の paths で .void/db.d.ts に解決される（@schema は src/server の中なので上のルールで止まる）
       "name": "client-not-to-server-modules",
-      "comment": "src/client から BE 専用のモジュール（@schema・void/db・@orpc/server など）を import しています。FE からは @ai-chat/contract と @orpc/client だけを使ってください",
+      "comment": "src/client から BE 専用のモジュール（void/db・@orpc/server など）を import しています。FE からは @ai-chat/contract と @orpc/client だけを使ってください",
       "severity": "error",
       "from": { "path": "^src/client/" },
-      "to": { "path": "^(@schema(/|$)|void/db|void/schema-|@orpc/server)" }
+      "to": { "path": "^(\\.void/db\\.d\\.ts$|void/db|void/schema-|@orpc/server)" }
     },
     {
       "name": "server-not-to-client",

@@ -1,6 +1,5 @@
 {
-  // .void/tsconfig.json（void prepare が生成）が paths で void/db・@schema の型を当てている。
-  // ここに paths を書くと extends 側の paths が丸ごと上書きされて消えるので、書かない
+  // .void/tsconfig.json は void prepare が生成する（routes.d.ts などの型を読み込む）
   "extends": "./.void/tsconfig.json",
   "compilerOptions": {
     "target": "es2023",
@@ -17,7 +16,16 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "erasableSyntaxOnly": true,
-    "noFallthroughCasesInSwitch": true
+    "noFallthroughCasesInSwitch": true,
+    // extends 先の paths は混ざらずに丸ごと上書きされるので、.void/tsconfig.json の paths をここに写す。
+    // 写し忘れは typecheck の scripts/check-tsconfig-paths.mjs が止める
+    "paths": {
+      "~/*": ["./src/*"],
+      "void/db": ["./.void/db.d.ts"],
+      "void/routes": ["./.void/routes.d.ts"],
+      "@schema": ["./src/server/db/schema.ts"],
+      "@schema/*": ["./src/server/db/schema/*"]
+    }
   },
   "include": ["src", "vite.config.ts", "void.config.ts"],
   // テストは tsconfig.test.json で見る。ここで外すと、__tests__ の外に置いたテストは test・expect の型がなく型エラーになる

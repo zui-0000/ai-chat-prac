@@ -6,8 +6,6 @@ AI チャットの画面を作る学習用リポジトリ。
 - API: [oRPC](https://orpc.dev/) の約束（contract）を先に書く
 - FE: React + TanStack Router + TanStack Query
 
-構成と、そう決めた理由は [docs/01 構成を決める](docs/01-構成を決める.md) にある。単体テストは [docs/02 単体テスト](docs/02-単体テスト.md)。
-
 ## 構成
 
 ```text

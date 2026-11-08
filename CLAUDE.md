@@ -30,7 +30,7 @@ TypeScript と JavaScript のファイルは `vpx <file>` で動かす（例: `v
 
 # このリポジトリの決まり
 
-構成と、そう決めた理由は `docs/01-構成を決める.md` にある。単体テストは `docs/02-単体テスト.md`。
+構成と、そう決めた理由は `docs/01-構成を決める.md` にある。単体テストは `docs/02-単体テスト.md`、import のパスは `docs/03-import のパス.md`。
 
 ## コマンドはルートで実行する
 
@@ -51,7 +51,12 @@ TypeScript と JavaScript のファイルは `vpx <file>` で動かす（例: `v
 
 - FE と BE の間の API は、`packages/contract` に oRPC の約束（zod のスキーマ）として先に書く
 - BE は `src/server/rpc/router.ts` で `implement(contract)` して実装する。`src/server/routes/` に API のルートを増やさない（`/rpc` の受け口だけを置く）
-- `apps/web/tsconfig.app.json` に `paths` を書かない。`.void/tsconfig.json` の `paths`（`void/db`・`@schema`）が上書きされて消える
+
+## import のパス
+
+- `apps/web/src` の下は `~/` から書く。`../../` より上への相対パスは使わない（lint が止める）。`../` が 1 つまでは相対パスでよい
+- `apps/web/tsconfig.app.json` の `paths` は、`.void/tsconfig.json` の `paths` を写したもの（extends 先の `paths` は上書きされて消えるため）。Void がキーを足したら、`apps/web` から見たパスに直して写す。写し忘れは `typecheck` が止める
+- `~` を変えるときは、`tsconfig.app.json` の `paths` と `apps/web/vite.config.ts` の `resolve.alias` の両方を直す
 
 ## 単体テスト
 

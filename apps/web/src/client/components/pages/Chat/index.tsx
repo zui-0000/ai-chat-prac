@@ -2,7 +2,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 
-import { client, orpc } from "../../../orpc";
+import { client, orpc } from "~/client/orpc";
 
 export const ChatPage = () => {
   const queryClient = useQueryClient();

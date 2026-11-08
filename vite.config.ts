@@ -48,6 +48,26 @@ export default defineConfig({
       "vite-plus/prefer-vite-plus-imports": "error",
       "func-style": ["error", "expression"],
     },
+    overrides: [
+      {
+        // 2 つ以上上のフォルダへの相対パスは、~/（apps/web/src）から書く
+        files: ["apps/web/src/**"],
+        rules: {
+          "no-restricted-imports": [
+            "error",
+            {
+              patterns: [
+                {
+                  group: ["../../*", "../../**"],
+                  message:
+                    "2 つ以上上のフォルダへの相対パスは使わず、~/ から書いてください（例: ~/client/orpc）",
+                },
+              ],
+            },
+          ],
+        },
+      },
+    ],
     options: {
       typeAware: true,
       typeCheck: true,
