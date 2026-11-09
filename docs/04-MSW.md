@@ -173,7 +173,7 @@ MSW は FE の開発とテストのための道具なので、`src/client/mocks`
 ```ts
 // src/client/main.tsx
 if (import.meta.env.DEV) {
-  const { startMocking } = await import("~/client/mocks/browser");
+  const { startMocking } = await import("#/client/mocks/browser.ts");
   await startMocking();
 }
 ```

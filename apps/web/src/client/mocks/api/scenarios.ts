@@ -1,6 +1,6 @@
 import type { HttpHandler } from "msw";
 
-import { orpcHandler, type OrpcRouter } from "~/client/mocks/utils/orpc-handler";
+import { orpcHandler, type OrpcRouter } from "#/client/mocks/utils/orpc-handler.ts";
 
 import { scenarios as chatStream } from "./chat/stream/scenarios";
 import { scenarios as messageCreate } from "./message/create/scenarios";

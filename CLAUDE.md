@@ -66,9 +66,8 @@ TypeScript と JavaScript のファイルは `vpx <file>` で動かす（例: `v
 
 ## import のパス
 
-- `apps/web/src` の下は `~/` から書く。`../../` より上への相対パスは使わない（lint が止める）。`../` が 1 つまでは相対パスでよい
-- `apps/web/tsconfig.app.json` の `paths` は、`.void/tsconfig.json` の `paths` を写したもの（extends 先の `paths` は上書きされて消えるため）。Void がキーを足したら、`apps/web` から見たパスに直して写す。写し忘れは `typecheck` が止める
-- `~` を変えるときは、`tsconfig.app.json` の `paths` と `apps/web/vite.config.ts` の `resolve.alias` の両方を直す
+- `apps/web/src` の下は `#/` から、拡張子まで書く（`#/client/orpc.ts`）。`../../` より上への相対パスは使わない（lint が止める）。`../` が 1 つまでは相対パスでよく、拡張子は書かない
+- `#/` は `apps/web/package.json` の `imports` で決めている。tsconfig の `paths` や Vite の `resolve.alias` でエイリアスを足さない（`tsconfig.app.json` に `paths` を書くと、extends 先の Void の `paths` が消える）
 
 ## 単体テスト
 

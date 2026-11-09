@@ -50,7 +50,7 @@ export default defineConfig({
     },
     overrides: [
       {
-        // 2 つ以上上のフォルダへの相対パスは、~/（apps/web/src）から書く
+        // 2 つ以上上のフォルダへの相対パスは、#/（apps/web/src。apps/web/package.json の imports）から書く
         files: ["apps/web/src/**"],
         rules: {
           "no-restricted-imports": [
@@ -60,7 +60,7 @@ export default defineConfig({
                 {
                   group: ["../../*", "../../**"],
                   message:
-                    "2 つ以上上のフォルダへの相対パスは使わず、~/ から書いてください（例: ~/client/orpc）",
+                    "2 つ以上上のフォルダへの相対パスは使わず、#/ から拡張子まで書いてください（例: #/client/orpc.ts）",
                 },
               ],
             },

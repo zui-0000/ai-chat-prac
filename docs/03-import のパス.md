@@ -1,95 +1,99 @@
 # import のパス
 
-記録日: 2026-11-08 / 対象: Void 1.6.2、Vite+ 1.5.0、tsrs 0.22.0-ts7.1.0-beta、dependency-cruiser 18.7.2
+記録日: 2026-11-08（2026-11-09 に `~/` から `#/` に変えた） / 対象: Void 1.6.2、Vite+ 1.5.0、tsrs 0.23.0-ts7.1.0-beta、TypeScript 7.0.2、dependency-cruiser 18.7.2
 
-`apps/web/src` の下は、`~/` から書ける。2 つ以上上のフォルダへの相対パス（`../../`）は使わず、`~/` から書く。
+2026-11-09 に、次の記事を読んで、tsconfig の `paths`（`~/`）から `package.json` の `imports`（`#/`）に乗り換えた。
+
+- 「パスエイリアスには Subpath Imports を使いたい」（mediba、2026-11-05）: https://zenn.dev/mediba/articles/167e2a3f663889
+
+`apps/web/src` の下は、`#/` から書ける。2 つ以上上のフォルダへの相対パス（`../../`）は使わず、`#/` から書く。`#/` のときだけ、拡張子まで書く。
 
 ```ts
-import { client, orpc } from "~/client/orpc"; // ../../../orpc と書かない
-import { router } from "~/server/rpc/router"; // ../../rpc/router と書かない
-import { theme } from "../theme"; // 1 つ上までは相対パスでよい
+import { client, orpc } from "#/client/orpc.ts"; // ../../../orpc と書かない
+import { router } from "#/server/rpc/router.ts"; // ../../rpc/router と書かない
+import { theme } from "../theme"; // 1 つ上までは相対パスでよい。拡張子は書かない
 ```
 
-design-system-prac の docs/09 と同じく `~/` にした。違うのは、`../` を 1 つは許すこと。`__tests__/` から確かめるファイルを読むとき（`../draft`）や、同じまとまりの中のファイルを読むときは、相対パスの方が近くて読みやすい。
+`../` を 1 つは許す。`__tests__/` から確かめるファイルを読むとき（`../draft`）や、同じまとまりの中のファイルを読むときは、相対パスの方が近くて読みやすい。
 
-## 型と実行で、別々に設定する
+## package.json の imports で決める
 
-| 受け持ち                                 | 設定                                                            |
-| ---------------------------------------- | --------------------------------------------------------------- |
-| 型（tsrs・エディタ・dependency-cruiser） | `apps/web/tsconfig.app.json` の `paths` に `"~/*": ["./src/*"]` |
-| 実行（開発サーバー・ビルド・テスト）     | `apps/web/vite.config.ts` の `resolve.alias` に `~`             |
+エイリアスは、Node.js 標準の Subpath Imports（`package.json` の `imports`）で決める。tsconfig の `paths` は使わない。
 
-TS で `paths` を書いても、TS は型を見るだけで、実行時の import を書き換えない。Vite が実行時に解決するので、両方に書く。テストは `extends: true` で `resolve.alias` を引き継ぐので、テストからも `~/` で読める。
+```json
+// apps/web/package.json
+{
+  "imports": { "#/*": "./src/*" }
+}
+```
 
-## Void の paths を写す
+TypeScript（`moduleResolution: "bundler"`）・Vite・Vitest・dependency-cruiser が、どれもこの 1 か所を読む。`vite.config.ts` の `resolve.alias` も要らない。
 
-`apps/web/tsconfig.app.json` は、Void が作る `.void/tsconfig.json` を extends している。`.void/tsconfig.json` は、`paths` で `void/db`・`@schema` などの型を当てている。
+Subpath Imports は、名前が `#` から始まる決まり（Node.js の仕様）。`~/` や `@/` は使えない。npm のパッケージ（`@scope/name`）と見分けやすい。
 
-tsconfig の `extends` は、`paths` を混ぜない。`tsconfig.app.json` に `paths` を書くと、`.void/tsconfig.json` の `paths` が丸ごと上書きされて消える。Void のソース（`codegen/project-tsconfig.ts`）を読むと、`.void/tsconfig.json` の `paths` は毎回ゼロから作り直していて、こちらのエイリアスを足す仕組みはない。
+### 拡張子を書く
 
-そこで、`.void/tsconfig.json` の `paths` を、`tsconfig.app.json` に写した。`.void/` から見たパスを、`apps/web` から見たパスに直す（`./db.d.ts` → `./.void/db.d.ts`）。
+`#/client/orpc` と拡張子なしで書くと、TypeScript は「モジュールが見つからない」（TS2307）で止まる。`imports` の置き換え先（`./src/client/orpc`）に、TypeScript は `.ts` を補わない。
 
-### 写し忘れを止める
+| 試したこと                                  | tsrs                        |
+| ------------------------------------------- | --------------------------- |
+| `"#/*": "./src/*"`、拡張子なしで import     | 12 か所が見つからない       |
+| `"#src/*": "./src/*"`、拡張子なしで import  | 同じ（`#/` のせいではない） |
+| `"#/*": "./src/*"`、拡張子まで書いて import | 通る                        |
 
-Void は、プロジェクトの形によって `paths` を足す。
+置き換え先を `["./src/*.ts", "./src/*.tsx", "./src/*"]` の配列にしても tsrs は通ったが、使わない。Node.js の仕様では、配列は「前の候補が不正な書き方のときの予備」で、ファイルがあるかどうかで次に進むものではない。道具によって解釈が変わる。
 
-| キー                              | 足される条件                  |
-| --------------------------------- | ----------------------------- |
-| `void/db`・`@schema`・`@schema/*` | DB のスキーマがあるとき       |
-| `void/routes`                     | API のルートがあるとき        |
-| `void/queues`                     | キュー（`queues/`）を使うとき |
-| `@void/md/pages`                  | Markdown のページを使うとき   |
+拡張子を書くので、`tsconfig.app.json` に `allowImportingTsExtensions` を足した（`noEmit` のときだけ使える）。
 
-キューなどを使い始めたり、Void を上げてパスが変わったりすると、写しが古くなる。写しが古くなったときに何が起きるかを、スクリプトを通さずに tsrs だけで試した。
+Vite は拡張子なしでも解決してしまうので、書き忘れに気づけるのは型チェックだけ。`typecheck` はコミットのときに動くので、すり抜けない。
 
-| 写さなかったキー | 起きたこと                                                                                                                                                                                 |
-| ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `void/routes`    | 何も起きない。`.void/routes.d.ts` は `declare module "void/routes"` で型を足していて、`.void/tsconfig.json` の `files` で読まれるので、`paths` がなくても型が当たる                        |
-| `void/db`        | 型エラーで止まる。ただし、正しいコード（`db.query.messages`）までエラーになり、メッセージは「`Seems like the schema generic is missing`」。`void` パッケージの中の汎用の型に解決されるため |
-| `@schema`        | 型エラーで止まる（モジュールが見つからない）                                                                                                                                               |
+## 前は tsconfig の paths で決めていた
 
-写し忘れても、多くは型チェックで止まる。ただ、エラーが原因と関係ない場所を指す。`void/db` の例だと Drizzle の使い方を間違えたように見えて、「Void を上げて `.void/tsconfig.json` が変わり、写しが古くなった」という本当の原因にたどり着きにくい。
+2026-11-08 は `~/` を tsconfig の `paths` と Vite の `resolve.alias` の 2 か所で決めていた。これには、Void と食い合う問題があった。
 
-そこで、`apps/web/scripts/check-tsconfig-paths.mjs` を `typecheck` の最初に動かす。`.void/tsconfig.json` のキーがすべて `tsconfig.app.json` にあって、同じファイルを指しているかを確かめ、合わなければ、どのキーをどう直すかを出して止まる。`typecheck` はコミットのときに動き、あとで作る CI でも動かすので、別にフックの設定を足さなくて済む。
+`apps/web/tsconfig.app.json` は、Void が作る `.void/tsconfig.json` を extends している。`.void/tsconfig.json` は `paths` で `void/db`・`@schema` などの型を当てている。tsconfig の `extends` は `paths` を混ぜないので、`tsconfig.app.json` に `paths` を書くと、Void の `paths` が丸ごと上書きされて消える。Void のソース（`codegen/project-tsconfig.ts`）を読むと、`.void/tsconfig.json` の `paths` は毎回ゼロから作り直していて、こちらのエイリアスを足す仕組みもない。
 
-| 試したこと                                    | 結果                                      |
-| --------------------------------------------- | ----------------------------------------- |
-| `tsconfig.app.json` から `void/routes` を消す | `"void/routes" がありません` で止まった   |
-| `@schema` の行き先を別のファイルにする        | `"@schema" の行き先が違います` で止まった |
+そこで、Void の `paths` を `tsconfig.app.json` に写し、写し忘れを `scripts/check-tsconfig-paths.mjs` で止めていた。写し忘れても多くは型エラーになるが、`void/db` を写し忘れると、正しいコード（`db.query.messages`）までエラーになり、メッセージも「`Seems like the schema generic is missing`」と原因と関係ない場所を指したため。
 
-**手放すもの**: 自前のスクリプトが 1 つ増える。`typecheck` の中に、型チェックそのものではない確認が混ざる。
+`imports` に変えたので、`tsconfig.app.json` に `paths` を書かなくて済む。Void の `paths` はそのまま引き継がれ、写す作業・見張るスクリプト・`resolve.alias` がすべて要らなくなった。Void がキーを足しても（`void/queues` など）、何もしなくてよい。
 
-`tsconfig.app.json` にはコメントがあるので、そのままでは `JSON.parse` で読めない。このリポジトリの tsconfig のコメントは、すべて行の頭からの `//` なので、その行を消して読む。
+冒頭の記事（https://zenn.dev/mediba/articles/167e2a3f663889 ）を読んで、乗り換えた。
 
 ## ../../ を lint で止める
 
-ルートの `vite.config.ts` の lint の `overrides` で、`apps/web/src/**` に `no-restricted-imports` をかけた。`../../*` と `../../**` を止める。今あった 2 か所（`[...path].ts` と `Chat/index.tsx`）を `~/` に直した。テストのファイルの中の `../../` も止まる。
+ルートの `vite.config.ts` の lint の `overrides` で、`apps/web/src/**` に `no-restricted-imports` をかけた。`../../*` と `../../**` を止める。テストのファイルの中の `../../` も止まる。
 
-## dependency-cruiser の穴を 1 つふさいだ
+## dependency-cruiser は Void の名前を名前で止める
 
-`paths` に Void の分を写したことで、dependency-cruiser が `@schema` と `void/db` を、実体のファイルまでたどれるようになった。
+dependency-cruiser は、`#/` を `imports` から正しく解決する（種類は `aliased-subpath-import`）。一方で、extends 先の `.void/tsconfig.json` の `paths` はたどれず、`@schema`・`void/db` は名前のまま残る。
 
-| import    | 前（paths なし）        | 後（paths あり）          |
-| --------- | ----------------------- | ------------------------- |
-| `@schema` | `@schema`（名前のまま） | `src/server/db/schema.ts` |
-| `void/db` | `void/db`（名前のまま） | `.void/db.d.ts`           |
+| import    | paths を写していたとき    | imports にした後        |
+| --------- | ------------------------- | ----------------------- |
+| `@schema` | `src/server/db/schema.ts` | `@schema`（名前のまま） |
+| `void/db` | `.void/db.d.ts`           | `void/db`（名前のまま） |
 
-dependency-cruiser のルールは、解決した後のパスで比べる。FE から BE 専用のモジュールを止める `client-not-to-server-modules` は `^void/db` で比べていたので、`void/db` が止まらなくなっていた。`^\.void/db\.d\.ts$` でも止めるように直した。`@schema` は `src/server` の中に解決されるので、場所で止める `client-not-to-server` で止まる。
+そこで、FE と偽物から BE 専用のモジュールを止めるルール（`client-not-to-server-modules`・`mocks-not-to-db`）は、`^(@schema|void/db|void/schema-…)` の名前で比べる。dependency-cruiser に Void の `paths` を読ませる道もあるが、写す作業を dependency-cruiser の設定に移すだけなので選ばなかった。
 
-FE から 1 つずつ import して確かめた。
+使い捨てのファイルで、わざと違反を入れて確かめた。
 
-| FE から import        | 止めたルール                                   |
-| --------------------- | ---------------------------------------------- |
-| `~/server/rpc/router` | `client-not-to-server`                         |
-| `@schema`             | `client-not-to-server`                         |
-| `void/db`             | `client-not-to-server-modules`                 |
-| `void/schema-d1`      | `client-not-to-server-modules`                 |
-| `@orpc/server`        | `client-not-to-server-modules`                 |
-| `void/routes`         | 止めない（FE でも使う、型の付いた URL の道具） |
+| import する側 | import                            | 止めたルール                   |
+| ------------- | --------------------------------- | ------------------------------ |
+| FE の部品     | `@schema`                         | `client-not-to-server-modules` |
+| FE の部品     | `void/db`                         | `client-not-to-server-modules` |
+| FE の部品     | `#/server/rpc/router.ts`          | `client-not-to-server`         |
+| FE の部品     | `#/client/mocks/browser.ts`       | `client-not-to-mocks`          |
+| 偽物          | `@schema`                         | `mocks-not-to-db`              |
+| 偽物          | `void/db`                         | `mocks-not-to-db`              |
+| テスト        | `#/client/mocks/api/scenarios.ts` | `mocks-entry-only`             |
 
 ## 確かめたこと
 
-- `vp check`・`vp run typecheck`・`vp run lint:deps`・`vp run test` が通る
-- テストから `~/client/orpc`・`~/server/rpc/router` を読める
-- 本番のビルドに、解決されていない `~/` が残らない
-- 開発サーバーと本番のプレビューで、`/about` の直接表示・oRPC の一覧・作成・ストリーミングが動く（BE の `[...path].ts` も FE の `Chat` も `~/` で import している）
+- `vp check`・`vp run typecheck`・`vp run lint:deps`・`vp run test`・`vp run build` が通る
+- エディタの TypeScript 7.0.2（`tsc`）でも通る
+- 開発サーバーで、FE は `#/client/mocks/browser.ts` を読める。BE（workerd）は `#/server/rpc/router.ts` を読めて、`/rpc` の作成と一覧が動く
+- 本番のビルドに、解決されていない `#/` の import が残らない
+
+## 参考
+
+- 「パスエイリアスには Subpath Imports を使いたい」（mediba、2026-11-05）: https://zenn.dev/mediba/articles/167e2a3f663889
+- Node.js の Subpath Imports の仕様: https://nodejs.org/api/packages.html#subpath-imports

@@ -1,5 +1,5 @@
-import { orpcHandler } from "~/client/mocks/utils/orpc-handler";
-import { os } from "~/client/mocks/utils/orpc-implementer";
+import { orpcHandler } from "#/client/mocks/utils/orpc-handler.ts";
+import { os } from "#/client/mocks/utils/orpc-implementer.ts";
 
 import { handler as chatStream } from "./chat/stream/handler";
 import { handler as messageCreate } from "./message/create/handler";

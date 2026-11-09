@@ -1,4 +1,4 @@
-import { os } from "~/client/mocks/utils/orpc-implementer";
+import { os } from "#/client/mocks/utils/orpc-implementer.ts";
 
 import { fakeReply } from "./reply";
 

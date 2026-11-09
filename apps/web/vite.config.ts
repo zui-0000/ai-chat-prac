@@ -14,10 +14,6 @@ const unitTest = {
 };
 
 export default defineConfig({
-  resolve: {
-    // tsconfig.app.json の paths（~/*）と対で必要。tsconfig は型を、こちらは実行時の解決を受け持つ
-    alias: { "~": `${import.meta.dirname}/src` },
-  },
   plugins: [
     // react() より前に置く必要がある
     tanstackRouter({

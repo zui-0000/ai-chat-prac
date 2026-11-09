@@ -1,7 +1,7 @@
 import { ORPCError } from "@orpc/server";
 import { delay } from "msw";
 
-import { os } from "~/client/mocks/utils/orpc-implementer";
+import { os } from "#/client/mocks/utils/orpc-implementer.ts";
 
 import type { handler } from "./handler";
 import { fakeReply } from "./reply";

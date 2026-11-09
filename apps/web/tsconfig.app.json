@@ -1,5 +1,6 @@
 {
-  // .void/tsconfig.json は void prepare が生成する（routes.d.ts などの型を読み込む）
+  // .void/tsconfig.json は void prepare が生成する（routes.d.ts などの型を読み込む）。
+  // paths は書かない。書くと extends 先の Void の paths（void/db・@schema など）が丸ごと上書きされて消える。src のエイリアスは package.json の imports（#/）
   "extends": "./.void/tsconfig.json",
   "compilerOptions": {
     "target": "es2023",
@@ -11,21 +12,14 @@
     "jsx": "react-jsx",
     "strict": true,
     "noEmit": true,
+    // #/ の import は拡張子まで書く。imports の置き換え先に、TypeScript は .ts を補わない
+    "allowImportingTsExtensions": true,
     "skipLibCheck": true,
     "verbatimModuleSyntax": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "erasableSyntaxOnly": true,
-    "noFallthroughCasesInSwitch": true,
-    // extends 先の paths は混ざらずに丸ごと上書きされるので、.void/tsconfig.json の paths をここに写す。
-    // 写し忘れは typecheck の scripts/check-tsconfig-paths.mjs が止める
-    "paths": {
-      "~/*": ["./src/*"],
-      "void/db": ["./.void/db.d.ts"],
-      "void/routes": ["./.void/routes.d.ts"],
-      "@schema": ["./src/server/db/schema.ts"],
-      "@schema/*": ["./src/server/db/schema/*"]
-    }
+    "noFallthroughCasesInSwitch": true
   },
   "include": ["src", "vite.config.ts", "void.config.ts"],
   // テストとその準備は tsconfig.test.json で見る。ここで外すと、__tests__ の外に置いたテストは test・expect の型がなく型エラーになる

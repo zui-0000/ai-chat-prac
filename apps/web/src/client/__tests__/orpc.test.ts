@@ -1,6 +1,6 @@
 import { ORPCError } from "@orpc/client";
 
-import { scenarios, server } from "~/client/mocks/node";
+import { scenarios, server } from "#/client/mocks/node.ts";
 
 import { client } from "../orpc";
 
