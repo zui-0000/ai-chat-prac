@@ -35,3 +35,6 @@ dist-ssr
 
 # TanStack Router の plugin が作る一時ファイル
 .tanstack/
+
+# Vitest 5 が出すレポートや添付（失敗時のスクリーンショットなど）
+.vitest/
