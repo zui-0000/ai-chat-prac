@@ -1,0 +1,70 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+# CI はリポジトリを読むだけなので、書き込みの権限を渡さない
+permissions:
+  contents: read
+
+# 同じ PR で続けてプッシュしたら、古い実行を取り消す。main は取り消さず、全部の結果を残す
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  # ルールセットがこのジョブの名前を必須のチェックにしているので、名前を変えない
+  check:
+    name: check
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      # Action のコミットは actions.lock で固定する（gh actions-lock で更新する）。タグが付け替えられても、動くのは固定したコミット
+      - uses: actions/checkout@v7.0.1
+        with:
+          persist-credentials: false
+
+      # Node.js の版は書かない。package.json の devEngines.runtime を読み、手元と同じ版になる
+      - id: setup
+        uses: voidzero-dev/setup-vp@v1.22.0
+        with:
+          cache: true
+          # lockfile を書き換えずに入れる。lockfile と package.json がずれていたら止まる
+          run-install: |
+            - args: ['--frozen-lockfile']
+
+      # どれかが落ちても残りを回し、1 回の実行で全部の結果を見られるようにする
+      - name: フォーマット・lint・型
+        if: ${{ !cancelled() && steps.setup.outcome == 'success' }}
+        run: vp check --continue-on-error
+
+      - name: 型チェック（各パッケージ）
+        if: ${{ !cancelled() && steps.setup.outcome == 'success' }}
+        run: vp run typecheck
+
+      - name: import の向き
+        if: ${{ !cancelled() && steps.setup.outcome == 'success' }}
+        run: vp run lint:deps
+
+      - name: テスト（client）
+        if: ${{ !cancelled() && steps.setup.outcome == 'success' }}
+        run: vp run test:client
+
+      - name: テスト（server）
+        if: ${{ !cancelled() && steps.setup.outcome == 'success' }}
+        run: vp run test:server
+
+      - name: ビルド
+        if: ${{ !cancelled() && steps.setup.outcome == 'success' }}
+        run: vp run build
+
+      # actions.lock がワークフローとずれていないか、固定したコミットが今も正しいかを確かめる
+      - name: actions.lock の確認
+        if: ${{ !cancelled() }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh extension install github/gh-actions-lock --pin v0.4.1
+          gh actions-lock --verify
