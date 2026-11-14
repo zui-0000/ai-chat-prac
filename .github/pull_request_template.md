@@ -8,4 +8,4 @@
 
 ### 参照
 
-- https://zui-develop0000.atlassian.net/browse/ZSCM-XX
+- ZSCM-XX
