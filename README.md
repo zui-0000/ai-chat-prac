@@ -5,6 +5,7 @@ AI チャットの画面を作る学習用リポジトリ。
 - 土台: [Void](https://void.cloud)（FE と BE を 1 つの Cloudflare Worker にまとめる）と [Vite+](https://viteplus.dev/)（`vp`）
 - API: [oRPC](https://orpc.dev/) の約束（contract）を先に書く
 - FE: React + TanStack Router + TanStack Query
+- BE: [Hono](https://hono.dev/)（Void がルーティングに使う）+ Cloudflare D1
 
 ## 構成
 
@@ -58,19 +59,11 @@ vp hooks status                       # 「Hooks dir: .vite-hooks」と出れば
 
 ### 開発サーバー
 
-`vp run dev` で、FE と BE が両方立ち上がる。開くのは <http://localhost:5173/> の 1 つだけでよい。
+`vp run dev` で FE と BE が立ち上がる。開くのは <http://localhost:5173/> だけでよい。
 
-**画面は、いつも偽物の BE（MSW、`apps/web/src/client/mocks`）と話す。** 本物の BE を画面から確かめるときは、`vp run build` してから `vp run preview` を使う。
-
-| 立ち上がるもの      | 動かすもの                                                   | ポート                         |
-| ------------------- | ------------------------------------------------------------ | ------------------------------ |
-| Vite の開発サーバー | FE（`apps/web/src/client`）。HMR もここ                      | 5173                           |
-| workerd             | BE（`apps/web/src/server`）。Cloudflare Workers のランタイム | 内部のポート（直接は開かない） |
-
-- Vite が入口になり、`/rpc` などの BE 宛てのリクエストを workerd に渡す。FE と BE が同じオリジンなので、CORS やプロキシの設定は要らない
-- BE は本番と同じ workerd で動くので、ローカルと Cloudflare での挙動がずれにくい
-- 本物の BE も立ち上がるが、画面の `/rpc` は MSW の Service Worker が先に返すので、本物には届かない
-- 起動時に DB のマイグレーションが自動で流れる。ローカルの D1 は `apps/web/.void/v3/d1/` の SQLite ファイル。このフォルダを消すと、次の起動でマイグレーションから作り直され、データが空に戻る
+- 画面は、いつも偽物の BE（MSW）と話す。本物の BE を確かめるときは、`vp run build` してから `vp run preview` を使う
+- BE は本番と同じ Cloudflare Workers のランタイム（workerd）で動く。FE と同じオリジンなので、CORS の設定は要らない
+- 起動時に DB のマイグレーションが流れる。ローカルの D1 は `apps/web/.void/v3/d1/` にあり、消すと空に戻る
 
 ### 失敗の画面を見る
 
@@ -81,15 +74,3 @@ http://localhost:5173/?scenario=message.create.error
 ```
 
 名前は `<API>.<状態>`（例: `message.list.many`・`chat.stream.slow`）。各 API のシナリオは `apps/web/src/client/mocks/api/<API>/scenarios.ts` にある。知らない名前を付けると、正常系で動きつつ、使える名前の一覧をコンソールに出す。
-
-## コミット時に自動で実行されること
-
-pre-commit フックが `vp staged` で、次の順に 1 つずつ実行する。どれかが失敗するとコミットは止まり、ファイルは元に戻る。
-
-| 順番 | 実行するもの           | 対象                                      | 内容                                                                |
-| ---- | ---------------------- | ----------------------------------------- | ------------------------------------------------------------------- |
-| 1    | `vp check --fix`       | ステージしたすべてのファイル              | 整形と lint。自動で直せるものは直してコミットする                   |
-| 2    | `vp run web#lint:deps` | `apps/web` の TS を変えたとき             | import の向き                                                       |
-| 3    | `vp run typecheck`     | `apps/` か `packages/` の TS を変えたとき | 全体の型チェック。contract を変えて実装が合わなくなったときも止まる |
-
-そのあと、commit-msg フックが commitlint でコミットメッセージを検査する。`feat: ヘッダーを作る` のように `<type>: <説明>` の形で書く。
