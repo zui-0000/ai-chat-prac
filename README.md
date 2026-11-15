@@ -34,6 +34,10 @@ vp hooks status                       # 「Hooks dir: .vite-hooks」と出れば
 1. 拡張機能の画面で `@recommended` と検索し、おすすめの拡張機能を入れる。TypeScript 7 をエディタで使うには、TypeScript Native Preview（`typescriptteam.native-preview`）が要る
 2. `.ts` のファイルを開き、コマンドパレットの「Select TypeScript Version...」で「Use Workspace Version」を選ぶ。エディタがリポジトリの版の TypeScript を使うようになる。ワークスペースごとに最初の 1 回だけ要る
 
+### Claude Code のスキル（オーナーのみ）
+
+オーナーは、別の非公開のリポジトリで管理している Claude Code のスキルを使う。セットアップの手順は、そのリポジトリの README にある。ほかの人は何もしなくてよい。
+
 ## よく使うコマンド
 
 コマンドはすべてリポジトリのルートで実行する。パッケージのフォルダで実行すると、そのパッケージしか検査しない。
