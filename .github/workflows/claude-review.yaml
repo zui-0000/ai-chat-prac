@@ -120,7 +120,7 @@ jobs:
           prompt: |
             前のレビューの指摘が直っているかを、指摘ごとに確かめなさい。
 
-            - 確かめる指摘は `claude-re-review-threads.json` にある。どれも、まだ解決していないレビューのスレッド（id・path・line・最初のコメントの body）
+            - 確かめる指摘は `claude-re-review-threads.json` にある。どれも、まだ解決していないレビューのスレッド（id・path・line・最初のコメントの body・返事の replies）
             - 作業フォルダは、PR の最新のコミット。PR の差分は `gh pr diff ${{ github.event.pull_request.number }}` で見られる
             - ファイルは書き換えない
             - `threads` には、ファイルのスレッドを 1 つずつ全部入れる。`id` はファイルの値をそのまま使う

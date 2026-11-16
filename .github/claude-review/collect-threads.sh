@@ -15,14 +15,15 @@ query($owner: String!, $name: String!, $number: Int!) {
           path
           line
           originalLine
-          comments(first: 1) { nodes { databaseId url body author { login } } }
+          comments(first: 50) { nodes { databaseId url body authorAssociation author { login } } }
         }
       }
     }
   }
 }' --jq '.data.repository.pullRequest')
 
-# GraphQL では App の login に [bot] が付かないことがあるので、外して比べる
+# GraphQL では App の login に [bot] が付かないことがあるので、外して比べる。
+# 公開リポジトリでは誰でもスレッドに返事を書けるので、プロンプトの注入を防ぐため、書き込みできる人の返事だけを渡す
 jq --arg bot "$BOT" '
   def by_bot: (.author.login // "" | sub("\\[bot\\]$"; "")) == $bot;
   {
@@ -31,7 +32,10 @@ jq --arg bot "$BOT" '
       | select(.isResolved | not)
       | .comments.nodes[0] as $first
       | select($first | by_bot)
-      | {id, path, line: (.line // .originalLine), comment_id: $first.databaseId, url: $first.url, body: $first.body}]
+      | {id, path, line: (.line // .originalLine), comment_id: $first.databaseId, url: $first.url, body: $first.body,
+        replies: [.comments.nodes[1:][]
+          | select((by_bot | not) and (.authorAssociation | IN("OWNER", "MEMBER", "COLLABORATOR")))
+          | {author: .author.login, body}]}]
   }
 ' <<<"$pr" >"$RUNNER_TEMP/collected.json"
 
