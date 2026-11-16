@@ -37,7 +37,7 @@ done
 
 if [[ -z $remaining ]]; then
   event=APPROVE
-  body="LGTMよ！やるじゃない！"
+  body="LGTMよ！やるじゃない！"$'\n'"安心してマージできるわよ。お疲れさま！"
 else
   event=COMMENT
   body="まだ直っていない指摘があるわ。${remaining}"$'\n\n'$(jq -r '.summary // ""' <<<"$result")
