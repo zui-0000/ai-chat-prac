@@ -32,6 +32,25 @@ jobs:
           fetch-depth: 1
           persist-credentials: false
 
+      - id: app-token
+        uses: actions/create-github-app-token@v3.3.0
+        with:
+          client-id: ${{ vars.REVIEWER_APP_CLIENT_ID }}
+          private-key: ${{ secrets.REVIEWER_APP_PRIVATE_KEY }}
+          permission-pull-requests: write
+
+      # App はレビューを頼む相手にできないので、レビュー中であることをコメントで見せる。付けられなくてもレビューは続ける
+      - id: marker
+        name: レビュー中の印を付ける
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+          REPO: ${{ github.repository }}
+          PR: ${{ github.event.pull_request.number }}
+        run: |
+          id=$(gh api "repos/$REPO/issues/$PR/comments" -f body="レビューするわ。まかせて！" --jq .id)
+          echo "id=$id" >>"$GITHUB_OUTPUT"
+
       - id: claude
         uses: anthropics/claude-code-action@v1.0.276
         with:
@@ -46,16 +65,8 @@ jobs:
             --disallowedTools "Bash(gh pr comment:*)"
             --json-schema '{"type":"object","properties":{"status":{"type":"string","enum":["reviewed","skipped"]},"skip_reason":{"type":"string"},"summary":{"type":"string"},"findings":{"type":"array","items":{"type":"object","properties":{"path":{"type":"string"},"line":{"type":"integer"},"start_line":{"type":"integer"},"body":{"type":"string"}},"required":["path","line","body"]}}},"required":["status","summary","findings"]}'
 
-      - id: app-token
-        if: ${{ !cancelled() }}
-        uses: actions/create-github-app-token@v3.3.0
-        with:
-          client-id: ${{ vars.REVIEWER_APP_CLIENT_ID }}
-          private-key: ${{ secrets.REVIEWER_APP_PRIVATE_KEY }}
-          permission-pull-requests: write
-
       - name: レビューを PR に出す
-        if: ${{ steps.claude.outcome == 'success' && steps.app-token.outcome == 'success' }}
+        if: ${{ steps.claude.outcome == 'success' }}
         env:
           GH_TOKEN: ${{ steps.app-token.outputs.token }}
           REPO: ${{ github.repository }}
@@ -72,6 +83,15 @@ jobs:
           REPO: ${{ github.repository }}
           PR: ${{ github.event.pull_request.number }}
         run: gh api -X DELETE "repos/$REPO/issues/$PR/labels/claude-review" --silent || echo "::warning::ラベルを外せなかった"
+
+      # 失敗・取り消しのときも消す
+      - name: レビュー中の印を消す
+        if: ${{ always() && steps.marker.outputs.id != '' }}
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+          REPO: ${{ github.repository }}
+          ID: ${{ steps.marker.outputs.id }}
+        run: gh api -X DELETE "repos/$REPO/issues/comments/$ID" --silent || echo "::warning::印を消せなかった"
 
   re-review:
     name: re-review
@@ -100,6 +120,17 @@ jobs:
           client-id: ${{ vars.REVIEWER_APP_CLIENT_ID }}
           private-key: ${{ secrets.REVIEWER_APP_PRIVATE_KEY }}
           permission-pull-requests: write
+
+      - id: marker
+        name: レビュー中の印を付ける
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+          REPO: ${{ github.repository }}
+          PR: ${{ github.event.pull_request.number }}
+        run: |
+          id=$(gh api "repos/$REPO/issues/$PR/comments" -f body="再レビューね！まかせて！" --jq .id)
+          echo "id=$id" >>"$GITHUB_OUTPUT"
 
       - id: threads
         name: まだ解決していない指摘を集める
@@ -158,3 +189,11 @@ jobs:
           REPO: ${{ github.repository }}
           PR: ${{ github.event.pull_request.number }}
         run: gh api -X DELETE "repos/$REPO/issues/$PR/labels/claude-re-review" --silent || echo "::warning::ラベルを外せなかった"
+
+      - name: レビュー中の印を消す
+        if: ${{ always() && steps.marker.outputs.id != '' }}
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+          REPO: ${{ github.repository }}
+          ID: ${{ steps.marker.outputs.id }}
+        run: gh api -X DELETE "repos/$REPO/issues/comments/$ID" --silent || echo "::warning::印を消せなかった"
