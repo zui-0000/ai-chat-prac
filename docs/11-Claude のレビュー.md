@@ -73,7 +73,7 @@ PR にラベルを貼ると、GitHub Actions で Claude が PR をレビュー�
 
 GitHub の App は、レビューを頼む相手（Request review）にできない。API で頼んでも、エラーにならずに無視された。PR の右側の Reviewers の欄に App が出るのは、レビューを出したあとだけで、それまでの 30〜50 秒は何も起きていないように見える。
 
-- 印のコメントを出すため、App のトークンはジョブの最初で作る。Claude には渡さない
+- 印のコメントを出すトークンは、印を付けたらすぐ取り消す（`skip-token-revoke` にして、自分で `DELETE /installation/token` を呼ぶ）。PR に書き込むトークンは、Claude が終わってから作る。Claude が動いているあいだ、書き込める App のトークンは残らない
 - 印を付けられなくても、レビューは続ける
 
 ## Claude は読むだけにした
