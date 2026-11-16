@@ -40,6 +40,13 @@ TypeScript と JavaScript のファイルは `vpx <file>` で動かす（例: `v
 
 `apps/web` は Void（`void`）のアプリ。Void の API や作法は、推測せずに `apps/web/node_modules/void/docs/` を読んで確かめる（入口は `apps/web/AGENTS.md`）。
 
+## タスクとキャッシュ
+
+- 検査・テスト・ビルド（`build`・`typecheck`・`lint:deps`・`test`・`test:client`・`test:server`）は、`package.json` ではなく各パッケージの `vite.config.ts` の `run.tasks` に書く。タスクはキャッシュされ、読んだファイルが変わっていなければ飛ばす（`docs/10-タスクのキャッシュ.md`）
+- `run.tasks` の中は変数を使わず、値をそのまま書く。変数があると `vp run` が設定を実行し、Void の plugin がルートに `.void/` を作る
+- `apps/web` の `vp build`・`vp test` のタスクは、`.void/v3` を入力と出力から外す
+- キャッシュを疑うときは `vp run --last-details` で外れた理由を見る。`vp run --no-cache <タスク>` で使わずに回し、`vp cache clean` で消す
+
 ## FE と BE の置き場所
 
 - FE（ブラウザで動く）は `apps/web/src/client/`、BE（Worker で動く）は `apps/web/src/server/` に置く
