@@ -20,7 +20,7 @@ PR にラベルを貼ると、GitHub Actions で Claude が PR をレビュー�
 | Claude の認証     | Claude のプランの OAuth トークン（`CLAUDE_CODE_OAUTH_TOKEN`）。Secrets に人が入れる                                                      |
 | Claude のトークン | このジョブの `GITHUB_TOKEN`（`contents: read` と `pull-requests: read`）。読むだけ                                                       |
 | 口調              | アスカの口調（`.github/claude-review/persona.md`）。何を指摘するかの基準は変えない                                                       |
-| マージの条件      | 入れない。承認もマージの条件に効かない（ルールセットは `check` だけを求めている）                                                        |
+| マージの条件      | 入れない。承認もマージの条件に効かない（ルールセットは承認を求めない。`docs/07-CI.md`）                                                  |
 
 ## 動き方
 
@@ -120,7 +120,7 @@ Anthropic の Claude の GitHub App は入れない。Contents・Issues・Pull r
 **手放すもの**: App が、このリポジトリのブランチに push できるようになる。秘密鍵が漏れると、ブランチを書き換えられる。
 
 - `.github/workflows/` は書き換えられない。App がワークフローを変えるには、別の Workflows の権限が要る
-- `main` には、CI（`check`）が通っていないコミットを入れられない（ルールセット）
+- `main` には PR のマージでしか入れず、force push も削除もできない（ルールセット。`docs/07-CI.md`）
 - Contents の書き込みを持つトークンは、Claude が終わったあとに作り、次のステップだけに渡す
 
 ### 承認
