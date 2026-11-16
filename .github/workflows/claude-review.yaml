@@ -52,13 +52,15 @@ jobs:
             --disallowedTools "Bash(gh pr comment:*)"
             --json-schema '{"type":"object","properties":{"status":{"type":"string","enum":["reviewed","skipped"]},"skip_reason":{"type":"string"},"summary":{"type":"string"},"findings":{"type":"array","items":{"type":"object","properties":{"path":{"type":"string"},"line":{"type":"integer"},"start_line":{"type":"integer"},"body":{"type":"string"}},"required":["path","line","body"]}}},"required":["status","summary","findings"]}'
 
-      # App の短いトークンを作る。ジョブが終わると取り消される
+      # App の短いトークンを作る。ジョブが終わると取り消される。
+      # App は Contents の書き込みも持つが、ここではレビューとラベルに要る Pull requests の書き込みだけに絞る
       - id: app-token
         if: ${{ !cancelled() }}
         uses: actions/create-github-app-token@v3.3.0
         with:
           client-id: ${{ vars.REVIEWER_APP_CLIENT_ID }}
           private-key: ${{ secrets.REVIEWER_APP_PRIVATE_KEY }}
+          permission-pull-requests: write
 
       # 指摘があれば行ごとのコメント、無ければ承認。書き込みは決まった手順で行い、Claude には判断させない
       - name: レビューを PR に出す
@@ -100,12 +102,13 @@ jobs:
           fetch-depth: 1
           persist-credentials: false
 
-      # App の名前（slug）で、App が付けた指摘を見分ける
+      # App の名前（slug）で、App が付けた指摘を見分ける。このトークンはラベルを外すのにも使う
       - id: app-token
         uses: actions/create-github-app-token@v3.3.0
         with:
           client-id: ${{ vars.REVIEWER_APP_CLIENT_ID }}
           private-key: ${{ secrets.REVIEWER_APP_PRIVATE_KEY }}
+          permission-pull-requests: write
 
       - id: threads
         name: まだ解決していない指摘を集める
@@ -137,11 +140,22 @@ jobs:
             --allowedTools "Read,Grep,Glob,Bash(gh pr diff:*)"
             --json-schema '{"type":"object","properties":{"summary":{"type":"string"},"threads":{"type":"array","items":{"type":"object","properties":{"id":{"type":"string"},"fixed":{"type":"boolean"},"comment":{"type":"string"}},"required":["id","fixed","comment"]}}},"required":["summary","threads"]}'
 
+      # スレッドを解決済みにする GraphQL（resolveReviewThread）は、Pull requests ではなく Contents の書き込みを求める。
+      # Contents の書き込みを持つトークンは、Claude が終わったあとに作り、次のステップだけで使う
+      - id: resolver-token
+        if: ${{ steps.claude.outcome == 'success' || steps.claude.outcome == 'skipped' }}
+        uses: actions/create-github-app-token@v3.3.0
+        with:
+          client-id: ${{ vars.REVIEWER_APP_CLIENT_ID }}
+          private-key: ${{ secrets.REVIEWER_APP_PRIVATE_KEY }}
+          permission-contents: write
+          permission-pull-requests: write
+
       # 直ったスレッドを解決済みにし、全部直っていれば承認する
       - name: 再確認の結果を PR に出す
         if: ${{ steps.claude.outcome == 'success' || steps.claude.outcome == 'skipped' }}
         env:
-          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+          GH_TOKEN: ${{ steps.resolver-token.outputs.token }}
           REPO: ${{ github.repository }}
           PR: ${{ github.event.pull_request.number }}
           HEAD_SHA: ${{ github.event.pull_request.head.sha }}

@@ -27,9 +27,11 @@ for ((i = 0; i < total; i++)); do
   jq '{body: .comment}' <<<"$answer" |
     gh api "repos/$REPO/pulls/$PR/comments/$(jq -r .comment_id <<<"$thread")/replies" --input - >/dev/null
 
+  # 解決済みにできなくても、直ったことは返事に書いたので、止めずに最後のレビューまで出す
   if [[ $(jq -r .fixed <<<"$answer") == true ]]; then
     gh api graphql -f id="$id" \
-      -f query='mutation($id: ID!) { resolveReviewThread(input: {threadId: $id}) { thread { isResolved } } }' >/dev/null
+      -f query='mutation($id: ID!) { resolveReviewThread(input: {threadId: $id}) { thread { isResolved } } }' >/dev/null ||
+      echo "::warning::スレッド $id を解決済みにできなかった"
   else
     remaining+=$(jq -r '"\n- [`\(.path)` の \(.line) 行目](\(.url))"' <<<"$thread")
   fi
