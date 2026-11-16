@@ -14,7 +14,7 @@ if [[ $status != reviewed ]]; then
 fi
 
 if ((count == 0)); then
-  jq -n --arg sha "$HEAD_SHA" '{commit_id: $sha, event: "APPROVE", body: "指摘ゼロ！LGTMよ！\nパーフェクトね！お疲れさま！"}' |
+  jq -n --arg sha "$HEAD_SHA" '{commit_id: $sha, event: "APPROVE", body: "指摘ゼロ！ LGTMよ🙌\nパーフェクトね！おつかれさま！！"}' |
     gh api "$reviews" --input - >/dev/null
   exit 0
 fi

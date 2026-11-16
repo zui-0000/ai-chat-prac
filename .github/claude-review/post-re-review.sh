@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
-# 再確認の結果を App の名前で PR に出す。直ったスレッドは解決済みにし、全部直っていれば承認する
+# 再確認の結果を App の名前で PR に出す。直ったスレッドは解決済みにし、全部直っていれば承認する。
+# 承認したかどうかを GITHUB_OUTPUT の approved に書く
 set -euo pipefail
 
 reviews="repos/$REPO/pulls/$PR/reviews"
@@ -7,6 +8,7 @@ reviews="repos/$REPO/pulls/$PR/reviews"
 # 確かめる指摘が無くても、一度もレビューしていない PR は承認しない
 if [[ $REVIEWED != true ]]; then
   gh pr comment "$PR" --repo "$REPO" --body "まだレビューしてないじゃない。先に claude-review のラベルを貼りなさいよね。"
+  echo "approved=false" >>"$GITHUB_OUTPUT"
   exit 0
 fi
 
@@ -37,10 +39,11 @@ done
 
 if [[ -z $remaining ]]; then
   event=APPROVE
-  body="LGTMよ！やるじゃない！"$'\n'"安心してマージできるわよ。お疲れさま！"
+  body="LGTMよ🙌"$'\n'"安心してマージできるわ！おつかれさま！！"
 else
   event=COMMENT
   body="まだ直っていない指摘があるわ。${remaining}"$'\n\n'$(jq -r '.summary // ""' <<<"$result")
 fi
 jq -n --arg sha "$HEAD_SHA" --arg event "$event" --arg body "$body" '{commit_id: $sha, event: $event, body: $body}' |
   gh api "$reviews" --input - >/dev/null
+echo "approved=$([[ $event == APPROVE ]] && echo true || echo false)" >>"$GITHUB_OUTPUT"
