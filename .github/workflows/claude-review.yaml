@@ -1,35 +1,30 @@
 name: Claude Review
 
-# ラベルを貼ったときだけ動く。見てほしい PR だけ、Max の利用枠を使ってレビューを受ける。
-# claude-review は最初のレビュー、claude-re-review は直したあとの再確認。
 # pull_request_target は使わない。秘密の値を持ったまま、フォークの PR のコードを扱うことになるため
 on:
   pull_request:
     types: [labeled]
 
-# ワークフロー全体の既定は権限なし。必要な分はジョブで渡す
 permissions: {}
 
 jobs:
   review:
     name: review
-    # フォークの PR には GitHub が秘密の値を渡さず、動いても失敗するだけなので、同じリポジトリのブランチの PR だけで動かす
+    # フォークの PR には秘密の値が渡らないので、同じリポジトリのブランチの PR だけで動かす
     if: >-
       github.event.label.name == 'claude-review' &&
       github.event.pull_request.head.repo.full_name == github.repository
     runs-on: ubuntu-latest
     timeout-minutes: 20
-    # 同じ PR でラベルを貼り直したら、古いほうを取り消す。
-    # ジョブに書くのは、関係ないラベルを貼ったとき（ジョブは飛ばされる）に、動いているレビューを取り消さないため
+    # ワークフローに書くと、関係ないラベルを貼っただけで動いているレビューが取り消される
     concurrency:
       group: claude-review-${{ github.event.pull_request.number }}
       cancel-in-progress: true
-    # このジョブのトークン（GITHUB_TOKEN）は読むだけ。PR に書くのは App のトークンで、Claude には渡さない
+    # Claude に渡すトークンは読むだけ。PR に書くのは App のトークンで、Claude には渡さない
     permissions:
       contents: read
       pull-requests: read
     steps:
-      # CLAUDE.md を読んで決まりに沿っているかを見るので、リポジトリのファイルを置く。
       # 指摘の行番号を PR の差分と合わせるため、マージ後の形ではなく PR の最新のコミットを置く
       - uses: actions/checkout@v7.0.1
         with:
@@ -37,7 +32,6 @@ jobs:
           fetch-depth: 1
           persist-credentials: false
 
-      # 公式の code-review プラグインでレビューする。--comment を付けず、指摘は構造化出力で受け取る
       - id: claude
         uses: anthropics/claude-code-action@v1.0.276
         with:
@@ -45,15 +39,13 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           plugin_marketplaces: https://github.com/anthropics/claude-plugins-official.git
           plugins: code-review@claude-plugins-official
+          # --comment を付けず、指摘は構造化出力で受け取る。プラグインが許している gh pr comment は禁じる
           prompt: /code-review:code-review ${{ github.repository }}/pull/${{ github.event.pull_request.number }}
-          # プラグインはコメントを書く gh pr comment を許しているので、ここで禁じる（トークンも読むだけ）
           claude_args: |
             --append-system-prompt-file .github/claude-review/persona.md
             --disallowedTools "Bash(gh pr comment:*)"
             --json-schema '{"type":"object","properties":{"status":{"type":"string","enum":["reviewed","skipped"]},"skip_reason":{"type":"string"},"summary":{"type":"string"},"findings":{"type":"array","items":{"type":"object","properties":{"path":{"type":"string"},"line":{"type":"integer"},"start_line":{"type":"integer"},"body":{"type":"string"}},"required":["path","line","body"]}}},"required":["status","summary","findings"]}'
 
-      # App の短いトークンを作る。ジョブが終わると取り消される。
-      # App は Contents の書き込みも持つが、ここではレビューとラベルに要る Pull requests の書き込みだけに絞る
       - id: app-token
         if: ${{ !cancelled() }}
         uses: actions/create-github-app-token@v3.3.0
@@ -62,7 +54,6 @@ jobs:
           private-key: ${{ secrets.REVIEWER_APP_PRIVATE_KEY }}
           permission-pull-requests: write
 
-      # 指摘があれば行ごとのコメント、無ければ承認。書き込みは決まった手順で行い、Claude には判断させない
       - name: レビューを PR に出す
         if: ${{ steps.claude.outcome == 'success' && steps.app-token.outcome == 'success' }}
         env:
@@ -73,7 +64,7 @@ jobs:
           RESULT: ${{ steps.claude.outputs.structured_output }}
         run: bash .github/claude-review/post-review.sh
 
-      # ラベルは「見てほしい」という合図なので、終わったら外す。もう一度貼れば、また動く
+      # 外しておくと、もう一度貼るだけでまた動かせる
       - name: ラベルを外す
         if: ${{ !cancelled() && steps.app-token.outcome == 'success' }}
         env:
@@ -102,7 +93,7 @@ jobs:
           fetch-depth: 1
           persist-credentials: false
 
-      # App の名前（slug）で、App が付けた指摘を見分ける。このトークンはラベルを外すのにも使う
+      # slug で App の指摘を見分ける
       - id: app-token
         uses: actions/create-github-app-token@v3.3.0
         with:
@@ -120,7 +111,6 @@ jobs:
           OUT: claude-re-review-threads.json
         run: bash .github/claude-review/collect-threads.sh
 
-      # 確かめる指摘が無いときは、Claude を動かさない
       - id: claude
         if: ${{ steps.threads.outputs.count != '0' }}
         uses: anthropics/claude-code-action@v1.0.276
@@ -128,20 +118,18 @@ jobs:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
           github_token: ${{ secrets.GITHUB_TOKEN }}
           prompt: |
-            相棒が、前のレビューの指摘を直したわ。指摘ごとに、直っているかを確かめなさい。
+            前のレビューの指摘が直っているかを、指摘ごとに確かめなさい。
 
             - 確かめる指摘は `claude-re-review-threads.json` にある。どれも、まだ解決していないレビューのスレッド（id・path・line・最初のコメントの body）
             - 作業フォルダは、PR の最新のコミット。PR の差分は `gh pr diff ${{ github.event.pull_request.number }}` で見られる
             - ファイルは書き換えない
             - `threads` には、ファイルのスレッドを 1 つずつ全部入れる。`id` はファイルの値をそのまま使う
-          # 読む道具だけを渡す。コードは動かさない
           claude_args: |
             --append-system-prompt-file .github/claude-review/persona.md
             --allowedTools "Read,Grep,Glob,Bash(gh pr diff:*)"
             --json-schema '{"type":"object","properties":{"summary":{"type":"string"},"threads":{"type":"array","items":{"type":"object","properties":{"id":{"type":"string"},"fixed":{"type":"boolean"},"comment":{"type":"string"}},"required":["id","fixed","comment"]}}},"required":["summary","threads"]}'
 
-      # スレッドを解決済みにする GraphQL（resolveReviewThread）は、Pull requests ではなく Contents の書き込みを求める。
-      # Contents の書き込みを持つトークンは、Claude が終わったあとに作り、次のステップだけで使う
+      # スレッドの解決（resolveReviewThread）は Contents の書き込みを求める。このトークンは Claude が終わってから作る
       - id: resolver-token
         if: ${{ steps.claude.outcome == 'success' || steps.claude.outcome == 'skipped' }}
         uses: actions/create-github-app-token@v3.3.0
@@ -151,7 +139,6 @@ jobs:
           permission-contents: write
           permission-pull-requests: write
 
-      # 直ったスレッドを解決済みにし、全部直っていれば承認する
       - name: 再確認の結果を PR に出す
         if: ${{ steps.claude.outcome == 'success' || steps.claude.outcome == 'skipped' }}
         env:

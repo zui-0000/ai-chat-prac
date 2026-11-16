@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
-# Claude のレビューの結果（構造化出力）を、App の名前で PR に出す。
-# 入力（環境変数）: GH_TOKEN（App のトークン）・REPO・PR・HEAD_SHA・RESULT
+# Claude のレビューの結果（構造化出力）を App の名前で PR に出す
 set -euo pipefail
 
 reviews="repos/$REPO/pulls/$PR/reviews"
@@ -8,14 +7,12 @@ status=$(jq -r '.status' <<<"$RESULT")
 summary=$(jq -r '.summary' <<<"$RESULT")
 count=$(jq '.findings | length' <<<"$RESULT")
 
-# レビューを飛ばしたときは、承認せず理由だけを残す
+# 飛ばしたときは承認しない
 if [[ $status != reviewed ]]; then
-  reason=$(jq -r '.skip_reason // ""' <<<"$RESULT")
-  gh pr comment "$PR" --repo "$REPO" --body "レビューを飛ばしたわ。${reason}"
+  gh pr comment "$PR" --repo "$REPO" --body "レビューを飛ばしたわ。$(jq -r '.skip_reason // ""' <<<"$RESULT")"
   exit 0
 fi
 
-# 指摘が無ければ承認する
 if ((count == 0)); then
   jq -n --arg sha "$HEAD_SHA" --arg summary "$summary" \
     '{commit_id: $sha, event: "APPROVE", body: ("指摘はありませんでした。\n\n" + $summary)}' |
@@ -23,7 +20,6 @@ if ((count == 0)); then
   exit 0
 fi
 
-# 指摘は、行ごとのコメントにまとめて 1 つのレビューで出す
 comments=$(jq '[.findings[] | {path, line, side: "RIGHT", body}
   + (if .start_line != null and .start_line < .line then {start_line, start_side: "RIGHT"} else {} end)]' <<<"$RESULT")
 
@@ -33,7 +29,7 @@ if jq -n --arg sha "$HEAD_SHA" --arg summary "$summary" --argjson comments "$com
   exit 0
 fi
 
-# 差分に無い行が混ざると、GitHub はレビューごと断る。1 つずつ付け直し、付けられなかったものは本文に並べる
+# 差分に無い行が 1 つでも混ざると、GitHub はレビューごと断る。1 つずつ付け直し、付けられなかったものは本文に並べる
 echo "::warning::行ごとのコメントをまとめて付けられなかったので、1 つずつ付け直す"
 failed=""
 for ((i = 0; i < count; i++)); do
