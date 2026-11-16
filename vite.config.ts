@@ -80,5 +80,4 @@ export default defineConfig({
     // - projects で apps/web を指すと、Void の plugin がルートを自分のプロジェクトとみなし、ルートにファイルを作る
     include: [],
   },
-  // run.cache は有効にしない。vp run のキャッシュが型チェックの入力の変化を検知できず、型エラーを見逃すことがある
 });

@@ -14,6 +14,46 @@ const unitTest = {
 };
 
 export default defineConfig({
+  // package.json のスクリプトはキャッシュされないので、キャッシュしたいものはここにタスクとして書く。
+  // run の中は変数を使わず値をそのまま書く。値だけなら vp run は設定を実行せずに読むが、変数があると設定を実行し、
+  // Void の plugin がルートを自分のアプリとみなして、ルートに .void を作る
+  run: {
+    tasks: {
+      // .void/v3 は Void の plugin が読み書きするローカルの実行状態（miniflare の DB など）。
+      // 動かすたびに書き換わるので、入力に入れると毎回キャッシュが外れる。出力として戻しもしない
+      build: {
+        command: "vp build",
+        cache: {
+          input: [{ auto: true }, "!.void/v3/**"],
+          output: [{ auto: true }, "!.void/v3/**"],
+        },
+      },
+      // tsrs はファイルの読み込みを Vite Task が追える。Go の tsc に戻すと追えず、型エラーを見逃すので cache: false にする
+      typecheck: "tsrs --noEmit -p tsconfig.app.json && tsrs --noEmit -p tsconfig.test.json",
+      "lint:deps": "depcruise src --config .dependency-cruiser.jsonc --output-type err-long",
+      test: {
+        command: "vp test",
+        cache: {
+          input: [{ auto: true }, "!.void/v3/**"],
+          output: [{ auto: true }, "!.void/v3/**"],
+        },
+      },
+      "test:client": {
+        command: "vp test --project client",
+        cache: {
+          input: [{ auto: true }, "!.void/v3/**"],
+          output: [{ auto: true }, "!.void/v3/**"],
+        },
+      },
+      "test:server": {
+        command: "vp test --project server",
+        cache: {
+          input: [{ auto: true }, "!.void/v3/**"],
+          output: [{ auto: true }, "!.void/v3/**"],
+        },
+      },
+    },
+  },
   plugins: [
     // react() より前に置く必要がある
     tanstackRouter({

@@ -35,6 +35,18 @@ jobs:
           run-install: |
             - args: ['--frozen-lockfile']
 
+      # Vite Task のキャッシュ（node_modules/.vite/task-cache）を前の実行から戻す。install のあとに戻す（install が node_modules を作り直すため）。
+      # main ではいつも全部回すので戻さない。全部回した結果を保存し、PR はそれを戻せる
+      # キーに lockfile などを入れない。何が変わったかは Vite Task が中身を見て決める
+      - name: Vite Task のキャッシュを戻す
+        if: ${{ github.event_name == 'pull_request' }}
+        uses: actions/cache/restore@v6.1.0
+        with:
+          path: node_modules/.vite/task-cache
+          key: vite-task-${{ runner.os }}-${{ runner.arch }}-${{ github.run_id }}-${{ github.run_attempt }}
+          restore-keys: |
+            vite-task-${{ runner.os }}-${{ runner.arch }}-
+
       # どれかが落ちても残りを回し、1 回の実行で全部の結果を見られるようにする
       - name: フォーマット・lint・型
         if: ${{ !cancelled() && steps.setup.outcome == 'success' }}
@@ -59,6 +71,14 @@ jobs:
       - name: ビルド
         if: ${{ !cancelled() && steps.setup.outcome == 'success' }}
         run: vp run build
+
+      # キャッシュに入るのは成功したタスクだけなので、どれかが落ちても保存する。キャッシュは書き換えられないので、キーは実行ごとに変える
+      - name: Vite Task のキャッシュを保存する
+        if: ${{ !cancelled() && steps.setup.outcome == 'success' }}
+        uses: actions/cache/save@v6.1.0
+        with:
+          path: node_modules/.vite/task-cache
+          key: vite-task-${{ runner.os }}-${{ runner.arch }}-${{ github.run_id }}-${{ github.run_attempt }}
 
       # actions.lock がワークフローとずれていないか、固定したコミットが今も正しいかを確かめる
       - name: actions.lock の確認

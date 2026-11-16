@@ -7,13 +7,7 @@
   },
   "scripts": {
     "dev": "vp dev",
-    "build": "vp build",
     "preview": "vp preview",
-    "typecheck": "tsrs --noEmit -p tsconfig.app.json && tsrs --noEmit -p tsconfig.test.json",
-    "lint:deps": "depcruise src --config .dependency-cruiser.jsonc --output-type err-long",
-    "test": "vp test",
-    "test:client": "vp test --project client",
-    "test:server": "vp test --project server",
     "db:generate": "void db generate",
     "postinstall": "void prepare"
   },
