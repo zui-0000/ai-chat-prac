@@ -56,6 +56,7 @@ vp hooks status                       # 「Hooks dir: .vite-hooks」と出れば
 | import の向きを検査する          | `vp run lint:deps`                    | FE から BE を import していないか（`apps/web/.dependency-cruiser.jsonc`）  |
 | 依存を足す                       | `vp add <名前> --filter <パッケージ>` | `<パッケージ>` は `web` か `@ai-chat/contract`。版は catalog に固定で入る  |
 | DB のマイグレーションを作る      | `vp run db:generate`                  | `apps/web/src/server/db/schema.ts` から作る                                |
+| タスクのキャッシュを消す         | `vp cache clean`                      | 検査・テスト・ビルドは、変わっていなければ前の結果を出す                   |
 
 ### 開発サーバー
 
