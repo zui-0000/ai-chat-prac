@@ -48,7 +48,7 @@ jobs:
           REPO: ${{ github.repository }}
           PR: ${{ github.event.pull_request.number }}
         run: |
-          id=$(gh api "repos/$REPO/issues/$PR/comments" -f body="レビューするわ。まかせて！" --jq .id)
+          id=$(gh api "repos/$REPO/issues/$PR/comments" -f body="レビューするわ！まかせなさい！" --jq .id)
           echo "id=$id" >>"$GITHUB_OUTPUT"
 
       - id: claude
@@ -74,15 +74,6 @@ jobs:
           HEAD_SHA: ${{ github.event.pull_request.head.sha }}
           RESULT: ${{ steps.claude.outputs.structured_output }}
         run: bash .github/claude-review/post-review.sh
-
-      # 外しておくと、もう一度貼るだけでまた動かせる
-      - name: ラベルを外す
-        if: ${{ !cancelled() && steps.app-token.outcome == 'success' }}
-        env:
-          GH_TOKEN: ${{ steps.app-token.outputs.token }}
-          REPO: ${{ github.repository }}
-          PR: ${{ github.event.pull_request.number }}
-        run: gh api -X DELETE "repos/$REPO/issues/$PR/labels/claude-review" --silent || echo "::warning::ラベルを外せなかった"
 
       # 失敗・取り消しのときも消す
       - name: レビュー中の印を消す
@@ -129,7 +120,7 @@ jobs:
           REPO: ${{ github.repository }}
           PR: ${{ github.event.pull_request.number }}
         run: |
-          id=$(gh api "repos/$REPO/issues/$PR/comments" -f body="再レビューね！まかせて！" --jq .id)
+          id=$(gh api "repos/$REPO/issues/$PR/comments" -f body="再レビューね！まかせなさい！" --jq .id)
           echo "id=$id" >>"$GITHUB_OUTPUT"
 
       - id: threads
@@ -170,7 +161,8 @@ jobs:
           permission-contents: write
           permission-pull-requests: write
 
-      - name: 再確認の結果を PR に出す
+      - id: post
+        name: 再確認の結果を PR に出す
         if: ${{ steps.claude.outcome == 'success' || steps.claude.outcome == 'skipped' }}
         env:
           GH_TOKEN: ${{ steps.resolver-token.outputs.token }}
@@ -182,8 +174,9 @@ jobs:
           RESULT: ${{ steps.claude.outputs.structured_output }}
         run: bash .github/claude-review/post-re-review.sh
 
+      # 承認しなかったときだけ外し、直したあとにもう一度貼れるようにする
       - name: ラベルを外す
-        if: ${{ !cancelled() && steps.app-token.outcome == 'success' }}
+        if: ${{ always() && steps.app-token.outcome == 'success' && steps.post.outputs.approved != 'true' }}
         env:
           GH_TOKEN: ${{ steps.app-token.outputs.token }}
           REPO: ${{ github.repository }}
