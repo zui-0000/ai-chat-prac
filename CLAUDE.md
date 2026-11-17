@@ -66,15 +66,6 @@ TypeScript と JavaScript のファイルは `vpx <file>` で動かす（例: `v
 - BE は `src/server/rpc/router.ts` で `implement(contract)` して実装する。`src/server/routes/` に API のルートを増やさない（`/rpc` の受け口だけを置く）
 - 約束に API を足したら、偽物にも足す（`src/client/mocks/api/` にフォルダを作り、`api/router.ts` に足す）。偽物も `implement(contract)` しているので、足し忘れると型エラーになる
 
-## DB と API の名前
-
-理由は `docs/09-API を決める.md` にある。
-
-- テーブルは、トランザクションは `t_`、マスタは `m_` を付け、単数形にする（`t_chat`・`t_message`）。認証のテーブルも `t_user` などにそろえる
-- API の手続きは、テーブルから `t_`・`m_` を外した名前 ＋ 動き（`chat.list`・`chat.delete`）
-- 親子の関係があるテーブルは、API も子を親の中に入れ子にする（`chat.message.send`）
-- HTTP のメソッドは動きに合わせ、約束の手続きに書く。読むだけは `GET`、消すのは `DELETE`、作る・送るは `POST`、名前を変えるなどの一部の書き換えは `PATCH`
-
 ## 偽物の BE（MSW）
 
 - 偽物は `apps/web/src/client/mocks/` に置く。開発サーバーの画面は、いつも偽物と話す。本物の BE を画面から確かめるときは `vp run preview` を使う
