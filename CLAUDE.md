@@ -56,9 +56,9 @@ TypeScript と JavaScript のファイルは `vpx <file>` で動かす（例: `v
 
 ## FE を書く
 
+理由は `docs/06-デザインシステムを決める.md` にある。
+
 - ブラウザの機能は、Baseline の Newly available（Chrome・Edge・Safari・Firefox の最新版で全部使えて、試験中でないもの）まで使ってよい。Newly available の機能に fallback や polyfill は書かない。どれかのブラウザで使えないもの（Limited availability）は使わない
-- Modern Web Guidance のガイドが勧めるもの（`<dialog>`・popover など）が Base UI の部品にあるときは、Base UI を使う。ガイドは CSS と振る舞いの注意点として使う
-- 部品・ルート・見た目の決まりは `.claude/rules/` にある。理由は `docs/05-画面を決める.md`・`docs/06-デザインシステムを決める.md`
 
 ## API は約束から作る
 

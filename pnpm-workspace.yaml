@@ -70,8 +70,6 @@ autoDedupe: true
 
 # サプライチェーン攻撃への備え。公開から 1 日たっていない版は入れない。
 # 止まっても minimumReleaseAgeExclude には足さず、1 日たった版を使う（vp migrate が足すことがあるので、そのときは消す）
-# 例外: Modern Web Guidance のスキルは npx -y modern-web-guidance@latest で最新を呼ぶので、この待ちは効かない。
-#   中身が Web の今のやり方そのもので、古い版を使う意味が薄いため認めた（provenance あり、依存とインストール時のスクリプトなし）
 minimumReleaseAge: 1440
 
 # 以前の版より公開の証明（provenance など）が弱い版は入れない
