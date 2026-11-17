@@ -54,11 +54,26 @@ TypeScript と JavaScript のファイルは `vpx <file>` で動かす（例: `v
 - TanStack Router のルートは `src/client/routes/`。ルートのファイルには `Route` だけを書き、画面の部品は `src/client/components/pages/` に置く
 - FE は BE のコードを import しない。FE が BE について知ってよいのは `packages/contract` の約束だけ（`vp run lint:deps` が止める）
 
+## FE を書く
+
+- ブラウザの機能は、Baseline の Newly available（Chrome・Edge・Safari・Firefox の最新版で全部使えて、試験中でないもの）まで使ってよい。Newly available の機能に fallback や polyfill は書かない。どれかのブラウザで使えないもの（Limited availability）は使わない
+- Modern Web Guidance のガイドが勧めるもの（`<dialog>`・popover など）が Base UI の部品にあるときは、Base UI を使う。ガイドは CSS と振る舞いの注意点として使う
+- 部品・ルート・見た目の決まりは `.claude/rules/` にある。理由は `docs/05-画面を決める.md`・`docs/06-デザインシステムを決める.md`
+
 ## API は約束から作る
 
 - FE と BE の間の API は、`packages/contract` に oRPC の約束（zod のスキーマ）として先に書く
 - BE は `src/server/rpc/router.ts` で `implement(contract)` して実装する。`src/server/routes/` に API のルートを増やさない（`/rpc` の受け口だけを置く）
 - 約束に API を足したら、偽物にも足す（`src/client/mocks/api/` にフォルダを作り、`api/router.ts` に足す）。偽物も `implement(contract)` しているので、足し忘れると型エラーになる
+
+## DB と API の名前
+
+理由は `docs/09-API を決める.md` にある。
+
+- テーブルは、トランザクションは `t_`、マスタは `m_` を付け、単数形にする（`t_chat`・`t_message`）。認証のテーブルも `t_user` などにそろえる
+- API の手続きは、テーブルから `t_`・`m_` を外した名前 ＋ 動き（`chat.list`・`chat.delete`）
+- 親子の関係があるテーブルは、API も子を親の中に入れ子にする（`chat.message.send`）
+- HTTP のメソッドは動きに合わせ、約束の手続きに書く。読むだけは `GET`、消すのは `DELETE`、作る・送るは `POST`、名前を変えるなどの一部の書き換えは `PATCH`
 
 ## 偽物の BE（MSW）
 
