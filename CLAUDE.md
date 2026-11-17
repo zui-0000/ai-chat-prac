@@ -54,12 +54,6 @@ TypeScript と JavaScript のファイルは `vpx <file>` で動かす（例: `v
 - TanStack Router のルートは `src/client/routes/`。ルートのファイルには `Route` だけを書き、画面の部品は `src/client/components/pages/` に置く
 - FE は BE のコードを import しない。FE が BE について知ってよいのは `packages/contract` の約束だけ（`vp run lint:deps` が止める）
 
-## FE を書く
-
-理由は `docs/06-デザインシステムを決める.md` にある。
-
-- ブラウザの機能は、Baseline の Newly available（Chrome・Edge・Safari・Firefox の最新版で全部使えて、試験中でないもの）まで使ってよい。Newly available の機能に fallback や polyfill は書かない。どれかのブラウザで使えないもの（Limited availability）は使わない
-
 ## API は約束から作る
 
 - FE と BE の間の API は、`packages/contract` に oRPC の約束（zod のスキーマ）として先に書く
