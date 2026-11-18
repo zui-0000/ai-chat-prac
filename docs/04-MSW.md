@@ -289,7 +289,7 @@ afterEach(() => {
 afterAll(() => server.close());
 ```
 
-- `server.listen()` は `beforeAll` ではなく、読み込んだ時点で呼ぶ。テストのファイルが読む `api/client.ts` の `RPCLink` は、作られたときの `fetch` を覚える。テストのファイルの import は `beforeAll` より先に動くので、`beforeAll` で MSW が `fetch` を差し替えても、`RPCLink` は古い `fetch` を使い続ける（design-system-prac の docs/20 で見つけた落とし穴）
+- `server.listen()` は `beforeAll` ではなく、読み込んだ時点で呼ぶ。テストのファイルが読む `api/orpc.ts` の `RPCLink` は、作られたときの `fetch` を覚える。テストのファイルの import は `beforeAll` より先に動くので、`beforeAll` で MSW が `fetch` を差し替えても、`RPCLink` は古い `fetch` を使い続ける（design-system-prac の docs/20 で見つけた落とし穴）
 - `onUnhandledFrame: "error"` で、偽物にない通信をしたテストは落ちる
 - テストごとに、`server.use()` の上書きと、偽物の保管を元に戻す
 - `src/client/__setup__` は `tsconfig.test.json` で見る（`globals` の型を使うため）。`tsconfig.app.json` からは外す
@@ -300,7 +300,7 @@ afterAll(() => server.close());
 server.use(scenarios["message.create.error"]);
 ```
 
-`src/client/api/__tests__/client.test.ts`（当時は `src/client/__tests__/orpc.test.ts`）で、正常系（作成と一覧、テストごとに空に戻ること、ストリーミング）と、シナリオ（`message.list.many`・`message.list.error`・`message.create.error`・`chat.stream.error`、上書きしていない API が正常系のまま動くこと）を確かめた。`chat.stream.slow` は待つだけなので、画面で確かめた。
+`src/client/api/__tests__/orpc.test.ts` で、正常系（作成と一覧、テストごとに空に戻ること、ストリーミング）と、シナリオ（`message.list.many`・`message.list.error`・`message.create.error`・`chat.stream.error`、上書きしていない API が正常系のまま動くこと）を確かめた。`chat.stream.slow` は待つだけなので、画面で確かめた。
 
 `server` のプロジェクトには、MSW を入れていない。いずれ BE から外の API（Claude の API など）を呼ぶようになったら、その呼び出しを `msw/node` で偽物にできる。
 

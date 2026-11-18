@@ -2,7 +2,7 @@ import { ORPCError } from "@orpc/client";
 
 import { scenarios, server } from "#/client/mocks/node.ts";
 
-import { client } from "../client";
+import { client } from "../orpc";
 
 const collectReply = async (prompt: string) => {
   let reply = "";
