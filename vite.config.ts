@@ -47,6 +47,9 @@ export default defineConfig({
       "react/use-memo": "error",
       "vite-plus/prefer-vite-plus-imports": "error",
       "func-style": ["error", "expression"],
+      eqeqeq: ["error", "always"],
+      "prefer-const": "error",
+      "no-param-reassign": ["error", { props: true }],
     },
     overrides: [
       {
