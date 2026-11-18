@@ -46,7 +46,7 @@
       "to": { "path": "^src/client/mocks/", "pathNot": "^src/client/mocks/(browser|node)\\.ts$" }
     },
 
-    // src/client の向き: main.tsx → App.tsx → routes → components → hooks → stores・api → utils。
+    // src/client の向き: main.tsx → App.tsx → routes → components → hooks → stores・api → utils → constants。
     // 下から上は読まない。テストは外す
     {
       "name": "client-entry-not-imported",
@@ -86,11 +86,20 @@
     },
     {
       "name": "utils-pure",
-      "comment": "utils からほかのフォルダか、React とその仲間のライブラリを読んでいます。utils には純粋な関数だけを置いてください",
+      "comment": "utils から constants のほかのフォルダか、React とその仲間のライブラリを読んでいます。utils には純粋な関数だけを置いてください",
       "severity": "error",
       "from": { "path": "^src/client/utils/", "pathNot": "/__tests__/" },
       "to": {
-        "path": "(^src/client/(?!utils/)|node_modules/(react|react-dom|@tanstack/react-[^/]+|zustand|lucide-react)/)"
+        "path": "(^src/client/(?!utils/|constants/)|node_modules/(react|react-dom|@tanstack/react-[^/]+|zustand|lucide-react)/)"
+      }
+    },
+    {
+      "name": "constants-pure",
+      "comment": "constants からほかのフォルダか、React とその仲間のライブラリを読んでいます。constants には値だけを置いてください",
+      "severity": "error",
+      "from": { "path": "^src/client/constants/", "pathNot": "/__tests__/" },
+      "to": {
+        "path": "(^src/client/(?!constants/)|node_modules/(react|react-dom|@tanstack/react-[^/]+|zustand|lucide-react)/)"
       }
     },
     {
