@@ -30,7 +30,7 @@ TypeScript と JavaScript のファイルは `vpx <file>` で動かす（例: `v
 
 # このリポジトリの決まり
 
-構成と、そう決めた理由は `docs/01-構成を決める.md` にある。単体テストは `docs/02-単体テスト.md`、import のパスは `docs/03-import のパス.md`、MSW は `docs/04-MSW.md`、FE のフォルダ構成と import の向きは `docs/12-FE のフォルダ構成.md`。
+構成と、そう決めた理由は `docs/01-構成を決める.md` にある。単体テストは `docs/02-単体テスト.md`、import のパスは `docs/03-import のパス.md`、MSW は `docs/04-MSW.md`、FE のフォルダ構成と import の向きは `docs/12-FE のフォルダ構成.md`、FE の書き方は `docs/13-FE の書き方.md`。
 
 ## コマンドはルートで実行する
 

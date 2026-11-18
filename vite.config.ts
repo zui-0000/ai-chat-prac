@@ -50,12 +50,23 @@ export default defineConfig({
     },
     overrides: [
       {
-        // 2 つ以上上のフォルダへの相対パスは、#/（apps/web/src。apps/web/package.json の imports）から書く
         files: ["apps/web/src/**"],
         rules: {
+          // export * でまとめ直すと、1 つ読むだけで全部を読み込み、開発サーバーも遅くなる
+          "oxc/no-barrel-file": ["error", { threshold: 0 }],
           "no-restricted-imports": [
             "error",
             {
+              paths: [
+                {
+                  // React Compiler がメモ化する
+                  name: "react",
+                  importNames: ["useMemo", "useCallback", "memo"],
+                  message:
+                    "React Compiler がメモ化するので使わないでください。値を作る計算は utils/ の関数にします",
+                },
+              ],
+              // 2 つ以上上のフォルダへの相対パスは、#/（apps/web/src。apps/web/package.json の imports）から書く
               patterns: [
                 {
                   group: ["../../*", "../../**"],
