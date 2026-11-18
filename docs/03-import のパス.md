@@ -9,7 +9,7 @@
 `apps/web/src` の下は、`#/` から書ける。2 つ以上上のフォルダへの相対パス（`../../`）は使わず、`#/` から書く。`#/` のときだけ、拡張子まで書く。
 
 ```ts
-import { client, orpc } from "#/client/orpc.ts"; // ../../../orpc と書かない
+import { client, orpc } from "#/client/api/client.ts"; // ../../../api/client と書かない
 import { router } from "#/server/rpc/router.ts"; // ../../rpc/router と書かない
 import { theme } from "../theme"; // 1 つ上までは相対パスでよい。拡張子は書かない
 ```
