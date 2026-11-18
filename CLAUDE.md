@@ -30,7 +30,7 @@ TypeScript と JavaScript のファイルは `vpx <file>` で動かす（例: `v
 
 # このリポジトリの決まり
 
-構成と、そう決めた理由は `docs/01-構成を決める.md` にある。単体テストは `docs/02-単体テスト.md`、import のパスは `docs/03-import のパス.md`、MSW は `docs/04-MSW.md`。
+構成と、そう決めた理由は `docs/01-構成を決める.md` にある。単体テストは `docs/02-単体テスト.md`、import のパスは `docs/03-import のパス.md`、MSW は `docs/04-MSW.md`、FE のフォルダ構成と import の向きは `docs/12-FE のフォルダ構成.md`。
 
 ## コマンドはルートで実行する
 
@@ -73,7 +73,7 @@ TypeScript と JavaScript のファイルは `vpx <file>` で動かす（例: `v
 
 ## import のパス
 
-- `apps/web/src` の下は `#/` から、拡張子まで書く（`#/client/orpc.ts`）。`../../` より上への相対パスは使わない（lint が止める）。`../` が 1 つまでは相対パスでよく、拡張子は書かない
+- `apps/web/src` の下は `#/` から、拡張子まで書く（`#/client/api/orpc.ts`）。`../../` より上への相対パスは使わない（lint が止める）。`../` が 1 つまでは相対パスでよく、拡張子は書かない
 - `#/` は `apps/web/package.json` の `imports` で決めている。tsconfig の `paths` や Vite の `resolve.alias` でエイリアスを足さない（`tsconfig.app.json` に `paths` を書くと、extends 先の Void の `paths` が消える）
 
 ## 単体テスト

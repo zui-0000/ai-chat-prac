@@ -1,37 +1,35 @@
-// apps/web の中の import の向きを検査する。パッケージをまたぐ向きは package.json の依存で守る。
-// 標準の設定ファイル名に .jsonc は含まれないので、--config で指定して実行する（lint:deps）
+// apps/web の中の import の向き。パッケージをまたぐ向きは package.json の依存で守る。
+// .jsonc は既定の設定ファイル名に無いので --config で渡す。渡さないと、決まりを読まずに「違反なし」で通る
 {
   "forbidden": [
     {
-      // import type も止める。FE が BE について知ってよいのは @ai-chat/contract だけ
       "name": "client-not-to-server",
-      "comment": "src/client から src/server を import しています。FE からは @ai-chat/contract の約束だけを使ってください",
+      "comment": "src/client から src/server を読んでいます（import type も止めます）。FE は @ai-chat/contract の約束だけを使ってください",
       "severity": "error",
       "from": { "path": "^src/client/" },
       "to": { "path": "^src/server/" }
     },
     {
-      // BE 専用のモジュールを名前で止める。@schema・void/db は Void が .void/tsconfig.json の paths で当てた名前で、
-      // dependency-cruiser は extends 先の paths をたどれず、名前のまま残る。
-      // 偽物の BE（src/client/mocks）は、oRPC の約束を実装するために @orpc/server を使うので外す。@schema・void/db は下のルールで止める
+      // @schema・void/db は Void の paths で当てた名前で、ファイルまでたどれないので名前で止める。
+      // 偽物は約束を実装するので @orpc/server を許す
       "name": "client-not-to-server-modules",
-      "comment": "src/client から BE 専用のモジュール（@schema・void/db・@orpc/server など）を import しています。FE からは @ai-chat/contract と @orpc/client だけを使ってください",
+      "comment": "src/client から BE 専用のモジュール（@schema・void/db・@orpc/server など）を読んでいます。FE は @ai-chat/contract と @orpc/client だけを使ってください",
       "severity": "error",
       "from": { "path": "^src/client/", "pathNot": "^src/client/mocks/" },
       "to": { "path": "^(@schema|void/db|void/schema-|@orpc/server)" }
     },
     {
-      // 偽物は約束（@ai-chat/contract）だけを見て実装する。本物の DB に寄りかかると、約束とのずれに気づけない
+      // 本物の DB に寄りかかると、約束とのずれに気づけない
       "name": "mocks-not-to-db",
-      "comment": "src/client/mocks から本物の DB（@schema・void/db など）を import しています。偽物は @ai-chat/contract の約束だけを見て実装してください",
+      "comment": "偽物の BE から本物の DB を読んでいます。偽物は @ai-chat/contract の約束だけを見て作ってください",
       "severity": "error",
       "from": { "path": "^src/client/mocks/" },
       "to": { "path": "^(@schema|void/db|void/schema-)" }
     },
     {
-      // 偽物の BE（MSW）が本番のバンドルに入らないようにする。main.tsx は開発のときだけ動的 import で読む
+      // 偽物を本番のバンドルに入れない。main.tsx は開発のときだけ動的 import で読む
       "name": "client-not-to-mocks",
-      "comment": "src/client/mocks を import しています。偽物の BE を読んでよいのは main.tsx とテストだけです",
+      "comment": "偽物の BE を読んでいます。読んでよいのは main.tsx とテストだけです",
       "severity": "error",
       "from": {
         "path": "^src/client/",
@@ -40,49 +38,105 @@
       "to": { "path": "^src/client/mocks/" }
     },
     {
-      // 外から読むのを入口だけにして、mocks の中の並べ方を変えても外を直さずに済むようにする
+      // 中の並べ方を変えても、外を直さずに済むように
       "name": "mocks-entry-only",
-      "comment": "src/client/mocks の中のファイルを直接 import しています。外からは入口（browser.ts・node.ts）だけを読んでください",
+      "comment": "偽物の BE の中を直接読んでいます。外からは入口（browser.ts・node.ts）だけを読んでください",
       "severity": "error",
       "from": { "path": "^src/", "pathNot": "^src/client/mocks/" },
       "to": { "path": "^src/client/mocks/", "pathNot": "^src/client/mocks/(browser|node)\\.ts$" }
     },
+
+    // src/client の向き: main.tsx → App.tsx → routes → components → hooks → stores・api → utils。
+    // 下から上は読まない。テストは外す
+    {
+      "name": "client-entry-not-imported",
+      "comment": "main.tsx・App.tsx を読んでいます。入口はほかから読まないでください",
+      "severity": "error",
+      "from": { "path": "^src/client/", "pathNot": "(^src/client/main\\.tsx$|/__tests__/)" },
+      "to": { "path": "^src/client/(main|App)\\.tsx$" }
+    },
+    {
+      "name": "components-not-to-routes",
+      "comment": "components から routes を読んでいます。ルートの情報が要るときは getRouteApi を使ってください",
+      "severity": "error",
+      "from": { "path": "^src/client/components/", "pathNot": "/__tests__/" },
+      "to": { "path": "^src/client/(routes/|routeTree\\.gen\\.ts$)" }
+    },
+    {
+      "name": "hooks-not-to-upper",
+      "comment": "hooks から components・routes を読んでいます",
+      "severity": "error",
+      "from": { "path": "^src/client/hooks/", "pathNot": "/__tests__/" },
+      "to": { "path": "^src/client/(components/|routes/|routeTree\\.gen\\.ts$)" }
+    },
+    {
+      // サーバーのデータは TanStack Query だけが持ち、ストアにコピーしない
+      "name": "stores-not-to-upper",
+      "comment": "stores から api・hooks・components・routes を読んでいます。ストアには UI の状態だけを置いてください",
+      "severity": "error",
+      "from": { "path": "^src/client/stores/", "pathNot": "/__tests__/" },
+      "to": { "path": "^src/client/(api/|hooks/|components/|routes/|routeTree\\.gen\\.ts$)" }
+    },
+    {
+      "name": "api-not-to-upper",
+      "comment": "api から stores・hooks・components・routes を読んでいます",
+      "severity": "error",
+      "from": { "path": "^src/client/api/", "pathNot": "/__tests__/" },
+      "to": { "path": "^src/client/(stores/|hooks/|components/|routes/|routeTree\\.gen\\.ts$)" }
+    },
+    {
+      "name": "utils-pure",
+      "comment": "utils からほかのフォルダか、React とその仲間のライブラリを読んでいます。utils には純粋な関数だけを置いてください",
+      "severity": "error",
+      "from": { "path": "^src/client/utils/", "pathNot": "/__tests__/" },
+      "to": {
+        "path": "(^src/client/(?!utils/)|node_modules/(react|react-dom|@tanstack/react-[^/]+|zustand|lucide-react)/)"
+      }
+    },
+    {
+      // 偽物は約束だけを見て作る。FE のコードに寄りかかると、約束とのずれに気づけない
+      "name": "mocks-not-to-client",
+      "comment": "偽物の BE から src/client のほかのフォルダを読んでいます。偽物は @ai-chat/contract の約束だけを見て作ってください",
+      "severity": "error",
+      "from": { "path": "^src/client/mocks/" },
+      "to": { "path": "^src/client/(?!mocks/)" }
+    },
+
     {
       "name": "server-not-to-client",
-      "comment": "src/server から src/client を import しています。BE から FE のコードは使わないでください",
+      "comment": "src/server から src/client を読んでいます",
       "severity": "error",
       "from": { "path": "^src/server/" },
       "to": { "path": "^src/client/" }
     },
     {
-      // テストの道具がアプリのコードとバンドルに入らないようにする
       "name": "no-test-runner-in-app",
-      "comment": "アプリのコードから vite-plus/test を import しています。テストの道具は __tests__ と src/client/__setup__ の中だけで使ってください",
+      "comment": "アプリのコードから vite-plus/test を読んでいます。テストの道具は __tests__ と __setup__ の中だけで使ってください",
       "severity": "error",
       "from": { "path": "^src/", "pathNot": "(/__tests__/|^src/client/__setup__/)" },
       "to": { "path": "^vite-plus/test" }
     },
     {
       "name": "no-test-support-in-app",
-      "comment": "アプリのコードから src/client/__setup__ を import しています。テストの準備はテストからだけ使ってください",
+      "comment": "アプリのコードから __setup__ を読んでいます",
       "severity": "error",
       "from": { "path": "^src/", "pathNot": "(/__tests__/|^src/client/__setup__/)" },
       "to": { "path": "^src/client/__setup__/" }
     },
     {
       "name": "no-circular",
-      "comment": "循環参照になっています。依存の輪を切ってください",
+      "comment": "循環参照になっています",
       "severity": "error",
       "from": {},
       "to": {
         "circular": true,
-        // 型だけの循環は実行時に消えるので許す
+        // 型だけの循環は実行時に消える
         "viaOnly": { "dependencyTypesNot": ["type-only"] }
       }
     }
   ],
   "options": {
-    // TypeScript 7 には dependency-cruiser が使う JS の API がなく、既定の parser では 1 ファイルも読めずに「違反なし」で通ってしまう
+    // TypeScript 7 では、既定の parser が 1 ファイルも読めず「違反なし」で通ってしまう
     "parser": "swc",
     "doNotFollow": { "path": "node_modules" },
     "tsConfig": { "fileName": "tsconfig.app.json" }

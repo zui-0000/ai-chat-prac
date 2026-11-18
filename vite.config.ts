@@ -60,7 +60,7 @@ export default defineConfig({
                 {
                   group: ["../../*", "../../**"],
                   message:
-                    "2 つ以上上のフォルダへの相対パスは使わず、#/ から拡張子まで書いてください（例: #/client/orpc.ts）",
+                    "2 つ以上上のフォルダへの相対パスは使わず、#/ から拡張子まで書いてください（例: #/client/api/orpc.ts）",
                 },
               ],
             },
