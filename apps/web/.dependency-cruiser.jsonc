@@ -1,9 +1,10 @@
-// apps/web の中の import の向き。パッケージをまたぐ向きは package.json の依存で守る
+// apps/web の中の import の向き。パッケージをまたぐ向きは package.json の依存で守る。
+// .jsonc は既定の設定ファイル名に無いので --config で渡す。渡さないと、決まりを読まずに「違反なし」で通る
 {
   "forbidden": [
     {
       "name": "client-not-to-server",
-      "comment": "src/client から src/server を読んでいます。FE は @ai-chat/contract の約束だけを使ってください",
+      "comment": "src/client から src/server を読んでいます（import type も止めます）。FE は @ai-chat/contract の約束だけを使ってください",
       "severity": "error",
       "from": { "path": "^src/client/" },
       "to": { "path": "^src/server/" }
@@ -12,7 +13,7 @@
       // @schema・void/db は Void の paths で当てた名前で、ファイルまでたどれないので名前で止める。
       // 偽物は約束を実装するので @orpc/server を許す
       "name": "client-not-to-server-modules",
-      "comment": "src/client から BE 専用のモジュール（@schema・void/db・@orpc/server など）を読んでいます",
+      "comment": "src/client から BE 専用のモジュール（@schema・void/db・@orpc/server など）を読んでいます。FE は @ai-chat/contract と @orpc/client だけを使ってください",
       "severity": "error",
       "from": { "path": "^src/client/", "pathNot": "^src/client/mocks/" },
       "to": { "path": "^(@schema|void/db|void/schema-|@orpc/server)" }
@@ -69,33 +70,36 @@
       "to": { "path": "^src/client/(components/|routes/|routeTree\\.gen\\.ts$)" }
     },
     {
-      "name": "stores-api-not-to-upper",
-      "comment": "stores・api から hooks・components・routes を読んでいます",
-      "severity": "error",
-      "from": { "path": "^src/client/(stores|api)/", "pathNot": "/__tests__/" },
-      "to": { "path": "^src/client/(hooks/|components/|routes/|routeTree\\.gen\\.ts$)" }
-    },
-    {
       // サーバーのデータは TanStack Query だけが持ち、ストアにコピーしない
-      "name": "stores-not-to-api",
-      "comment": "stores から api を読んでいます。ストアには UI の状態だけを置いてください",
+      "name": "stores-not-to-upper",
+      "comment": "stores から api・hooks・components・routes を読んでいます。ストアには UI の状態だけを置いてください",
       "severity": "error",
       "from": { "path": "^src/client/stores/", "pathNot": "/__tests__/" },
-      "to": { "path": "^src/client/api/" }
+      "to": { "path": "^src/client/(api/|hooks/|components/|routes/|routeTree\\.gen\\.ts$)" }
     },
     {
-      "name": "api-not-to-stores",
-      "comment": "api から stores を読んでいます",
+      "name": "api-not-to-upper",
+      "comment": "api から stores・hooks・components・routes を読んでいます",
       "severity": "error",
       "from": { "path": "^src/client/api/", "pathNot": "/__tests__/" },
-      "to": { "path": "^src/client/stores/" }
+      "to": { "path": "^src/client/(stores/|hooks/|components/|routes/|routeTree\\.gen\\.ts$)" }
     },
     {
       "name": "utils-pure",
-      "comment": "utils からほかのフォルダか React を読んでいます。utils には純粋な関数だけを置いてください",
+      "comment": "utils からほかのフォルダか、React とその仲間のライブラリを読んでいます。utils には純粋な関数だけを置いてください",
       "severity": "error",
       "from": { "path": "^src/client/utils/", "pathNot": "/__tests__/" },
-      "to": { "path": "(^src/client/(?!utils/)|node_modules/(react|react-dom)/)" }
+      "to": {
+        "path": "(^src/client/(?!utils/)|node_modules/(react|react-dom|@tanstack/react-[^/]+|zustand|lucide-react)/)"
+      }
+    },
+    {
+      // 偽物は約束だけを見て作る。FE のコードに寄りかかると、約束とのずれに気づけない
+      "name": "mocks-not-to-client",
+      "comment": "偽物の BE から src/client のほかのフォルダを読んでいます。偽物は @ai-chat/contract の約束だけを見て作ってください",
+      "severity": "error",
+      "from": { "path": "^src/client/mocks/" },
+      "to": { "path": "^src/client/(?!mocks/)" }
     },
 
     {

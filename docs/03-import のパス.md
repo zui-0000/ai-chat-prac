@@ -33,7 +33,7 @@ Subpath Imports は、名前が `#` から始まる決まり（Node.js の仕様
 
 ### 拡張子を書く
 
-`#/client/orpc` と拡張子なしで書くと、TypeScript は「モジュールが見つからない」（TS2307）で止まる。`imports` の置き換え先（`./src/client/orpc`）に、TypeScript は `.ts` を補わない。
+`#/client/api/client` と拡張子なしで書くと、TypeScript は「モジュールが見つからない」（TS2307）で止まる。`imports` の置き換え先（`./src/client/api/client`）に、TypeScript は `.ts` を補わない。
 
 | 試したこと                                  | tsrs                        |
 | ------------------------------------------- | --------------------------- |
