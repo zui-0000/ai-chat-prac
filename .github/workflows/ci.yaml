@@ -80,6 +80,16 @@ jobs:
           path: node_modules/.vite/task-cache
           key: vite-task-${{ runner.os }}-${{ runner.arch }}-${{ github.run_id }}-${{ github.run_attempt }}
 
+      # ワークフローの危ない書き方を止める。結果を Advanced Security に上げると指摘があっても落ちないので、ここで落とす
+      # zizmor の版は手元の lint:actions（vite.config.ts）とそろえる
+      - name: ワークフローの検査（zizmor）
+        if: ${{ !cancelled() }}
+        uses: zizmorcore/zizmor-action@v0.8.1
+        with:
+          version: v1.32.0
+          advanced-security: false
+          annotations: true
+
       # actions.lock がワークフローとずれていないか、固定したコミットが今も正しいかを確かめる
       - name: actions.lock の確認
         if: ${{ !cancelled() }}

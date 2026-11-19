@@ -1,0 +1,5 @@
+rules:
+  dependabot-cooldown:
+    config:
+      # pnpm の minimumReleaseAge（1 日）とそろえて、Dependabot も公開から 1 日たった版を使う
+      days: 1

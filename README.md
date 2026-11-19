@@ -18,7 +18,7 @@ packages/contract/     FE と BE の約束（oRPC + zod）
 
 ## セットアップ（初回のみ）
 
-Node.js と pnpm は `vp` が用意する。必要なのは Git と `vp`（1.5.0 以上）だけ。
+Node.js と pnpm は `vp` が用意する。必要なのは Git と `vp`（1.5.0 以上）だけ。GitHub Actions のワークフローを検査する（`vp run lint:actions`）ときだけ、[uv](https://docs.astral.sh/uv/) も要る。
 
 ```zsh
 curl -fsSL https://vite.plus | bash   # vp を入れる。終わったら新しいターミナルを開く
@@ -54,6 +54,7 @@ vp hooks status                       # 「Hooks dir: .vite-hooks」と出れば
 | client だけテストする            | `vp run test:client`                  | `apps/web/src/client` の `__tests__/`                                      |
 | server だけテストする            | `vp run test:server`                  | `apps/web/src/server` の `__tests__/`                                      |
 | import の向きを検査する          | `vp run lint:deps`                    | FE から BE を import していないか（`apps/web/.dependency-cruiser.jsonc`）  |
+| ワークフローを検査する           | `vp run lint:actions`                 | GitHub Actions の危ない書き方（zizmor）。uv が要る                         |
 | 依存を足す                       | `vp add <名前> --filter <パッケージ>` | `<パッケージ>` は `web` か `@ai-chat/contract`。版は catalog に固定で入る  |
 | DB のマイグレーションを作る      | `vp run db:generate`                  | `apps/web/src/server/db/schema.ts` から作る                                |
 | タスクのキャッシュを消す         | `vp cache clean`                      | 検査・テスト・ビルドは、変わっていなければ前の結果を出す                   |

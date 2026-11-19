@@ -24,7 +24,7 @@ TypeScript と JavaScript のファイルは `vpx <file>` で動かす（例: `v
 ## 作業のチェックリスト
 
 - [ ] リモートの変更を取り込んだ後と、作業を始める前に `vp install` を実行する
-- [ ] `vp check`（フォーマット・lint・型チェック）、`vp run typecheck`（各パッケージの `tsrs`）、`vp run lint:deps`（import の向き）、`vp run test`（単体テスト）で、変更を確かめる
+- [ ] `vp check`（フォーマット・lint・型チェック）、`vp run typecheck`（各パッケージの `tsrs`）、`vp run lint:deps`（import の向き）、`vp run lint:actions`（GitHub Actions のワークフロー。uv が要る）、`vp run test`（単体テスト）で、変更を確かめる
 - [ ] 確認に必要な `vite.config.ts` のタスクや `package.json` のスクリプトがあれば、`vp run <script>` で実行する
 - [ ] セットアップ・Node.js・パッケージマネージャーの動きがおかしいときは `vp env doctor` を実行し、相談するときにその出力を添える
 
@@ -42,7 +42,7 @@ TypeScript と JavaScript のファイルは `vpx <file>` で動かす（例: `v
 
 ## タスクとキャッシュ
 
-- 検査・テスト・ビルド（`build`・`typecheck`・`lint:deps`・`test`・`test:client`・`test:server`）は、`package.json` ではなく各パッケージの `vite.config.ts` の `run.tasks` に書く。タスクはキャッシュされ、読んだファイルが変わっていなければ飛ばす（`docs/10-タスクのキャッシュ.md`）
+- 検査・テスト・ビルド（`build`・`typecheck`・`lint:deps`・`test`・`test:client`・`test:server`）は、`package.json` ではなく各パッケージの `vite.config.ts` の `run.tasks` に書く。パッケージに属さない検査（`lint:actions`）は、ルートの `vite.config.ts` の `run.tasks` に書く。タスクはキャッシュされ、読んだファイルが変わっていなければ飛ばす（`docs/10-タスクのキャッシュ.md`）
 - `run.tasks` の中は変数を使わず、値をそのまま書く。変数があると `vp run` が設定を実行し、Void の plugin がルートに `.void/` を作る
 - `apps/web` の `vp build`・`vp test` のタスクは、`.void/v3` を入力と出力から外す
 - キャッシュを疑うときは `vp run --last-details` で外れた理由を見る。`vp run --no-cache <タスク>` で使わずに回し、`vp cache clean` で消す

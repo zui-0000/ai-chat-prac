@@ -88,6 +88,17 @@ export default defineConfig({
     },
     jsPlugins: [{ name: "vite-plus", specifier: "vite-plus/oxlint-plugin" }],
   },
+  run: {
+    tasks: {
+      // GitHub Actions のワークフローの危ない書き方を止める。zizmor は npm で配られていないので uv で動かす。
+      // 版は CI（.github/workflows/ci.yaml）とそろえる。ネットにつなぐ検査は CI に任せる
+      // zizmor は入力を探すためにリポジトリ全体を読み、どのファイルを変えてもキャッシュが外れるので、入力を .github だけにする
+      "lint:actions": {
+        command: "uvx zizmor@1.32.0 --offline .",
+        cache: { input: [".github/**"] },
+      },
+    },
+  },
   test: {
     // ルートの vp test では何も動かさない。テストは vp run test（apps/web の中で vp test）で動かす。
     // - 設定がないと、apps/web の設定（client の jsdom など）を読まずに、すべての *.test.ts を Node で動かす
