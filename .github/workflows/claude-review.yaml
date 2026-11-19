@@ -39,9 +39,9 @@ jobs:
           client-id: ${{ vars.REVIEWER_APP_CLIENT_ID }}
           private-key: ${{ secrets.REVIEWER_APP_PRIVATE_KEY }}
           permission-pull-requests: write
-          skip-token-revoke: true
 
-      # 印を付けたら、このトークンはすぐ取り消す。Claude が動いているあいだ、書き込めるトークンを残さない
+      # 印を付けたら、このトークンはすぐ取り消す。Claude が動いているあいだ、書き込めるトークンを残さない。
+      # 後始末でも取り消すので、印を付ける前にジョブが止まってもトークンは残らない（取り消し済みなら警告だけ出る）
       - id: marker
         name: レビュー中の印を付ける
         continue-on-error: true
@@ -123,9 +123,9 @@ jobs:
           client-id: ${{ vars.REVIEWER_APP_CLIENT_ID }}
           private-key: ${{ secrets.REVIEWER_APP_PRIVATE_KEY }}
           permission-pull-requests: write
-          skip-token-revoke: true
 
-      # 印を付けたら、このトークンはすぐ取り消す。Claude が動いているあいだ、書き込めるトークンを残さない
+      # 印を付けたら、このトークンはすぐ取り消す。Claude が動いているあいだ、書き込めるトークンを残さない。
+      # 後始末でも取り消すので、印を付ける前にジョブが止まってもトークンは残らない（取り消し済みなら警告だけ出る）
       - id: marker
         name: レビュー中の印を付ける
         continue-on-error: true
