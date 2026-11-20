@@ -9,19 +9,19 @@ PR にラベルを貼ると、GitHub Actions で Claude が PR をレビュー�
 
 ## 決めたこと
 
-| 何を              | どうしたか                                                                                                                                                                |
-| ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| ファイル          | `.github/workflows/claude-review.yaml`（ジョブは `review` と `re-review`）と `.github/claude-review/`                                                                     |
-| 動くとき          | ラベルを貼ったとき（`pull_request` の `labeled`）。同じリポジトリのブランチの PR だけ。`claude-re-review` は、承認しなかったときだけ外す                                  |
-| Action            | Anthropic 公式の `anthropics/claude-code-action`。版はタグで書き、コミットは `actions.lock` で固定する                                                                    |
-| レビューのやり方  | 非公開のリポジトリにあるレビューの手順を呼ぶ。指摘を構造化出力（JSON）で受け取る（ZSCM-75 で、公式の `code-review` プラグインから変えた）                                 |
-| 再確認のやり方    | プロンプトを自分で書く（レビューの手順に再確認は無い）。直ったかどうかを JSON で受け取る                                                                                  |
-| PR への書き込み   | 自前の GitHub App のトークンで、決まった手順のスクリプトが行う。Claude には書き込ませない                                                                                 |
-| Claude の認証     | Claude のプランの OAuth トークン（`CLAUDE_CODE_OAUTH_TOKEN`）。Secrets に人が入れる                                                                                       |
-| モデル            | `--model opus` で Opus にする。指定しないと Action の既定のモデル（試したときは Sonnet）で動き、レビューが浅かった。`opus` は別名なので、新しい Opus が出るとそれに変わる |
-| Claude のトークン | このジョブの `GITHUB_TOKEN`（`contents: read` と `pull-requests: read`）。読むだけ                                                                                        |
-| 口調              | アスカの口調（`.github/claude-review/persona.md`）。何を指摘するかの基準は変えない                                                                                        |
-| マージの条件      | 入れない。承認もマージの条件に効かない（ルールセットは承認を求めない。`docs/07-CI.md`）                                                                                   |
+| 何を              | どうしたか                                                                                                                                                                                                           |
+| ----------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| ファイル          | `.github/workflows/claude-review.yaml`（ジョブは `review` と `re-review`）と `.github/claude-review/`                                                                                                                |
+| 動くとき          | ラベルを貼ったとき（`pull_request` の `labeled`）。同じリポジトリのブランチの PR だけ。`claude-review` は、既定のブランチに向いた、開いていて下書きでない PR だけ。`claude-re-review` は、承認しなかったときだけ外す |
+| Action            | Anthropic 公式の `anthropics/claude-code-action`。版はタグで書き、コミットは `actions.lock` で固定する                                                                                                               |
+| レビューのやり方  | 非公開のリポジトリにあるレビューの手順を呼ぶ。指摘を構造化出力（JSON）で受け取る（ZSCM-75 で、公式の `code-review` プラグインから変えた）                                                                            |
+| 再確認のやり方    | プロンプトを自分で書く（レビューの手順に再確認は無い）。直ったかどうかを JSON で受け取る                                                                                                                             |
+| PR への書き込み   | 自前の GitHub App のトークンで、決まった手順のスクリプトが行う。Claude には書き込ませない                                                                                                                            |
+| Claude の認証     | Claude のプランの OAuth トークン（`CLAUDE_CODE_OAUTH_TOKEN`）。Secrets に人が入れる                                                                                                                                  |
+| モデル            | `--model opus` で Opus にする。指定しないと Action の既定のモデル（試したときは Sonnet）で動き、レビューが浅かった。`opus` は別名なので、新しい Opus が出るとそれに変わる                                            |
+| Claude のトークン | このジョブの `GITHUB_TOKEN`（`contents: read` と `pull-requests: read`）。読むだけ                                                                                                                                   |
+| 口調              | アスカの口調（`.github/claude-review/persona.md`）。何を指摘するかの基準は変えない                                                                                                                                   |
+| マージの条件      | 入れない。承認もマージの条件に効かない（ルールセットは承認を求めない。`docs/07-CI.md`）                                                                                                                              |
 
 ## 動き方
 
@@ -57,7 +57,7 @@ PR にラベルを貼ると、GitHub Actions で Claude が PR をレビュー�
 
 ### ふだんの使い方
 
-1. PR を出したら `claude-review` を貼る（閉じた PR と下書きの PR では動かないので、Ready for review にしてから）
+1. PR を出したら `claude-review` を貼る（閉じた PR と下書きの PR では動かないので、Ready for review にしてから）。既定のブランチ以外に向いた PR（積み重ねた PR）でも動かない。レビューの手順が、既定のブランチとの差分を取るため
 2. 指摘を直して push し、スレッドに返事する。直さない指摘には、その理由を書く
 3. `claude-re-review` を貼る。残った指摘があれば、2 と 3 を繰り返す
 
