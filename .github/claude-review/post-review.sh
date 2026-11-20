@@ -2,6 +2,13 @@
 # Claude のレビューの結果（構造化出力）を App の名前で PR に出す
 set -euo pipefail
 
+# 非公開のリポジトリの名前は、決まりのファイルのパスなどから結果に紛れ込むことがある。
+# ログの伏せ字は PR への書き込みには効かないので、出す前に伏せる
+RESULT=$(jq --arg repo "${HIDE_REPO:-}" --arg marketplace "${HIDE_MARKETPLACE:-}" '
+  [$repo, $marketplace | select(. != "")] as $names
+  | walk(if type == "string" then reduce $names[] as $n (.; split($n) | join("***")) else . end)
+' <<<"$RESULT")
+
 reviews="repos/$REPO/pulls/$PR/reviews"
 status=$(jq -r '.status' <<<"$RESULT")
 summary=$(jq -r '.summary' <<<"$RESULT")

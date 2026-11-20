@@ -10,10 +10,15 @@ permissions: {}
 jobs:
   review:
     name: review
-    # フォークの PR には秘密の値が渡らないので、同じリポジトリのブランチの PR だけで動かす
+    # フォークの PR には秘密の値が渡らないので、同じリポジトリのブランチの PR だけで動かす。
+    # レビューの手順は PR の状態と向き先を見ず、既定のブランチとの差分を取るので、
+    # 既定のブランチに向いた、開いていて下書きでない PR だけにする
     if: >-
       github.event.label.name == 'claude-review' &&
-      github.event.pull_request.head.repo.full_name == github.repository
+      github.event.pull_request.head.repo.full_name == github.repository &&
+      github.event.pull_request.base.ref == github.event.repository.default_branch &&
+      github.event.pull_request.state == 'open' &&
+      !github.event.pull_request.draft
     runs-on: ubuntu-latest
     timeout-minutes: 20
     # ワークフローに書くと、関係ないラベルを貼っただけで動いているレビューが取り消される
@@ -25,12 +30,38 @@ jobs:
       contents: read
       pull-requests: read
     steps:
-      # 指摘の行番号を PR の差分と合わせるため、マージ後の形ではなく PR の最新のコミットを置く
+      # 指摘の行番号を PR の差分と合わせるため、マージ後の形ではなく PR の最新のコミットを置く。
+      # レビューの手順は、既定のブランチとの分かれ目から差分を取るので、履歴を全部取ってくる
       - uses: actions/checkout@v7.0.1
         with:
           ref: ${{ github.event.pull_request.head.sha }}
-          fetch-depth: 1
+          fetch-depth: 0
           persist-credentials: false
+
+      # レビューの手順は、既定のブランチを手元のブランチの名前で引く
+      - name: 既定のブランチを手元に作る
+        env:
+          DEFAULT: ${{ github.event.repository.default_branch }}
+        run: git branch "$DEFAULT" "origin/$DEFAULT"
+
+      # レビューの手順は非公開のリポジトリにある。そのリポジトリだけを、読むだけで取ってくる
+      - id: skills-token
+        uses: actions/create-github-app-token@v3.3.0
+        with:
+          client-id: ${{ vars.REVIEWER_APP_CLIENT_ID }}
+          private-key: ${{ secrets.REVIEWER_APP_PRIVATE_KEY }}
+          repositories: ${{ secrets.SKILLS_REPO }}
+          permission-contents: read
+
+      # 作業フォルダの中に置くと、まだ追跡していないファイルとしてレビューの差分に混ざるので、外に置く。
+      # 取ってきたら、このトークンはすぐ取り消す（後始末でも取り消す）
+      - name: レビューの手順を取ってくる
+        env:
+          GH_TOKEN: ${{ steps.skills-token.outputs.token }}
+          SKILLS: ${{ github.repository_owner }}/${{ secrets.SKILLS_REPO }}
+        run: |
+          trap 'gh api -X DELETE installation/token --silent' EXIT
+          gh repo clone "$SKILLS" "$RUNNER_TEMP/skills" -- --depth 1 --quiet
 
       # App はレビューを頼む相手にできないので、レビュー中であることをコメントで見せる。付けられなくてもレビューは続ける
       - id: marker-token
@@ -54,18 +85,22 @@ jobs:
           id=$(gh api "repos/$REPO/issues/$PR/comments" -f body="レビューするわ！まかせなさい！" --jq .id)
           echo "id=$id" >>"$GITHUB_OUTPUT"
 
+      # 非公開のリポジトリの名前はログに出さないので、秘密の値から渡す（ログでは伏せられる）
       - id: claude
         uses: anthropics/claude-code-action@v1.0.276
         with:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          plugin_marketplaces: https://github.com/anthropics/claude-plugins-official.git
-          plugins: code-review@claude-plugins-official
-          # --comment を付けず、指摘は構造化出力で受け取る。プラグインが許している gh pr comment は禁じる
-          prompt: /code-review:code-review ${{ github.repository }}/pull/${{ github.event.pull_request.number }}
+          plugin_marketplaces: ${{ runner.temp }}/skills
+          plugins: |
+            review@${{ secrets.SKILLS_MARKETPLACE }}
+            ai-chat-prac@${{ secrets.SKILLS_MARKETPLACE }}
+          # 指摘は構造化出力で受け取る。ファイルを書く道具は禁じる
+          prompt: /review:code medium
           claude_args: |
+            --model opus
             --append-system-prompt-file .github/claude-review/persona.md
-            --disallowedTools "Bash(gh pr comment:*)"
+            --disallowedTools "Bash(gh pr comment:*)" Edit Write NotebookEdit
             --json-schema '{"type":"object","properties":{"status":{"type":"string","enum":["reviewed","skipped"]},"skip_reason":{"type":"string"},"summary":{"type":"string"},"findings":{"type":"array","items":{"type":"object","properties":{"path":{"type":"string"},"line":{"type":"integer"},"start_line":{"type":"integer"},"body":{"type":"string"}},"required":["path","line","body"]}}},"required":["status","summary","findings"]}'
 
       # 書き込むトークンは Claude が終わってから作る
@@ -85,6 +120,8 @@ jobs:
           PR: ${{ github.event.pull_request.number }}
           HEAD_SHA: ${{ github.event.pull_request.head.sha }}
           RESULT: ${{ steps.claude.outputs.structured_output }}
+          HIDE_REPO: ${{ secrets.SKILLS_REPO }}
+          HIDE_MARKETPLACE: ${{ secrets.SKILLS_MARKETPLACE }}
         run: bash .github/claude-review/post-review.sh
 
       # 失敗・取り消しのときも消す
@@ -162,6 +199,7 @@ jobs:
             - ファイルは書き換えない
             - `threads` には、ファイルのスレッドを 1 つずつ全部入れる。`id` はファイルの値をそのまま使う
           claude_args: |
+            --model opus
             --append-system-prompt-file .github/claude-review/persona.md
             --allowedTools "Read,Grep,Glob,Bash(gh pr diff:*)"
             --json-schema '{"type":"object","properties":{"summary":{"type":"string"},"threads":{"type":"array","items":{"type":"object","properties":{"id":{"type":"string"},"fixed":{"type":"boolean"},"comment":{"type":"string"}},"required":["id","fixed","comment"]}}},"required":["summary","threads"]}'
