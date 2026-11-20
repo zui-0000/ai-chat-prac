@@ -89,3 +89,4 @@ TypeScript と JavaScript のファイルは `vpx <file>` で動かす（例: `v
 - catalog の版は範囲（`^`・`~`）で書かない。範囲を指定して足したとき（`vp add "pkg@^1.0.0"`）は範囲のまま書かれるので、固定の版に直す
 - 公開から 1 日たっていない版は入らない（`minimumReleaseAge`）。止まったら除外せず、1 日たった版を使う
 - `tsrs` を上げるときは、新しい版の provenance が `github.com/oxc-project/tsrs` の `release.yml` であることを確かめてから、`trustPolicyExclude` の版を書き換える。一度に新しい版だけにすると、lockfile の古い版が検査で止まるので、古い版と新しい版を `||` で並べて `vp install` し、lockfile から古い版が消えてから外す
+- `tsrs` は、Vite+ が持つ版にそろえる（Vite+ も型を使う lint に使うので、2 つの版が入らないようにする）。Vite+ を上げたら `npm view vite-plus@<版> dependencies.tsrs` で版を見て、catalog と `trustPolicyExclude` を合わせる

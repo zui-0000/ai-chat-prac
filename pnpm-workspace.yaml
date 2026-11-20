@@ -41,22 +41,21 @@ catalog:
   oxc-transform-react: 0.156.0
   react: 19.3.1
   react-dom: 19.3.1
-  tsrs: 0.23.0-ts7.1.0-beta
+  # Vite+ が持つ tsrs と同じ版にそろえる（npm view vite-plus@<版> dependencies.tsrs）
+  tsrs: 7.1.0-beta.tsrs2
   typescript: 7.0.2
-  vite: npm:@voidzero-dev/vite-plus-core@1.6.0
-  vite-plus: 1.6.0
+  vite: npm:@voidzero-dev/vite-plus-core@8.3.8000
+  vite-plus: 1.7.0
   void: 1.6.2
   zod: 4.6.7
 
-# vite を Vite+ の vite-plus-core に置き換える。版が vite の版と一致しないため、peer の検査を緩める
+# vite を Vite+ の vite-plus-core に置き換える。core の版は中の Vite の版を表す（8.3.8000 は Vite 8.3.8）ので、
+# プラグインの vite の peer の範囲をそのまま満たし、検査を緩めなくてよい
 overrides:
   vite@*: "catalog:"
 
 peerDependencyRules:
-  allowAny:
-    - vite
   allowedVersions:
-    vite: "*"
     # void が使う @cloudflare/workers-auth は、テスト用の道具（test-helpers）だけのために msw 2.14.6 を
     # optional の peer に持つ。void は test-helpers を使わないので、こちらの msw 3 との食い違いを許す
     "@cloudflare/workers-auth>msw": "3"
@@ -75,7 +74,8 @@ minimumReleaseAge: 1440
 # 以前の版より公開の証明（provenance など）が弱い版は入れない
 trustPolicy: no-downgrade
 # 例外は版まで書き、上げるたびに確かめ直す
-# - tsrs: 名前の持ち主が移ったため、乗っ取りの疑いで止まる。
-#   provenance が github.com/oxc-project/tsrs の release.yml であることを確かめて許可した
+# - tsrs: 最初に出た仮の版（0.0.0-bootstrap.0）が承認つきの公開（staged publish）だったため、
+#   あとから CI で出した版がどれも、証明が弱くなった（乗っ取りの疑い）と見なされて止まる。
+#   provenance が github.com/oxc-project/tsrs の main の release.yml であることを確かめて許可した
 trustPolicyExclude:
-  - "tsrs@0.23.0-ts7.1.0-beta"
+  - "tsrs@7.1.0-beta.tsrs2"
