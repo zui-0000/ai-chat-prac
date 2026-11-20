@@ -93,9 +93,10 @@ jobs:
           plugins: |
             review@${{ secrets.SKILLS_MARKETPLACE }}
             ai-chat-prac@${{ secrets.SKILLS_MARKETPLACE }}
-          # 指摘は構造化出力で受け取る。ファイルを書く道具は禁じる（Bash では書けるので、PR の中のスクリプトを守り切るものではない）
+          # 指摘は構造化出力で受け取る。ファイルを書く道具は禁じる
           prompt: /review:code medium
           claude_args: |
+            --model opus
             --append-system-prompt-file .github/claude-review/persona.md
             --disallowedTools "Bash(gh pr comment:*)" Edit Write NotebookEdit
             --json-schema '{"type":"object","properties":{"status":{"type":"string","enum":["reviewed","skipped"]},"skip_reason":{"type":"string"},"summary":{"type":"string"},"findings":{"type":"array","items":{"type":"object","properties":{"path":{"type":"string"},"line":{"type":"integer"},"start_line":{"type":"integer"},"body":{"type":"string"}},"required":["path","line","body"]}}},"required":["status","summary","findings"]}'
@@ -196,6 +197,7 @@ jobs:
             - ファイルは書き換えない
             - `threads` には、ファイルのスレッドを 1 つずつ全部入れる。`id` はファイルの値をそのまま使う
           claude_args: |
+            --model opus
             --append-system-prompt-file .github/claude-review/persona.md
             --allowedTools "Read,Grep,Glob,Bash(gh pr diff:*)"
             --json-schema '{"type":"object","properties":{"summary":{"type":"string"},"threads":{"type":"array","items":{"type":"object","properties":{"id":{"type":"string"},"fixed":{"type":"boolean"},"comment":{"type":"string"}},"required":["id","fixed","comment"]}}},"required":["summary","threads"]}'
