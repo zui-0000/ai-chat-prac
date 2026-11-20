@@ -39,6 +39,25 @@ vp hooks status                       # 「Hooks dir: .vite-hooks」と出れば
 
 オーナーは、別の非公開のリポジトリで管理している Claude Code のスキルを使う。セットアップの手順は、そのリポジトリの README にある。ほかの人は何もしなくてよい。
 
+### Claude のレビュー（オーナーのみ）
+
+PR にラベルを貼ると、GitHub Actions で Claude がレビューする。マージの条件には入っていない。
+
+- `claude-review`: 最初のレビュー。このリポジトリのブランチから出した、開いていて下書きでない、既定のブランチに向いた PR だけで動く。外して貼り直すと、もう一度レビューする
+- `claude-re-review`: 指摘を直して push し、スレッドに返事してから貼る。承認しなかったときは外れるので、直したらもう一度貼る
+
+動かすには、次の Secrets と Variables が要る。
+
+| 名前                       | 種類     | 中身                                                |
+| -------------------------- | -------- | --------------------------------------------------- |
+| `CLAUDE_CODE_OAUTH_TOKEN`  | Secret   | `claude setup-token` で作るトークン（1 年で切れる） |
+| `REVIEWER_APP_CLIENT_ID`   | Variable | レビューに使う GitHub App の Client ID              |
+| `REVIEWER_APP_PRIVATE_KEY` | Secret   | その App の秘密鍵                                   |
+| `SKILLS_REPO`              | Secret   | レビューの手順を置いた非公開のリポジトリの名前      |
+| `SKILLS_MARKETPLACE`       | Secret   | そのリポジトリのマーケットプレイスの名前            |
+
+App の権限は Contents（読み書き）と Pull requests（読み書き）だけにし、Webhook は使わない。権限を変えたら、インストール先で承認し直す。App は、このリポジトリと、レビューの手順を置いた非公開のリポジトリにインストールする。
+
 ## よく使うコマンド
 
 コマンドはすべてリポジトリのルートで実行する。パッケージのフォルダで実行すると、そのパッケージしか検査しない。
