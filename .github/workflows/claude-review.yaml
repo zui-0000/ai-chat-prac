@@ -46,7 +46,7 @@ jobs:
 
       # レビューの手順は非公開のリポジトリにある。そのリポジトリだけを、読むだけで取ってくる
       - id: skills-token
-        uses: actions/create-github-app-token@v3.3.0
+        uses: actions/create-github-app-token@v3.4.0
         with:
           client-id: ${{ vars.REVIEWER_APP_CLIENT_ID }}
           private-key: ${{ secrets.REVIEWER_APP_PRIVATE_KEY }}
@@ -65,7 +65,7 @@ jobs:
 
       # App はレビューを頼む相手にできないので、レビュー中であることをコメントで見せる。付けられなくてもレビューは続ける
       - id: marker-token
-        uses: actions/create-github-app-token@v3.3.0
+        uses: actions/create-github-app-token@v3.4.0
         with:
           client-id: ${{ vars.REVIEWER_APP_CLIENT_ID }}
           private-key: ${{ secrets.REVIEWER_APP_PRIVATE_KEY }}
@@ -106,7 +106,7 @@ jobs:
       # 書き込むトークンは Claude が終わってから作る
       - id: app-token
         if: ${{ always() }}
-        uses: actions/create-github-app-token@v3.3.0
+        uses: actions/create-github-app-token@v3.4.0
         with:
           client-id: ${{ vars.REVIEWER_APP_CLIENT_ID }}
           private-key: ${{ secrets.REVIEWER_APP_PRIVATE_KEY }}
@@ -155,7 +155,7 @@ jobs:
 
       # slug（App の名前）は、このトークンの出力を使って、App の指摘を見分けるのにも使う
       - id: marker-token
-        uses: actions/create-github-app-token@v3.3.0
+        uses: actions/create-github-app-token@v3.4.0
         with:
           client-id: ${{ vars.REVIEWER_APP_CLIENT_ID }}
           private-key: ${{ secrets.REVIEWER_APP_PRIVATE_KEY }}
@@ -207,7 +207,7 @@ jobs:
       # 書き込むトークンは Claude が終わってから作る
       - id: app-token
         if: ${{ always() }}
-        uses: actions/create-github-app-token@v3.3.0
+        uses: actions/create-github-app-token@v3.4.0
         with:
           client-id: ${{ vars.REVIEWER_APP_CLIENT_ID }}
           private-key: ${{ secrets.REVIEWER_APP_PRIVATE_KEY }}
@@ -216,7 +216,7 @@ jobs:
       # スレッドの解決（resolveReviewThread）は Contents の書き込みを求めるので、結果を出すステップだけ別のトークンにする
       - id: resolver-token
         if: ${{ steps.claude.outcome == 'success' || steps.claude.outcome == 'skipped' }}
-        uses: actions/create-github-app-token@v3.3.0
+        uses: actions/create-github-app-token@v3.4.0
         with:
           client-id: ${{ vars.REVIEWER_APP_CLIENT_ID }}
           private-key: ${{ secrets.REVIEWER_APP_PRIVATE_KEY }}
