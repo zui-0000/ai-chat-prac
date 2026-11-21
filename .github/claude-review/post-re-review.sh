@@ -13,6 +13,9 @@ if [[ $REVIEWED != true ]]; then
 fi
 
 result=${RESULT:-'{}'}
+# 非公開のリポジトリの名前は、決まりのファイルのパスなどから結果に紛れ込むことがあるので、出す前に伏せる
+result=$(jq -L "$(dirname "$0")" --arg repo "${HIDE_REPO:-}" --arg marketplace "${HIDE_MARKETPLACE:-}" \
+  'include "hide-names"; hide_re_review([$repo, $marketplace])' <<<"$result")
 total=$(jq length "$THREADS")
 remaining=""
 
