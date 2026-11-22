@@ -2,12 +2,18 @@
 # Claude のレビューの結果（構造化出力）を App の名前で PR に出す
 set -euo pipefail
 
-# 非公開のリポジトリの名前は、決まりのファイルのパスなどから結果に紛れ込むことがある。
-# ログの伏せ字は PR への書き込みには効かないので、出す前に伏せる
-RESULT=$(jq --arg repo "${HIDE_REPO:-}" --arg marketplace "${HIDE_MARKETPLACE:-}" '
-  [$repo, $marketplace | select(. != "")] as $names
-  | walk(if type == "string" then reduce $names[] as $n (.; split($n) | join("***")) else . end)
-' <<<"$RESULT")
+here=$(dirname "$0")
+
+# 秘密の値を含むジョブの outputs は GitHub が落とすので、結果が空で届くことがある。黙って抜けないよう、落として知らせる
+if ! jq -e 'type == "object"' <<<"${RESULT:-}" >/dev/null 2>&1; then
+  gh pr comment "$PR" --repo "$REPO" --body "レビューの結果を受け取れなかったわ。Actions のログを見て、もう一度ラベルを貼りなさい。"
+  echo "::error::レビューの結果が空か、JSON として読めない"
+  exit 1
+fi
+
+# 非公開のリポジトリの名前は、決まりのファイルのパスなどから結果に紛れ込むことがあるので、出す前に伏せる
+RESULT=$(jq -L "$here" --arg repo "${HIDE_REPO:-}" --arg marketplace "${HIDE_MARKETPLACE:-}" \
+  'include "hide-names"; hide_review([$repo, $marketplace])' <<<"$RESULT")
 
 reviews="repos/$REPO/pulls/$PR/reviews"
 status=$(jq -r '.status' <<<"$RESULT")

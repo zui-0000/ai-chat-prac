@@ -29,6 +29,10 @@ jobs:
     permissions:
       contents: read
       pull-requests: read
+    outputs:
+      claude: ${{ steps.claude.outcome }}
+      result: ${{ steps.result.outputs.result }}
+      marker: ${{ steps.marker.outputs.id }}
     steps:
       # 指摘の行番号を PR の差分と合わせるため、マージ後の形ではなく PR の最新のコミットを置く。
       # レビューの手順は、既定のブランチとの分かれ目から差分を取るので、履歴を全部取ってくる
@@ -103,9 +107,44 @@ jobs:
             --disallowedTools "Bash(gh pr comment:*)" Edit Write NotebookEdit
             --json-schema '{"type":"object","properties":{"status":{"type":"string","enum":["reviewed","skipped"]},"skip_reason":{"type":"string"},"summary":{"type":"string"},"findings":{"type":"array","items":{"type":"object","properties":{"path":{"type":"string"},"line":{"type":"integer"},"start_line":{"type":"integer"},"body":{"type":"string"}},"required":["path","line","body"]}}},"required":["status","summary","findings"]}'
 
-      # 書き込むトークンは Claude が終わってから作る
+      # 秘密の値を含む outputs は GitHub が落とすので、名前を伏せてから渡す
+      - id: result
+        name: レビューの結果を渡す
+        if: ${{ steps.claude.outcome == 'success' }}
+        env:
+          RESULT: ${{ steps.claude.outputs.structured_output }}
+          HIDE_REPO: ${{ secrets.SKILLS_REPO }}
+          HIDE_MARKETPLACE: ${{ secrets.SKILLS_MARKETPLACE }}
+        run: |
+          delimiter="EOF_$(openssl rand -hex 16)"
+          {
+            echo "result<<$delimiter"
+            jq -c -L .github/claude-review --arg repo "$HIDE_REPO" --arg marketplace "$HIDE_MARKETPLACE" \
+              'include "hide-names"; hide_review([$repo, $marketplace])' <<<"$RESULT"
+            echo "$delimiter"
+          } >>"$GITHUB_OUTPUT"
+
+  # Claude は Bash を使えるので、同じランナーのファイルや道具を書き換えられる。
+  # 書き込める App のトークンは、Claude が動いたランナーでは使わず、新しいランナーのこのジョブで使う
+  review-post:
+    name: review-post
+    needs: review
+    # 失敗・取り消しのときも、印を消すために動かす
+    if: ${{ always() && needs.review.result != 'skipped' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+    steps:
+      # レビューしたコミットのスクリプトを動かす
+      - uses: actions/checkout@v7.0.1
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 1
+          persist-credentials: false
+          sparse-checkout: .github/claude-review
+
       - id: app-token
-        if: ${{ always() }}
         uses: actions/create-github-app-token@v3.4.0
         with:
           client-id: ${{ vars.REVIEWER_APP_CLIENT_ID }}
@@ -113,31 +152,33 @@ jobs:
           permission-pull-requests: write
 
       - name: レビューを PR に出す
-        if: ${{ steps.claude.outcome == 'success' && steps.app-token.outcome == 'success' }}
+        if: ${{ needs.review.outputs.claude == 'success' }}
         env:
           GH_TOKEN: ${{ steps.app-token.outputs.token }}
           REPO: ${{ github.repository }}
           PR: ${{ github.event.pull_request.number }}
           HEAD_SHA: ${{ github.event.pull_request.head.sha }}
-          RESULT: ${{ steps.claude.outputs.structured_output }}
+          RESULT: ${{ needs.review.outputs.result }}
           HIDE_REPO: ${{ secrets.SKILLS_REPO }}
           HIDE_MARKETPLACE: ${{ secrets.SKILLS_MARKETPLACE }}
         run: bash .github/claude-review/post-review.sh
 
       # 失敗・取り消しのときも消す
       - name: レビュー中の印を消す
-        if: ${{ always() && steps.marker.outputs.id != '' && steps.app-token.outcome == 'success' }}
+        if: ${{ always() && needs.review.outputs.marker != '' && steps.app-token.outcome == 'success' }}
         env:
           GH_TOKEN: ${{ steps.app-token.outputs.token }}
           REPO: ${{ github.repository }}
-          ID: ${{ steps.marker.outputs.id }}
+          ID: ${{ needs.review.outputs.marker }}
         run: gh api -X DELETE "repos/$REPO/issues/comments/$ID" --silent || echo "::warning::印を消せなかった"
 
   re-review:
     name: re-review
     if: >-
       github.event.label.name == 'claude-re-review' &&
-      github.event.pull_request.head.repo.full_name == github.repository
+      github.event.pull_request.head.repo.full_name == github.repository &&
+      github.event.pull_request.state == 'open' &&
+      !github.event.pull_request.draft
     runs-on: ubuntu-latest
     timeout-minutes: 20
     concurrency:
@@ -152,6 +193,23 @@ jobs:
           ref: ${{ github.event.pull_request.head.sha }}
           fetch-depth: 1
           persist-credentials: false
+
+      # 再確認でも、レビューと同じ決まりで見るため、決まりを置いた非公開のリポジトリを読むだけで取ってくる
+      - id: skills-token
+        uses: actions/create-github-app-token@v3.4.0
+        with:
+          client-id: ${{ vars.REVIEWER_APP_CLIENT_ID }}
+          private-key: ${{ secrets.REVIEWER_APP_PRIVATE_KEY }}
+          repositories: ${{ secrets.SKILLS_REPO }}
+          permission-contents: read
+
+      - name: 決まりを取ってくる
+        env:
+          GH_TOKEN: ${{ steps.skills-token.outputs.token }}
+          SKILLS: ${{ github.repository_owner }}/${{ secrets.SKILLS_REPO }}
+        run: |
+          trap 'gh api -X DELETE installation/token --silent' EXIT
+          gh repo clone "$SKILLS" "$RUNNER_TEMP/skills" -- --depth 1 --quiet
 
       # slug（App の名前）は、このトークンの出力を使って、App の指摘を見分けるのにも使う
       - id: marker-token
@@ -191,6 +249,10 @@ jobs:
         with:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
           github_token: ${{ secrets.GITHUB_TOKEN }}
+          # レビューの手順は使わないので、決まりだけを入れる
+          plugin_marketplaces: ${{ runner.temp }}/skills
+          plugins: |
+            ai-chat-prac@${{ secrets.SKILLS_MARKETPLACE }}
           prompt: |
             前のレビューの指摘が直っているかを、指摘ごとに確かめなさい。
 
@@ -234,6 +296,8 @@ jobs:
           REVIEWED: ${{ steps.threads.outputs.reviewed }}
           THREADS: claude-re-review-threads.json
           RESULT: ${{ steps.claude.outputs.structured_output }}
+          HIDE_REPO: ${{ secrets.SKILLS_REPO }}
+          HIDE_MARKETPLACE: ${{ secrets.SKILLS_MARKETPLACE }}
         run: bash .github/claude-review/post-re-review.sh
 
       # 承認しなかったときだけ外し、直したあとにもう一度貼れるようにする
