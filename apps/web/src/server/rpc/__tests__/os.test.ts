@@ -20,8 +20,8 @@ const client = createRouterClient(
   }),
 );
 
-describe("入力の検査のエラー", () => {
-  test("約束の BAD_REQUEST になり、不正だったフィールドの名前が届くこと", async () => {
+describe("os", () => {
+  test("入力が正しくない場合、約束の BAD_REQUEST にして、不正だったフィールドの名前を返すこと", async () => {
     const { error } = await safe(client.message.create({ text: "" }));
 
     expect(isDefinedError(error)).toBe(true);
@@ -33,7 +33,7 @@ describe("入力の検査のエラー", () => {
     expect(create).not.toHaveBeenCalled();
   });
 
-  test("送られた値が、エラーに入らないこと", async () => {
+  test("入力が正しくない場合、送られた値をエラーに入れないこと", async () => {
     // 型に合わない値を送る（FE を通さない呼び出し）
     const input = { text: 12345 } as unknown as { text: string };
 
@@ -42,7 +42,7 @@ describe("入力の検査のエラー", () => {
     expect(JSON.stringify(error)).not.toContain("12345");
   });
 
-  test("入力がまるごと違う場合、フィールドの名前が空の文字で届くこと", async () => {
+  test("入力がまるごと違う場合、フィールドの名前を空の文字で返すこと", async () => {
     const input = "こんにちは" as unknown as { text: string };
 
     const { error } = await safe(client.message.create(input));
@@ -50,7 +50,7 @@ describe("入力の検査のエラー", () => {
     expect(error).toMatchObject({ code: "BAD_REQUEST", data: { errors: [{ field: "" }] } });
   });
 
-  test("正しい入力は、そのまま実装に届くこと", async () => {
+  test("入力が正しい場合、実装に渡すこと", async () => {
     await client.message.create({ text: "こんにちは" });
 
     expect(create).toHaveBeenCalledWith("こんにちは");
