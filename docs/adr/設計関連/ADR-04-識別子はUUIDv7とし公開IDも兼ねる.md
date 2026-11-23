@@ -48,7 +48,7 @@ informed:
 
 ### 確認方法 (Confirmation)
 
-`uuid` の `v7()` で作った ID が `IdSchema` を通り、UUIDv4 と大文字の ID が通らないことを、テストで確かめる。
+BE が作った ID が `IdSchema` を通ることを、ID を作る実装と一緒に、テストで確かめる。
 
 ## 各選択肢の評価 (Pros and Cons of the Options)
 

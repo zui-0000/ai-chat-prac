@@ -19,7 +19,7 @@ informed:
 
 - BE が動く Cloudflare Workers で遅くならないこと
 - Worker の起動のたびにかかる、スキーマを作る時間が短いこと
-- 約束のスキーマを FE で使うことになっても、バンドルが大きくならないこと
+- 約束を FE で読んでも、バンドルが大きくならないこと
 - 更新が続いていること
 
 ## 検討した選択肢 (Considered Options)
@@ -40,7 +40,7 @@ informed:
 
 - Good, because Workers での検査が 1.3〜1.5 倍速い（下の計測）
 - Good, because スキーマを作る時間が 12 分の 1 になる
-- Good, because 約束のスキーマを FE のフォームの検査に使うことになっても、足される量が小さい
+- Good, because FE が約束の値を読んでも、FE のバンドルは gzip で 1.6 KB しか増えない（設計関連/ADR-01 の補足）
 - Bad, because BE のバンドルから zod は消えない。認証の Better Auth（ADR-04）が zod に依存している。valibot の分が足される
 - Bad, because zod にある `z.uuidv7()` が無く、UUIDv7 の検査は正規表現で書く
 - Bad, because スキーマを JSON Schema にするときは、別のパッケージ（`@valibot/to-json-schema`）が要る。zod は本体に入っている
