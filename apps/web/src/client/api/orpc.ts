@@ -6,7 +6,6 @@ import { createTanstackQueryUtils } from "@orpc/tanstack-query";
 
 const link = new RPCLink({
   url: `${location.origin}/rpc`,
-  // 契約に書いたメソッド（GET・DELETE など）で送る。書いていない手続きは POST になる
   method: inferRPCMethodFromContractRouter(contract),
 });
 

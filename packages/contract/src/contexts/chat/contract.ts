@@ -1,12 +1,15 @@
 import { eventIterator, oc } from "@orpc/contract";
 
-import { AiFailedError } from "../../shared/errors/AiFailedError";
-import { BadRequestError } from "../../shared/errors/BadRequestError";
-import { UnauthorizedError } from "../../shared/errors/UnauthorizedError";
+import { HttpMethod } from "#/shared/constants/HttpMethod.ts";
+import { AiFailedError } from "#/shared/errors/AiFailedError.ts";
+import { BadRequestError } from "#/shared/errors/BadRequestError.ts";
+import { UnauthorizedError } from "#/shared/errors/UnauthorizedError.ts";
+
 import { StreamChatRequestSchema } from "./StreamChatRequest";
 import { StreamChatResponseSchema } from "./StreamChatResponse";
 
 export const streamChat = oc
+  .route({ method: HttpMethod.POST })
   .input(StreamChatRequestSchema)
   .output(eventIterator(StreamChatResponseSchema))
   .errors({

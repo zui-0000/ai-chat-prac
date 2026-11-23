@@ -1,8 +1,9 @@
 import { oc } from "@orpc/contract";
 
-import { HttpMethod } from "../../shared/constants/HttpMethod";
-import { BadRequestError } from "../../shared/errors/BadRequestError";
-import { UnauthorizedError } from "../../shared/errors/UnauthorizedError";
+import { HttpMethod } from "#/shared/constants/HttpMethod.ts";
+import { BadRequestError } from "#/shared/errors/BadRequestError.ts";
+import { UnauthorizedError } from "#/shared/errors/UnauthorizedError.ts";
+
 import { CreateMessageRequestSchema } from "./CreateMessageRequest";
 import { CreateMessageResponseSchema } from "./CreateMessageResponse";
 import { ListMessagesResponseSchema } from "./ListMessagesResponse";
@@ -16,6 +17,7 @@ export const listMessages = oc
   });
 
 export const createMessage = oc
+  .route({ method: HttpMethod.POST })
   .input(CreateMessageRequestSchema)
   .output(CreateMessageResponseSchema)
   .errors({

@@ -36,7 +36,7 @@ informed:
 
 - 主キーと外に出す ID を、同じ列で兼ねる
 - BE が `uuid` の `v7()` で作る。DB には `text` の列で入れる
-- 契約では `IdSchema`（`packages/contract`）で検査する。小文字の UUIDv7 だけを通す
+- 契約では `UuidV7Schema`（`packages/contract`）で検査する。小文字の UUIDv7 だけを通す
 
 ### 結果 (Consequences)
 
@@ -48,7 +48,7 @@ informed:
 
 ### 確認方法 (Confirmation)
 
-BE が作った ID が `IdSchema` を通ることを、ID を作る実装と一緒に、テストで確かめる。
+BE が作った ID が `UuidV7Schema` を通ることを、ID を作る実装と一緒に、テストで確かめる。
 
 ## 各選択肢の評価 (Pros and Cons of the Options)
 

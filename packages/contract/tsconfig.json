@@ -7,6 +7,8 @@
     "moduleDetection": "force",
     "strict": true,
     "noEmit": true,
+    // #/ の import は拡張子まで書く。imports の置き換え先に、TypeScript は .ts を補わない
+    "allowImportingTsExtensions": true,
     "skipLibCheck": true,
     "verbatimModuleSyntax": true,
     "noUnusedLocals": true,
