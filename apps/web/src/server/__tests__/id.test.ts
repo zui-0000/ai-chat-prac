@@ -6,7 +6,7 @@ describe("ID の形", () => {
   const isId = (value: string) => IdSchema["~standard"].validate(value);
 
   test("uuid の v7 で作った ID が、約束の検査を通ること", async () => {
-    expect(await isId(v7())).toEqual({ typed: true, value: expect.any(String) });
+    expect(await isId(v7())).not.toHaveProperty("issues");
   });
 
   test("UUIDv4 が、約束の検査を通らないこと", async () => {

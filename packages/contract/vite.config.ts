@@ -5,8 +5,6 @@ export default defineConfig({
   run: {
     tasks: {
       typecheck: "tsrs --noEmit",
-      // 約束を変えたら回して、FE が読む src/minified.json を作り直す
-      minify: "vpx scripts/minify.ts",
     },
   },
 });

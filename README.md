@@ -62,21 +62,22 @@ App の権限は Contents（読み書き）と Pull requests（読み書き）�
 
 コマンドはすべてリポジトリのルートで実行する。パッケージのフォルダで実行すると、そのパッケージしか検査しない。
 
-| やりたいこと                     | コマンド                              | 補足                                                                       |
-| -------------------------------- | ------------------------------------- | -------------------------------------------------------------------------- |
-| 開発サーバーを起動する           | `vp run dev`                          | 画面は偽物の BE（MSW）と話す（下の「開発サーバー」）                       |
-| 本番用にビルドする               | `vp run build`                        | 出力先は `apps/web/dist/`                                                  |
-| ビルドしたものを確かめる         | `vp run preview`                      | <http://localhost:4173/>。画面は本物の BE と話す。先に `vp run build` する |
-| lint + フォーマット + 型チェック | `vp check`                            | 確認だけ。`vp check --fix` で自動修正                                      |
-| 各パッケージの型チェック         | `vp run typecheck`                    | 各パッケージの `tsrs --noEmit`（TypeScript の Rust 版）                    |
-| 単体テストを実行する             | `vp run test`                         | `client`（jsdom）と `server`（Node）の両方。ルートの `vp test` は使わない  |
-| client だけテストする            | `vp run test:client`                  | `apps/web/src/client` の `__tests__/`                                      |
-| server だけテストする            | `vp run test:server`                  | `apps/web/src/server` の `__tests__/`                                      |
-| import の向きを検査する          | `vp run lint:deps`                    | FE から BE を import していないか（`apps/web/.dependency-cruiser.jsonc`）  |
-| ワークフローを検査する           | `vp run lint:actions`                 | GitHub Actions の危ない書き方（zizmor）。uv が要る                         |
-| 依存を足す                       | `vp add <名前> --filter <パッケージ>` | `<パッケージ>` は `web` か `@ai-chat/contract`。版は catalog に固定で入る  |
-| DB のマイグレーションを作る      | `vp run db:generate`                  | `apps/web/src/server/db/schema.ts` から作る                                |
-| タスクのキャッシュを消す         | `vp cache clean`                      | 検査・テスト・ビルドは、変わっていなければ前の結果を出す                   |
+| やりたいこと                     | コマンド                              | 補足                                                                                 |
+| -------------------------------- | ------------------------------------- | ------------------------------------------------------------------------------------ |
+| 開発サーバーを起動する           | `vp run dev`                          | 画面は偽物の BE（MSW）と話す（下の「開発サーバー」）                                 |
+| 本番用にビルドする               | `vp run build`                        | 出力先は `apps/web/dist/`                                                            |
+| ビルドしたものを確かめる         | `vp run preview`                      | <http://localhost:4173/>。画面は本物の BE と話す。先に `vp run build` する           |
+| lint + フォーマット + 型チェック | `vp check`                            | 確認だけ。`vp check --fix` で自動修正                                                |
+| 各パッケージの型チェック         | `vp run typecheck`                    | 各パッケージの `tsrs --noEmit`（TypeScript の Rust 版）                              |
+| 単体テストを実行する             | `vp run test`                         | `client`（jsdom）と `server`（Node）の両方。ルートの `vp test` は使わない            |
+| client だけテストする            | `vp run test:client`                  | `apps/web/src/client` の `__tests__/`                                                |
+| server だけテストする            | `vp run test:server`                  | `apps/web/src/server` の `__tests__/`                                                |
+| import の向きを検査する          | `vp run lint:deps`                    | FE から BE を import していないか（`apps/web/.dependency-cruiser.jsonc`）            |
+| ワークフローを検査する           | `vp run lint:actions`                 | GitHub Actions の危ない書き方（zizmor）。uv が要る                                   |
+| 依存を足す                       | `vp add <名前> --filter <パッケージ>` | `<パッケージ>` は `web` か `@ai-chat/contract`。版は catalog に固定で入る            |
+| DB のマイグレーションを作る      | `vp run db:generate`                  | `apps/web/src/server/db/schema.ts` から作る                                          |
+| 約束の JSON を作り直す           | `vp run @ai-chat/contract#minify`     | 約束（`packages/contract`）を変えたあとに回す。FE が手続きのメソッドを知るために読む |
+| タスクのキャッシュを消す         | `vp cache clean`                      | 検査・テスト・ビルドは、変わっていなければ前の結果を出す                             |
 
 ### 開発サーバー
 

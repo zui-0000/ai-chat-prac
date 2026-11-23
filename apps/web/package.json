@@ -20,8 +20,7 @@
     "@tanstack/react-query": "catalog:",
     "@tanstack/react-router": "catalog:",
     "react": "catalog:",
-    "react-dom": "catalog:",
-    "uuid": "catalog:"
+    "react-dom": "catalog:"
   },
   "devDependencies": {
     "@swc/core": "catalog:",
@@ -35,6 +34,7 @@
     "oxc-transform-react": "catalog:",
     "tsrs": "catalog:",
     "typescript": "catalog:",
+    "uuid": "catalog:",
     "vite": "catalog:",
     "vite-plus": "catalog:",
     "void": "catalog:"

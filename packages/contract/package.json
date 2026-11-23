@@ -6,6 +6,9 @@
     ".": "./src/index.ts",
     "./minified.json": "./src/minified.json"
   },
+  "scripts": {
+    "minify": "vpx scripts/minify.ts"
+  },
   "dependencies": {
     "@orpc/contract": "catalog:",
     "valibot": "catalog:"

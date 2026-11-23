@@ -1,7 +1,7 @@
 import { ORPCError, ValidationError } from "@orpc/contract";
 import * as v from "valibot";
 
-// 返すのは不正だったフィールドの名前だけ。検査のライブラリが作る文言には、送られた値が入る
+// 返すのは不正だったフィールドの名前だけ（入力がまるごと違うときは空の文字）。検査のライブラリが作る文言には、送られた値が入る
 const BadRequestDataSchema = v.object({
   errors: v.array(v.object({ field: v.string() })),
 });
@@ -23,12 +23,15 @@ export const toBadRequestData = (error: unknown): BadRequestData | undefined => 
     return undefined;
   }
 
+  // 入力がまるごと違う（オブジェクトでない、など）ときは path が無いので、field は空の文字になる
   const fields = new Set<string>();
   for (const issue of error.cause.issues) {
-    const field = issue.path
-      ?.map((segment) => String(typeof segment === "object" ? segment.key : segment))
-      .join(".");
-    if (field) fields.add(field);
+    const segments = issue.path ?? [];
+    fields.add(
+      segments
+        .map((segment) => String(typeof segment === "object" ? segment.key : segment))
+        .join("."),
+    );
   }
   return { errors: [...fields].map((field) => ({ field })) };
 };
