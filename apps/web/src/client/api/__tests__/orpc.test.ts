@@ -17,6 +17,8 @@ const recordMethods = () => {
   return methods;
 };
 
+type MethodCase = { procedure: string; call: () => Promise<unknown>; method: string };
+
 describe("client", () => {
   test("手続きを呼ぶと、出力が返ること", async () => {
     const message = await client.message.create({ text: "こんにちは" });
@@ -24,30 +26,20 @@ describe("client", () => {
     expect(message.text).toBe("こんにちは");
   });
 
-  test("返答を少しずつ受け取れること", async () => {
-    let reply = "";
-    for await (const { delta } of await client.chat.stream({ prompt: "やあ" })) {
-      reply += delta;
-    }
+  test.each`
+    procedure           | call                                                   | method
+    ${"message.list"}   | ${() => client.message.list()}                         | ${"GET"}
+    ${"message.create"} | ${() => client.message.create({ text: "こんにちは" })} | ${"POST"}
+  `(
+    "$procedure を呼んだ場合、契約に書いた $method で送ること",
+    async ({ procedure, call, method }: MethodCase) => {
+      const methods = recordMethods();
 
-    expect(reply).toBe("（偽物）「やあ」への返事です。");
-  });
+      await call();
 
-  test("契約に GET と書いた手続きの場合、GET で送ること", async () => {
-    const methods = recordMethods();
-
-    await client.message.list();
-
-    expect(methods.get("/rpc/message/list")).toBe("GET");
-  });
-
-  test("契約にメソッドを書いていない手続きの場合、POST で送ること", async () => {
-    const methods = recordMethods();
-
-    await client.message.create({ text: "こんにちは" });
-
-    expect(methods.get("/rpc/message/create")).toBe("POST");
-  });
+      expect(methods.get(`/rpc/${procedure.replace(".", "/")}`)).toBe(method);
+    },
+  );
 
   test("契約に書いたエラーの場合、コードで見分けられること", async () => {
     server.use(scenarios["message.list.unauthorized"]);

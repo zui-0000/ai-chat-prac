@@ -9,8 +9,4 @@ const rpcFetch = createRpcFetch(router);
 const handle = defineHandler(async (c) => (await rpcFetch(c.req.raw)) ?? c.notFound());
 
 // 契約で使うメソッドを全部受ける
-export const GET = handle;
-export const POST = handle;
-export const PUT = handle;
-export const PATCH = handle;
-export const DELETE = handle;
+export { handle as GET, handle as POST, handle as PUT, handle as PATCH, handle as DELETE };

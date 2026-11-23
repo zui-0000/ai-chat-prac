@@ -48,6 +48,9 @@ const createClient = (method: "GET" | "POST" | "DELETE", headers: Record<string,
 const request = (path: string, method: string, headers: Record<string, string>) =>
   new Request(`${ORIGIN}/rpc/${path}`, { method, headers });
 
+type CrossSiteCase = { method: string; path: string; header: string; value: string };
+type SameSiteCase = { from: string; site: string | undefined; origin: string | undefined };
+
 describe("createRpcFetch", () => {
   test("GET と書いた手続きを GET で呼んだ場合、実行して Cache-Control を付けること", async () => {
     const { client, responses } = createClient("GET");
@@ -72,51 +75,59 @@ describe("createRpcFetch", () => {
     expect(await client.remove()).toBe("remove");
   });
 
-  test.each([
-    ["ほかのサイトから", { "Sec-Fetch-Site": "cross-site" }],
-    ["同じオリジンから", { "Sec-Fetch-Site": "same-origin" }],
-  ])("%s HEAD で呼んだ場合、405 で断って実行しないこと", async (_, headers) => {
-    const responses = await Promise.all(
-      ["read", "write", "replace", "remove"].map((path) =>
-        rpcFetch(request(path, "HEAD", headers)),
-      ),
-    );
+  test.each`
+    from              | site
+    ${"ほかのサイト"} | ${"cross-site"}
+    ${"同じオリジン"} | ${"same-origin"}
+  `(
+    "「$from」から HEAD で呼んだ場合、405 で断って実行しないこと",
+    async ({ site }: { from: string; site: string }) => {
+      const responses = await Promise.all(
+        ["read", "write", "replace", "remove"].map((path) =>
+          rpcFetch(request(path, "HEAD", { "Sec-Fetch-Site": site })),
+        ),
+      );
 
-    expect(responses.map((response) => response?.status)).toEqual([405, 405, 405, 405]);
-    expect(calls).not.toHaveBeenCalled();
-  });
+      expect(responses.map((response) => response?.status)).toEqual([405, 405, 405, 405]);
+      expect(calls).not.toHaveBeenCalled();
+    },
+  );
 
   test("router に無い手続きの場合、undefined を返すこと", async () => {
     expect(await rpcFetch(request("unknown", "POST", {}))).toBeUndefined();
   });
 
-  describe("ほかのサイトからの書き込みの場合", () => {
-    test.each([
-      ["POST", "write", { "Sec-Fetch-Site": "cross-site" }],
-      ["PUT", "replace", { "Sec-Fetch-Site": "cross-site" }],
-      ["DELETE", "remove", { "Sec-Fetch-Site": "cross-site" }],
-      ["POST", "write", { "Sec-Fetch-Site": "same-site" }],
-      ["POST", "write", { Origin: "https://evil.example" }],
-      ["DELETE", "remove", { Origin: "https://evil.example" }],
-    ])("%s（%s）を %o で送ると、403 で弾いて実行しないこと", async (method, path, headers) => {
-      const response = await rpcFetch(request(path, method, headers));
+  test.each`
+    method      | path         | header              | value
+    ${"POST"}   | ${"write"}   | ${"Sec-Fetch-Site"} | ${"cross-site"}
+    ${"PUT"}    | ${"replace"} | ${"Sec-Fetch-Site"} | ${"cross-site"}
+    ${"DELETE"} | ${"remove"}  | ${"Sec-Fetch-Site"} | ${"cross-site"}
+    ${"POST"}   | ${"write"}   | ${"Sec-Fetch-Site"} | ${"same-site"}
+    ${"POST"}   | ${"write"}   | ${"Origin"}         | ${"https://evil.example"}
+    ${"DELETE"} | ${"remove"}  | ${"Origin"}         | ${"https://evil.example"}
+  `(
+    "$method で $header が $value の場合、403 で弾いて実行しないこと",
+    async ({ method, path, header, value }: CrossSiteCase) => {
+      const response = await rpcFetch(request(path, method, { [header]: value }));
 
       expect(response?.status).toBe(403);
       expect(calls).not.toHaveBeenCalled();
-    });
-  });
+    },
+  );
 
-  describe("ほかのサイトからでない書き込みの場合", () => {
-    test.each([
-      ["同じオリジンのページから", { "Sec-Fetch-Site": "same-origin", Origin: ORIGIN }],
-      ["アドレスバーなど、人の操作から", { "Sec-Fetch-Site": "none" }],
-      ["Sec-Fetch-Site を付けないブラウザの、同じオリジンのページから", { Origin: ORIGIN }],
-      ["ヘッダーを付けない、ブラウザでないクライアントから", {}],
-    ])("%s送ると、実行すること", async (_, headers) => {
-      const { client } = createClient("POST", headers);
-
-      expect(await client.write()).toBe("write");
+  test.each`
+    from                                                           | site             | origin
+    ${"同じオリジンのページ"}                                      | ${"same-origin"} | ${ORIGIN}
+    ${"アドレスバーなどの、人の操作"}                              | ${"none"}        | ${undefined}
+    ${"Sec-Fetch-Site を付けないブラウザの、同じオリジンのページ"} | ${undefined}     | ${ORIGIN}
+    ${"ヘッダーを付けない、ブラウザでないクライアント"}            | ${undefined}     | ${undefined}
+  `("「$from」から書き込んだ場合、実行すること", async ({ site, origin }: SameSiteCase) => {
+    const { client } = createClient("POST", {
+      ...(site !== undefined && { "Sec-Fetch-Site": site }),
+      ...(origin !== undefined && { Origin: origin }),
     });
+
+    expect(await client.write()).toBe("write");
   });
 
   test("ほかのサイトからの GET の場合、実行すること", async () => {
