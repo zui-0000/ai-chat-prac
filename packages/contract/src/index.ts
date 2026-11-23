@@ -9,7 +9,7 @@ export { NotFoundError } from "./shared/errors/not-found";
 export { type DateTime, DateTimeSchema } from "./shared/model/date-time";
 export { type Id, IdSchema } from "./shared/model/id";
 
-// FE と BE の間の API の約束。BE と偽物の BE は implement(contract) で実装し、FE はクライアントの型とメソッドに使う
+// FE と BE の間の API の契約。BE と偽物の BE は implement(contract) で実装し、FE はクライアントの型とメソッドに使う
 export const contract = {
   message: messageContract,
   chat: chatContract,

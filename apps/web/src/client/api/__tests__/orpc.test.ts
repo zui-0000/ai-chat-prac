@@ -33,7 +33,7 @@ describe("client", () => {
     expect(reply).toBe("（偽物）「やあ」への返事です。");
   });
 
-  test("約束に GET と書いた手続きの場合、GET で送ること", async () => {
+  test("契約に GET と書いた手続きの場合、GET で送ること", async () => {
     const methods = recordMethods();
 
     await client.message.list();
@@ -41,7 +41,7 @@ describe("client", () => {
     expect(methods.get("/rpc/message/list")).toBe("GET");
   });
 
-  test("約束にメソッドを書いていない手続きの場合、POST で送ること", async () => {
+  test("契約にメソッドを書いていない手続きの場合、POST で送ること", async () => {
     const methods = recordMethods();
 
     await client.message.create({ text: "こんにちは" });
@@ -49,7 +49,7 @@ describe("client", () => {
     expect(methods.get("/rpc/message/create")).toBe("POST");
   });
 
-  test("約束に書いたエラーの場合、コードで見分けられること", async () => {
+  test("契約に書いたエラーの場合、コードで見分けられること", async () => {
     server.use(scenarios["message.list.unauthorized"]);
 
     const { error } = await safe(client.message.list());
@@ -65,7 +65,7 @@ describe("client", () => {
     });
   });
 
-  test("約束に無いエラーの場合、ORPCError になること", async () => {
+  test("契約に無いエラーの場合、ORPCError になること", async () => {
     server.use(scenarios["message.list.error"]);
 
     const { error } = await safe(client.message.list());

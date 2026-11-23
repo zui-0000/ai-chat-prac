@@ -20,7 +20,7 @@ const isCrossSiteWrite = (request: Request) => {
 };
 
 // /rpc に来たリクエストを oRPC に渡す関数を作る。router にない手続きなら undefined を返す。
-// RPCHandler の StrictGetMethodPlugin は最初から入っていて、約束で GET の印を付けた手続きだけを GET で呼べる
+// RPCHandler の StrictGetMethodPlugin は最初から入っていて、契約で GET の印を付けた手続きだけを GET で呼べる
 export const createRpcFetch = (router: Router) => {
   const handler = new RPCHandler(router);
 

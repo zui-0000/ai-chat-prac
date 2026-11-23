@@ -15,7 +15,7 @@ export const scenarios = {
       yield { delta: char };
     }
   }),
-  // 返答を流し始める前に、AI が失敗した。約束に書いたエラーなので、errors から作る
+  // 返答を流し始める前に、AI が失敗した。契約に書いたエラーなので、errors から作る
   aiFailed: os.chat.stream.handler(({ errors }) => {
     throw errors.AI_FAILED();
   }),

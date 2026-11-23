@@ -33,7 +33,7 @@ informed:
 
 決め手は、**DB から FE まで `Date` のまま届き、変換のコードがどこにも要らない**こと。
 
-- 約束では `DateTimeSchema`（`packages/contract`。`Date`）で書く
+- 契約では `DateTimeSchema`（`packages/contract`。`Date`）で書く
 - DB の列は `integer` にし、drizzle の `mode: "timestamp_ms"` で読み書きする。BE のコードでは `Date` になる
 - oRPC の RPC の通信は、`Date` を `Date` のまま運ぶ。FE は文字列から作り直さない
 

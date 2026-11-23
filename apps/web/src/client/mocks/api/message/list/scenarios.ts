@@ -14,7 +14,7 @@ export const scenarios = {
       createdAt: new Date(Date.UTC(2026, 0, 1, 0, i)).toISOString(),
     })),
   ),
-  // 約束に書いたエラーは、errors から作る。本物と同じ形（コードとメッセージ）で届く
+  // 契約に書いたエラーは、errors から作る。本物と同じ形（コードとメッセージ）で届く
   unauthorized: os.message.list.handler(({ errors }) => {
     throw errors.UNAUTHORIZED();
   }),

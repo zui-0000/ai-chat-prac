@@ -13,12 +13,12 @@ informed:
 
 `vp run dev` では本物の BE（workerd とローカルの D1）も立ち上がる。でも画面を作るときは、失敗やストリーミングの途中などの状態を、自由に出したい。
 
-偽物を API ごとに生の MSW で書くと、oRPC の通信の形を手で真似ることになる。約束とずれても気づけず、「偽物では動くのに、本物で壊れる」が起きる。
+偽物を API ごとに生の MSW で書くと、oRPC の通信の形を手で真似ることになる。契約とずれても気づけず、「偽物では動くのに、本物で壊れる」が起きる。
 
 ## 決定要因 (Decision Drivers)
 
 - 画面で、失敗などの状態を自由に出せること
-- 偽物が約束（ADR-01）とずれたら気づけること
+- 偽物が契約（ADR-01）とずれたら気づけること
 - 偽物を本番のバンドルに入れないこと
 
 ## 検討した選択肢 (Considered Options)
@@ -35,7 +35,7 @@ informed:
 
 **選択: いつも偽物と話す。偽物は MSW の中で oRPC を動かして作る**
 
-決め手は、**偽物も約束を `implement` するので、約束とずれると型エラーになる**こと。
+決め手は、**偽物も契約を `implement` するので、契約とずれると型エラーになる**こと。
 
 - 画面の oRPC のクライアントは本物のまま、ブラウザの MSW の中で oRPC の受け口を動かして、BE の側を偽物にする。偽物は `apps/web/src/client/mocks/` に置く
 - 本物の BE は、`vp run build` してから `vp run preview` で見る
@@ -45,7 +45,7 @@ informed:
 
 ### 結果 (Consequences)
 
-- Good, because 約束とずれた偽物は、型エラーで止まる
+- Good, because 契約とずれた偽物は、型エラーで止まる
 - Good, because 画面とテストで、同じシナリオを使える
 - Bad, because 開発サーバーの画面から、本物の BE は確かめられない
 - Bad, because 偽物の中でだけ、BE のライブラリ（`@orpc/server`）を読むのを許した
@@ -58,14 +58,14 @@ informed:
 
 ### いつも偽物と話す。偽物は MSW の中で oRPC を動かして作る — 採用
 
-- Good, because 偽物が約束を守る
+- Good, because 偽物が契約を守る
 - Good, because ストリーミングも、本物と同じ oRPC の仕組みで流れる
 - Bad, because tsconfig が DOM と Workers の両方の型を読むので、MSW から受け口に渡す `Request` の型を合わせる手間がある
 
 ### API ごとに生の MSW で偽物を書く
 
 - Good, because MSW のふつうの書き方で、情報が多い
-- Bad, because oRPC の通信の形を手で真似ることになり、約束とずれても気づけない
+- Bad, because oRPC の通信の形を手で真似ることになり、契約とずれても気づけない
 - Bad, because ストリーミングを手で組み、oRPC の版が上がると偽物だけ壊れる
 
 ### URL や環境変数で、偽物と本物を切り替える

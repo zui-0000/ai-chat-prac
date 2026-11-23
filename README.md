@@ -3,7 +3,7 @@
 AI チャットの画面を作る学習用リポジトリ。
 
 - 土台: [Void](https://void.cloud)（FE と BE を 1 つの Cloudflare Worker にまとめる）と [Vite+](https://viteplus.dev/)（`vp`）
-- API: [oRPC](https://orpc.dev/) の約束（contract）を先に書く
+- API: [oRPC](https://orpc.dev/) の契約（contract）を先に書く
 - FE: React + TanStack Router + TanStack Query
 - BE: [Hono](https://hono.dev/)（Void がルーティングに使う）+ Cloudflare D1
 
@@ -13,7 +13,7 @@ AI チャットの画面を作る学習用リポジトリ。
 apps/web/              Void のアプリ
 ├── src/client/        FE（ブラウザで動く）。TanStack Router のルートは src/client/routes、偽物の BE（MSW）は src/client/mocks
 └── src/server/        BE（Worker で動く）。Void はここだけを読む
-packages/contract/     FE と BE の約束（oRPC + valibot）
+packages/contract/     FE と BE の契約（oRPC + valibot）
 ```
 
 ## セットアップ（初回のみ）

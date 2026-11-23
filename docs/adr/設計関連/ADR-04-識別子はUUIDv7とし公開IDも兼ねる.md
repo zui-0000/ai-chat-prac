@@ -11,7 +11,7 @@ informed:
 
 ## 背景と課題 (Context and Problem Statement)
 
-会話やメッセージの ID は、DB の主キーになり、URL（`/chats/$chatId`）と API の入出力にも出る。どの手続きの約束も ID を使うので、形を先に決める。
+会話やメッセージの ID は、DB の主キーになり、URL（`/chats/$chatId`）と API の入出力にも出る。どの手続きの契約も ID を使うので、形を先に決める。
 
 疎通確認用に作った最初のテーブルは、連番の整数を主キーにしていた。連番を URL に出すと、件数が分かり、隣の番号を試せる。
 
@@ -36,7 +36,7 @@ informed:
 
 - 主キーと外に出す ID を、同じ列で兼ねる
 - BE が `uuid` の `v7()` で作る。DB には `text` の列で入れる
-- 約束では `IdSchema`（`packages/contract`）で検査する。小文字の UUIDv7 だけを通す
+- 契約では `IdSchema`（`packages/contract`）で検査する。小文字の UUIDv7 だけを通す
 
 ### 結果 (Consequences)
 

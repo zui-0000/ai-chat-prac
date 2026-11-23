@@ -7,11 +7,11 @@ consulted: Claude
 informed:
 ---
 
-# 約束のスキーマに valibot を採用
+# 契約のスキーマに valibot を採用
 
 ## 背景と課題 (Context and Problem Statement)
 
-約束（`packages/contract`。設計関連/ADR-01）の入力と出力の形は、スキーマのライブラリで書く。最初は zod で書いていた。oRPC は Standard Schema に対応しているので、約束の作り（`.input()`・`.output()`・`.errors()`）を変えずに、ライブラリだけを差し替えられる。
+契約（`packages/contract`。設計関連/ADR-01）の入力と出力の形は、スキーマのライブラリで書く。最初は zod で書いていた。oRPC は Standard Schema に対応しているので、契約の作り（`.input()`・`.output()`・`.errors()`）を変えずに、ライブラリだけを差し替えられる。
 
 どの手続きにも共通の形（ID・日時・エラー）を書く前に、どちらで書くかを決める。共通の形を書いたあとに変えると、書き直す量が増える。
 
@@ -19,7 +19,7 @@ informed:
 
 - BE が動く Cloudflare Workers で遅くならないこと
 - Worker の起動のたびにかかる、スキーマを作る時間が短いこと
-- 約束を FE で読んでも、バンドルが大きくならないこと
+- 契約を FE で読んでも、バンドルが大きくならないこと
 - 更新が続いていること
 
 ## 検討した選択肢 (Considered Options)
@@ -31,16 +31,16 @@ informed:
 
 **選択: valibot**
 
-決め手は、**Workers では zod より速く、スキーマを作る時間とバンドルが 1 桁小さく、約束がまだ小さい今なら書き換えが安い**こと。
+決め手は、**Workers では zod より速く、スキーマを作る時間とバンドルが 1 桁小さく、契約がまだ小さい今なら書き換えが安い**こと。
 
-- 約束のスキーマは valibot で書く。`import * as v from "valibot"` で読む
-- zod を約束の依存から外す
+- 契約のスキーマは valibot で書く。`import * as v from "valibot"` で読む
+- zod を契約の依存から外す
 
 ### 結果 (Consequences)
 
 - Good, because Workers での検査が 1.3〜1.5 倍速い（下の計測）
 - Good, because スキーマを作る時間が 12 分の 1 になる
-- Good, because FE が約束の値を読んでも、FE のバンドルは gzip で 1.6 KB しか増えない（設計関連/ADR-01 の補足）
+- Good, because FE が契約の値を読んでも、FE のバンドルは gzip で 1.6 KB しか増えない（設計関連/ADR-01 の補足）
 - Bad, because BE のバンドルから zod は消えない。認証の Better Auth（ADR-04）が zod に依存している。valibot の分が足される
 - Bad, because zod にある `z.uuidv7()` が無く、UUIDv7 の検査は正規表現で書く
 - Bad, because スキーマを JSON Schema にするときは、別のパッケージ（`@valibot/to-json-schema`）が要る。zod は本体に入っている
@@ -48,8 +48,8 @@ informed:
 
 ### 確認方法 (Confirmation)
 
-- 約束の依存（`packages/contract/package.json`）に zod が無いこと
-- 約束から手続きを 1 つ消すと、BE と偽物の BE の両方が型エラーになること（設計関連/ADR-01 と同じ）
+- 契約の依存（`packages/contract/package.json`）に zod が無いこと
+- 契約から手続きを 1 つ消すと、BE と偽物の BE の両方が型エラーになること（設計関連/ADR-01 と同じ）
 
 ## 各選択肢の評価 (Pros and Cons of the Options)
 

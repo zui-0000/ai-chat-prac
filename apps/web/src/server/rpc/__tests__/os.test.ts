@@ -21,7 +21,7 @@ const client = createRouterClient(
 );
 
 describe("os", () => {
-  test("入力が正しくない場合、約束の BAD_REQUEST にして、不正だったフィールドの名前を返すこと", async () => {
+  test("入力が正しくない場合、契約の BAD_REQUEST にして、不正だったフィールドの名前を返すこと", async () => {
     const { error } = await safe(client.message.create({ text: "" }));
 
     expect(isDefinedError(error)).toBe(true);

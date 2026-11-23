@@ -8,7 +8,7 @@ const rpcFetch = createRpcFetch(router);
 // /rpc 以下のリクエストをすべて oRPC に渡す
 const handle = defineHandler(async (c) => (await rpcFetch(c.req.raw)) ?? c.notFound());
 
-// 約束で使うメソッドを全部受ける
+// 契約で使うメソッドを全部受ける
 export const GET = handle;
 export const POST = handle;
 export const DELETE = handle;
