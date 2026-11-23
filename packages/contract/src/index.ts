@@ -1,7 +1,7 @@
 import { chatContract } from "./contexts/chat/contract";
 import { messageContract } from "./contexts/message/contract";
 
-export { type Message, MessageSchema } from "./contexts/message/model/message";
+export type { ListMessagesResult } from "./contexts/message/list-messages-result";
 export { HttpMethod } from "./shared/constants/http-method";
 export { AiFailedError } from "./shared/errors/ai-failed";
 export { type BadRequestData, toBadRequestData } from "./shared/errors/bad-request";

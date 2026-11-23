@@ -1,22 +1,23 @@
 import { oc } from "@orpc/contract";
-import * as v from "valibot";
 
 import { HttpMethod } from "../../shared/constants/http-method";
 import { BadRequestError } from "../../shared/errors/bad-request";
 import { UnauthorizedError } from "../../shared/errors/unauthorized";
-import { MessageSchema } from "./model/message";
+import { CreateMessageRequestSchema } from "./create-message-request";
+import { CreateMessageResponseSchema } from "./create-message-response";
+import { ListMessagesResponseSchema } from "./list-messages-response";
 
 export const listMessages = oc
   .route({ method: HttpMethod.GET })
-  .output(v.array(MessageSchema))
+  .output(ListMessagesResponseSchema)
   .errors({
     BAD_REQUEST: BadRequestError,
     UNAUTHORIZED: UnauthorizedError,
   });
 
 export const createMessage = oc
-  .input(v.object({ text: v.pipe(v.string(), v.minLength(1)) }))
-  .output(MessageSchema)
+  .input(CreateMessageRequestSchema)
+  .output(CreateMessageResponseSchema)
   .errors({
     BAD_REQUEST: BadRequestError,
     UNAUTHORIZED: UnauthorizedError,
