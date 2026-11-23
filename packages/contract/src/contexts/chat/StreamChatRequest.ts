@@ -1,6 +1,6 @@
 import * as v from "valibot";
 
-import { ChatPromptSchema } from "./model/ChatPrompt";
+import { ChatPromptSchema } from "./model";
 
 export const StreamChatRequestSchema = v.object({
   prompt: ChatPromptSchema,

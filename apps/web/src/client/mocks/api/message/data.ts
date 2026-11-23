@@ -1,12 +1,12 @@
-import type { ListMessagesResult } from "@ai-chat/contract";
+import type { CreateMessageResponse, ListMessagesResponse } from "@ai-chat/contract";
 
 // message.list と message.create が使う保管。メモリの中に持つので、画面を読み直すと空に戻る
-let messages: ListMessagesResult[] = [];
+let messages: ListMessagesResponse = [];
 let nextId = 1;
 
-export const listMessages = (): ListMessagesResult[] => [...messages];
+export const listMessages = (): ListMessagesResponse => [...messages];
 
-export const addMessage = (text: string): ListMessagesResult => {
+export const addMessage = (text: string): CreateMessageResponse => {
   const message = { id: nextId++, text, createdAt: new Date().toISOString() };
   messages.push(message);
   return message;
