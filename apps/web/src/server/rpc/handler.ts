@@ -3,8 +3,8 @@ import { RPCHandler } from "@orpc/server/fetch";
 
 type Router = ConstructorParameters<typeof RPCHandler>[0];
 
-// 受け口（routes/rpc/[...path].ts）が受けるメソッド
-const ALLOWED_METHODS = [
+// 契約で使うメソッド。受け口（middleware/01.rpc.ts）にはどのメソッドも届くので、ここで絞る
+const ALLOWED_METHODS: readonly string[] = [
   HttpMethod.GET,
   HttpMethod.POST,
   HttpMethod.PUT,
@@ -31,9 +31,9 @@ export const createRpcFetch = (router: Router) => {
   const handler = new RPCHandler(router);
 
   return async (request: Request): Promise<Response | undefined> => {
-    // HEAD は受けない。Hono は HEAD を GET のルートで受け、oRPC は HEAD を GET と見なさないので、
-    // そのまま渡すと、GET の印の無い手続きまで HEAD で動く
-    if (request.method === HttpMethod.HEAD) {
+    // 契約で使わないメソッドは受けない。oRPC は GET のほかのメソッドを区別しないので、
+    // そのまま渡すと、HEAD などでも手続きが動く
+    if (!ALLOWED_METHODS.includes(request.method)) {
       return new Response(null, { status: 405, headers: { Allow: ALLOWED_METHODS.join(", ") } });
     }
 

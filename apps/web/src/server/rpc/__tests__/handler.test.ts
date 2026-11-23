@@ -76,15 +76,17 @@ describe("createRpcFetch", () => {
   });
 
   test.each`
-    from              | site
-    ${"ほかのサイト"} | ${"cross-site"}
-    ${"同じオリジン"} | ${"same-origin"}
+    method       | site
+    ${"HEAD"}    | ${"cross-site"}
+    ${"HEAD"}    | ${"same-origin"}
+    ${"OPTIONS"} | ${"same-origin"}
+    ${"PURGE"}   | ${"same-origin"}
   `(
-    "「$from」から HEAD で呼んだ場合、405 で断って実行しないこと",
-    async ({ site }: { from: string; site: string }) => {
+    "契約で使わない $method を $site から呼んだ場合、405 で断って実行しないこと",
+    async ({ method, site }: { method: string; site: string }) => {
       const responses = await Promise.all(
         ["read", "write", "replace", "remove"].map((path) =>
-          rpcFetch(request(path, "HEAD", { "Sec-Fetch-Site": site })),
+          rpcFetch(request(path, method, { "Sec-Fetch-Site": site })),
         ),
       );
 
