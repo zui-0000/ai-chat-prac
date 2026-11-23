@@ -1,6 +1,6 @@
 import * as v from "valibot";
 
-import { ListMessagesResultSchema } from "./list-messages-result";
+import { ListMessagesResultSchema } from "./ListMessagesResult";
 
 export const ListMessagesResponseSchema = v.array(ListMessagesResultSchema);
 export type ListMessagesResponse = v.InferOutput<typeof ListMessagesResponseSchema>;

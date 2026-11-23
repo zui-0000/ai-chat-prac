@@ -1,8 +1,8 @@
 import * as v from "valibot";
 
-import { MessageCreatedAtSchema } from "./model/message-created-at";
-import { MessageIdSchema } from "./model/message-id";
-import { MessageTextSchema } from "./model/message-text";
+import { MessageCreatedAtSchema } from "./model/MessageCreatedAt";
+import { MessageIdSchema } from "./model/MessageId";
+import { MessageTextSchema } from "./model/MessageText";
 
 // 一覧の 1 件
 export const ListMessagesResultSchema = v.object({

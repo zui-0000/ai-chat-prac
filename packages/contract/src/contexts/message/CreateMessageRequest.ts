@@ -1,6 +1,6 @@
 import * as v from "valibot";
 
-import { MessageTextSchema } from "./model/message-text";
+import { MessageTextSchema } from "./model/MessageText";
 
 export const CreateMessageRequestSchema = v.object({
   text: MessageTextSchema,

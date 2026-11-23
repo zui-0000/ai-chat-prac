@@ -1,10 +1,10 @@
 import { eventIterator, oc } from "@orpc/contract";
 
-import { AiFailedError } from "../../shared/errors/ai-failed";
-import { BadRequestError } from "../../shared/errors/bad-request";
-import { UnauthorizedError } from "../../shared/errors/unauthorized";
-import { StreamChatRequestSchema } from "./stream-chat-request";
-import { StreamChatResponseSchema } from "./stream-chat-response";
+import { AiFailedError } from "../../shared/errors/AiFailedError";
+import { BadRequestError } from "../../shared/errors/BadRequestError";
+import { UnauthorizedError } from "../../shared/errors/UnauthorizedError";
+import { StreamChatRequestSchema } from "./StreamChatRequest";
+import { StreamChatResponseSchema } from "./StreamChatResponse";
 
 export const streamChat = oc
   .input(StreamChatRequestSchema)
