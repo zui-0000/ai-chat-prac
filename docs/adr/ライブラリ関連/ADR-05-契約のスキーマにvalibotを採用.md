@@ -49,7 +49,7 @@ informed:
 ### 確認方法 (Confirmation)
 
 - 契約の依存（`packages/contract/package.json`）に zod が無いこと
-- 契約から手続きを 1 つ消すと、BE と偽物の BE の両方が型エラーになること（設計関連/ADR-01 と同じ）
+- 契約から手続きを 1 つ消すと、BE とモックの BE の両方が型エラーになること（設計関連/ADR-01 と同じ）
 
 ## 各選択肢の評価 (Pros and Cons of the Options)
 

@@ -4,7 +4,7 @@ import { scenarios, server } from "#/client/mocks/node.ts";
 
 import { client } from "../orpc";
 
-// 偽物の BE に届いたリクエストのメソッドを、パスごとに覚える
+// モックの BE に届いたリクエストのメソッドを、パスごとに覚える
 const recordMethods = () => {
   const methods = new Map<string, string>();
   const listener = ({ request }: { request: Request }) => {

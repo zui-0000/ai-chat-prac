@@ -41,7 +41,7 @@ informed:
 - Good, because 認証の API とクライアントを自分で作らずに済む
 - Bad, because 試すのにアカウントの登録が要る
 - Bad, because Google と X は、それぞれのサービスでアプリを登録する準備が要る
-- Bad, because 認証の API は `/rpc` でないので、偽物の BE（設計関連/ADR-02）を別に用意する
+- Bad, because 認証の API は `/rpc` でないので、モックの BE（設計関連/ADR-02）を別に用意する
 
 ## 各選択肢の評価 (Pros and Cons of the Options)
 

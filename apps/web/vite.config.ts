@@ -78,7 +78,7 @@ export default defineConfig({
           ...unitTest,
           name: "client",
           include: ["src/client/**/__tests__/**/*.test.{ts,tsx}"],
-          // 偽物の BE（MSW）を立ち上げる
+          // モックの BE（MSW）を立ち上げる
           setupFiles: ["./src/client/__setup__/setup.ts"],
           // ブラウザで動くコードなので、DOM と localStorage を真似る
           environment: "jsdom",

@@ -11,7 +11,7 @@ AI チャットの画面を作る学習用リポジトリ。
 
 ```text
 apps/web/              Void のアプリ
-├── src/client/        FE（ブラウザで動く）。TanStack Router のルートは src/client/routes、偽物の BE（MSW）は src/client/mocks
+├── src/client/        FE（ブラウザで動く）。TanStack Router のルートは src/client/routes、モックの BE（MSW）は src/client/mocks
 └── src/server/        BE（Worker で動く）。Void はここだけを読む
 packages/contract/     FE と BE の契約（oRPC + valibot）
 ```
@@ -51,7 +51,7 @@ PR にラベルを貼ると、GitHub Actions で Claude がレビューする。
 
 | やりたいこと                     | コマンド                              | 補足                                                                       |
 | -------------------------------- | ------------------------------------- | -------------------------------------------------------------------------- |
-| 開発サーバーを起動する           | `vp run dev`                          | 画面は偽物の BE（MSW）と話す（下の「開発サーバー」）                       |
+| 開発サーバーを起動する           | `vp run dev`                          | 画面はモックの BE（MSW）と話す（下の「開発サーバー」）                     |
 | 本番用にビルドする               | `vp run build`                        | 出力先は `apps/web/dist/`                                                  |
 | ビルドしたものを確かめる         | `vp run preview`                      | <http://localhost:4173/>。画面は本物の BE と話す。先に `vp run build` する |
 | lint + フォーマット + 型チェック | `vp check`                            | 確認だけ。`vp check --fix` で自動修正                                      |
@@ -69,7 +69,7 @@ PR にラベルを貼ると、GitHub Actions で Claude がレビューする。
 
 `vp run dev` で FE と BE が立ち上がる。開くのは <http://localhost:5173/> だけでよい。
 
-- 画面は、いつも偽物の BE（MSW）と話す。本物の BE を確かめるときは、`vp run build` してから `vp run preview` を使う
+- 画面は、いつもモックの BE（MSW）と話す。本物の BE を確かめるときは、`vp run build` してから `vp run preview` を使う
 - BE は本番と同じ Cloudflare Workers のランタイム（workerd）で動く。FE と同じオリジンなので、CORS の設定は要らない
 - 起動時に DB のマイグレーションが流れる。ローカルの D1 は `apps/web/.void/v3/d1/` にあり、消すと空に戻る
 

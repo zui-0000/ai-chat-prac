@@ -11,7 +11,7 @@ export { type CreatedAt, CreatedAtSchema } from "./shared/model/CreatedAt";
 export { type DateTime, DateTimeSchema } from "./shared/model/DateTime";
 export { type UuidV7, UuidV7Schema } from "./shared/model/UuidV7";
 
-// FE と BE の間の API の契約。BE と偽物の BE は implement(contract) で実装し、FE はクライアントの型とメソッドに使う
+// FE と BE の間の API の契約。BE とモックの BE は implement(contract) で実装し、FE はクライアントの型とメソッドに使う
 export const contract = {
   message: messageContract,
   chat: chatContract,
