@@ -4,7 +4,13 @@ import { RPCHandler } from "@orpc/server/fetch";
 type Router = ConstructorParameters<typeof RPCHandler>[0];
 
 // 受け口（routes/rpc/[...path].ts）が受けるメソッド
-const ALLOWED_METHODS = [HttpMethod.GET, HttpMethod.POST, HttpMethod.DELETE, HttpMethod.PATCH];
+const ALLOWED_METHODS = [
+  HttpMethod.GET,
+  HttpMethod.POST,
+  HttpMethod.PUT,
+  HttpMethod.PATCH,
+  HttpMethod.DELETE,
+];
 
 // ほかのサイトのページから送られた書き込みかを、ブラウザが付けるヘッダーで見分ける。
 // ブラウザでないクライアントはどちらのヘッダーも付けないので通す（クッキーを勝手に付けて送るのはブラウザだけ）

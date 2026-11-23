@@ -15,6 +15,10 @@ const router = {
     calls("write");
     return "write";
   }),
+  replace: os.route({ method: "PUT" }).handler(() => {
+    calls("replace");
+    return "replace";
+  }),
   remove: os.route({ method: "DELETE" }).handler(() => {
     calls("remove");
     return "remove";
@@ -73,10 +77,12 @@ describe("createRpcFetch", () => {
     ["同じオリジンから", { "Sec-Fetch-Site": "same-origin" }],
   ])("%s HEAD で呼んだ場合、405 で断って実行しないこと", async (_, headers) => {
     const responses = await Promise.all(
-      ["read", "write", "remove"].map((path) => rpcFetch(request(path, "HEAD", headers))),
+      ["read", "write", "replace", "remove"].map((path) =>
+        rpcFetch(request(path, "HEAD", headers)),
+      ),
     );
 
-    expect(responses.map((response) => response?.status)).toEqual([405, 405, 405]);
+    expect(responses.map((response) => response?.status)).toEqual([405, 405, 405, 405]);
     expect(calls).not.toHaveBeenCalled();
   });
 
@@ -87,6 +93,7 @@ describe("createRpcFetch", () => {
   describe("ほかのサイトからの書き込みの場合", () => {
     test.each([
       ["POST", "write", { "Sec-Fetch-Site": "cross-site" }],
+      ["PUT", "replace", { "Sec-Fetch-Site": "cross-site" }],
       ["DELETE", "remove", { "Sec-Fetch-Site": "cross-site" }],
       ["POST", "write", { "Sec-Fetch-Site": "same-site" }],
       ["POST", "write", { Origin: "https://evil.example" }],
