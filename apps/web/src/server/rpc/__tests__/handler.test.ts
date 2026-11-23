@@ -1,3 +1,4 @@
+import { AiFailedError, NotFoundError, UnauthorizedError } from "@ai-chat/contract";
 import { createORPCClient, ORPCError } from "@orpc/client";
 import { RPCLink } from "@orpc/client/fetch";
 import { os, type RouterClient } from "@orpc/server";
@@ -22,6 +23,15 @@ const router = {
   remove: os.route({ method: "DELETE" }).handler(() => {
     calls("remove");
     return "remove";
+  }),
+  unauthorized: os.errors({ UNAUTHORIZED: UnauthorizedError }).handler(({ errors }) => {
+    throw errors.UNAUTHORIZED();
+  }),
+  notFound: os.errors({ NOT_FOUND: NotFoundError }).handler(({ errors }) => {
+    throw errors.NOT_FOUND();
+  }),
+  aiFailed: os.errors({ AI_FAILED: AiFailedError }).handler(({ errors }) => {
+    throw errors.AI_FAILED();
   }),
 };
 const rpcFetch = createRpcFetch(router);
@@ -92,6 +102,20 @@ describe("createRpcFetch", () => {
 
       expect(responses.map((response) => response?.status)).toEqual([405, 405, 405, 405]);
       expect(calls).not.toHaveBeenCalled();
+    },
+  );
+
+  test.each`
+    path              | status
+    ${"unauthorized"} | ${401}
+    ${"notFound"}     | ${404}
+    ${"aiFailed"}     | ${502}
+  `(
+    "$path が契約のエラーを投げた場合、エラーに書いた $status で返すこと",
+    async ({ path, status }: { path: string; status: number }) => {
+      const response = await rpcFetch(request(path, "POST", {}));
+
+      expect(response?.status).toBe(status);
     },
   );
 

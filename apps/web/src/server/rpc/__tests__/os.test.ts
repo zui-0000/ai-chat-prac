@@ -27,6 +27,7 @@ describe("os", () => {
     expect(isDefinedError(error)).toBe(true);
     expect(error).toMatchObject({
       code: "BAD_REQUEST",
+      status: 400,
       message: "入力が正しくありません",
       data: { errors: [{ field: "text" }] },
     });

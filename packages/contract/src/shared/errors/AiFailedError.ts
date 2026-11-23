@@ -1,1 +1,6 @@
-export const AiFailedError = { message: "AI が返答できませんでした" } as const;
+import { HttpStatus } from "../constants";
+
+export const AiFailedError = {
+  status: HttpStatus.BAD_GATEWAY,
+  message: "AI が返答できませんでした",
+} as const;
