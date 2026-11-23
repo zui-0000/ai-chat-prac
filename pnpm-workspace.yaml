@@ -44,10 +44,10 @@ catalog:
   # Vite+ が持つ tsrs と同じ版にそろえる（npm view vite-plus@<版> dependencies.tsrs）
   tsrs: 7.1.0-beta.tsrs2
   typescript: 7.0.2
+  valibot: 1.5.0
   vite: npm:@voidzero-dev/vite-plus-core@8.3.8000
   vite-plus: 1.7.0
   void: 1.11.0
-  zod: 4.6.7
 
 # vite を Vite+ の vite-plus-core に置き換える。core の版は中の Vite の版を表す（8.3.8000 は Vite 8.3.8）ので、
 # プラグインの vite の peer の範囲をそのまま満たし、検査を緩めなくてよい

@@ -1,4 +1,4 @@
-// contract は型だけを import する。値を import すると zod とスキーマが FE のバンドルに入る
+// contract は型だけを import する。値を import すると valibot とスキーマが FE のバンドルに入る
 import type { contract } from "@ai-chat/contract";
 import { createORPCClient } from "@orpc/client";
 import { RPCLink } from "@orpc/client/fetch";

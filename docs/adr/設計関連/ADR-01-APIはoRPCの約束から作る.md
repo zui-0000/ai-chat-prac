@@ -41,7 +41,7 @@ AI チャットでは、さらに次のことが効いた。
 
 決め手は、**BE と偽物の BE が約束を `implement` し、FE は約束の型でクライアントを作るので、形がずれると型エラーになる**こと。`eventIterator` で、body を送って返答を流して受け取れることも試して確かめた。
 
-- FE と BE の間の API は、`packages/contract` に oRPC の約束（zod のスキーマ）として先に書く
+- FE と BE の間の API は、`packages/contract` に oRPC の約束（valibot のスキーマ。ライブラリ関連/ADR-05）として先に書く
 - BE は Void のルートを 1 つ（`/rpc` の受け口）だけ置き、`/rpc` の下は全部 oRPC に渡す
 - FE は約束の型だけを読み、関数のように呼ぶ
 - HTTP のメソッドは、動き（読む・消す・作る）に合わせる
@@ -51,7 +51,7 @@ AI チャットでは、さらに次のことが効いた。
 ### 結果 (Consequences)
 
 - Good, because 約束を先に書けば、FE・偽物の BE・本物の BE を並べて作れる
-- Good, because FE のバンドルに、サーバーのコードも zod も入らない（約束の型だけを読む）
+- Good, because FE のバンドルに、サーバーのコードもスキーマのライブラリも入らない（約束の型だけを読む）
 - Good, because 約束に無い入力は 400、約束に無い URL は 404 になる
 - Bad, because Void の公式の道から少し外れる。`/rpc` の下は、Void の型付き `fetch` とルートごとのキャッシュの対象から外れる
 - Bad, because v2 に移るときに書き方が変わり、FE と BE を同時に上げることになる

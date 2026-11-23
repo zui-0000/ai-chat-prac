@@ -5,7 +5,7 @@ AI チャットを作りながら学ぶ、練習用のリポジトリ。pnpm の
 | 場所                | 中身                                                                    |
 | ------------------- | ----------------------------------------------------------------------- |
 | `apps/web`          | Void のアプリ。FE は `src/client/`、BE（Worker）は `src/server/` に置く |
-| `packages/contract` | FE と BE の間の API の約束（oRPC と zod）                               |
+| `packages/contract` | FE と BE の間の API の約束（oRPC と valibot）                           |
 
 ## コマンド
 

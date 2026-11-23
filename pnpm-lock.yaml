@@ -75,6 +75,9 @@ catalogs:
     typescript:
       specifier: 7.0.2
       version: 7.0.2
+    valibot:
+      specifier: 1.5.0
+      version: 1.5.0
     vite:
       specifier: npm:@voidzero-dev/vite-plus-core@8.3.8000
       version: 8.3.8000
@@ -84,9 +87,6 @@ catalogs:
     void:
       specifier: 1.11.0
       version: 1.11.0
-    zod:
-      specifier: 4.6.7
-      version: 4.6.7
 
 overrides:
   vite@*: npm:@voidzero-dev/vite-plus-core@8.3.8000
@@ -192,9 +192,9 @@ importers:
       '@orpc/contract':
         specifier: 'catalog:'
         version: 1.16.4
-      zod:
+      valibot:
         specifier: 'catalog:'
-        version: 4.6.7
+        version: 1.5.0(typescript@7.0.2)
     devDependencies:
       tsrs:
         specifier: 'catalog:'

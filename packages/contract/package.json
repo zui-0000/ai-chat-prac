@@ -7,7 +7,7 @@
   },
   "dependencies": {
     "@orpc/contract": "catalog:",
-    "zod": "catalog:"
+    "valibot": "catalog:"
   },
   "devDependencies": {
     "tsrs": "catalog:",

@@ -13,7 +13,7 @@ AI チャットの画面を作る学習用リポジトリ。
 apps/web/              Void のアプリ
 ├── src/client/        FE（ブラウザで動く）。TanStack Router のルートは src/client/routes、偽物の BE（MSW）は src/client/mocks
 └── src/server/        BE（Worker で動く）。Void はここだけを読む
-packages/contract/     FE と BE の約束（oRPC + zod）
+packages/contract/     FE と BE の約束（oRPC + valibot）
 ```
 
 ## セットアップ（初回のみ）
