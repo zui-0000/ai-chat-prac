@@ -53,6 +53,26 @@ export default defineConfig({
     },
     overrides: [
       {
+        files: ["packages/contract/src/**"],
+        rules: {
+          // index.ts は名前で export する。export * だと、何を外に出しているかが読めない
+          "oxc/no-barrel-file": ["error", { threshold: 0 }],
+          "no-restricted-imports": [
+            "error",
+            {
+              // 2 つ以上上のフォルダへの相対パスは、#/（packages/contract/src。packages/contract/package.json の imports）から書く
+              patterns: [
+                {
+                  group: ["../../*", "../../**"],
+                  message:
+                    "2 つ以上上のフォルダへの相対パスは使わず、#/ から拡張子まで書いてください（例: #/shared/model/UuidV7.ts）",
+                },
+              ],
+            },
+          ],
+        },
+      },
+      {
         files: ["apps/web/src/**"],
         rules: {
           // export * でまとめ直すと、1 つ読むだけで全部を読み込み、開発サーバーも遅くなる

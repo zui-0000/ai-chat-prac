@@ -32,7 +32,7 @@ informed:
 決め手は、**あとから持ち主を足すと会話の DB と API を作り直すことになるうえ、Void に組み込まれていて、認証の API もクライアントも出してくれる**こと。
 
 - ログインの方法は、メールアドレスとパスワード・Google・X。外の登録が要らないメールアドレスとパスワードを先に作る
-- 認証の API（`/api/auth`）は Void が出し、oRPC の約束（設計関連/ADR-01）には入れない。画面は自分で作る
+- 認証の API（`/api/auth`）は Void が出し、oRPC の契約（設計関連/ADR-01）には入れない。画面は自分で作る
 - ログインしていない人は、ルートの読み込みの前に `/login` に移す
 
 ### 結果 (Consequences)
@@ -41,7 +41,7 @@ informed:
 - Good, because 認証の API とクライアントを自分で作らずに済む
 - Bad, because 試すのにアカウントの登録が要る
 - Bad, because Google と X は、それぞれのサービスでアプリを登録する準備が要る
-- Bad, because 認証の API は `/rpc` でないので、偽物の BE（設計関連/ADR-02）を別に用意する
+- Bad, because 認証の API は `/rpc` でないので、モックの BE（設計関連/ADR-02）を別に用意する
 
 ## 各選択肢の評価 (Pros and Cons of the Options)
 

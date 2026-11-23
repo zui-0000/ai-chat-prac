@@ -1,4 +1,4 @@
-import { os } from "#/client/mocks/utils/orpc-implementer.ts";
+import { os } from "#/client/mocks/utils/orpcImplementer.ts";
 
 import { listMessages } from "../data";
 

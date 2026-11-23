@@ -4,14 +4,14 @@
   "forbidden": [
     {
       "name": "client-not-to-server",
-      "comment": "src/client から src/server を読んでいます（import type も止めます）。FE は @ai-chat/contract の約束だけを使ってください",
+      "comment": "src/client から src/server を読んでいます（import type も止めます）。FE は @ai-chat/contract の契約だけを使ってください",
       "severity": "error",
       "from": { "path": "^src/client/" },
       "to": { "path": "^src/server/" }
     },
     {
       // @schema・void/db は Void の paths で当てた名前で、ファイルまでたどれないので名前で止める。
-      // 偽物は約束を実装するので @orpc/server を許す
+      // モックは契約を実装するので @orpc/server を許す
       "name": "client-not-to-server-modules",
       "comment": "src/client から BE 専用のモジュール（@schema・void/db・@orpc/server など）を読んでいます。FE は @ai-chat/contract と @orpc/client だけを使ってください",
       "severity": "error",
@@ -19,17 +19,17 @@
       "to": { "path": "^(@schema|void/db|void/schema-|@orpc/server)" }
     },
     {
-      // 本物の DB に寄りかかると、約束とのずれに気づけない
+      // 本物の DB に寄りかかると、契約とのずれに気づけない
       "name": "mocks-not-to-db",
-      "comment": "偽物の BE から本物の DB を読んでいます。偽物は @ai-chat/contract の約束だけを見て作ってください",
+      "comment": "モックの BE から本物の DB を読んでいます。モックは @ai-chat/contract の契約だけを見て作ってください",
       "severity": "error",
       "from": { "path": "^src/client/mocks/" },
       "to": { "path": "^(@schema|void/db|void/schema-)" }
     },
     {
-      // 偽物を本番のバンドルに入れない。main.tsx は開発のときだけ動的 import で読む
+      // モックを本番のバンドルに入れない。main.tsx は開発のときだけ動的 import で読む
       "name": "client-not-to-mocks",
-      "comment": "偽物の BE を読んでいます。読んでよいのは main.tsx とテストだけです",
+      "comment": "モックの BE を読んでいます。読んでよいのは main.tsx とテストだけです",
       "severity": "error",
       "from": {
         "path": "^src/client/",
@@ -40,7 +40,7 @@
     {
       // 中の並べ方を変えても、外を直さずに済むように
       "name": "mocks-entry-only",
-      "comment": "偽物の BE の中を直接読んでいます。外からは入口（browser.ts・node.ts）だけを読んでください",
+      "comment": "モックの BE の中を直接読んでいます。外からは入口（browser.ts・node.ts）だけを読んでください",
       "severity": "error",
       "from": { "path": "^src/", "pathNot": "^src/client/mocks/" },
       "to": { "path": "^src/client/mocks/", "pathNot": "^src/client/mocks/(browser|node)\\.ts$" }
@@ -103,9 +103,9 @@
       }
     },
     {
-      // 偽物は約束だけを見て作る。FE のコードに寄りかかると、約束とのずれに気づけない
+      // モックは契約だけを見て作る。FE のコードに寄りかかると、契約とのずれに気づけない
       "name": "mocks-not-to-client",
-      "comment": "偽物の BE から src/client のほかのフォルダを読んでいます。偽物は @ai-chat/contract の約束だけを見て作ってください",
+      "comment": "モックの BE から src/client のほかのフォルダを読んでいます。モックは @ai-chat/contract の契約だけを見て作ってください",
       "severity": "error",
       "from": { "path": "^src/client/mocks/" },
       "to": { "path": "^src/client/(?!mocks/)" }

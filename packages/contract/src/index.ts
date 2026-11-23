@@ -1,23 +1,15 @@
-import { eventIterator, oc } from "@orpc/contract";
-import * as z from "zod";
+import type { InferContractRouterOutputs } from "@orpc/contract";
 
-export const MessageSchema = z.object({
-  id: z.number(),
-  text: z.string(),
-  createdAt: z.string(),
-});
-export type Message = z.infer<typeof MessageSchema>;
+import { chatContract, messageContract } from "./contexts";
 
-// FE と BE の間の API の約束。FE は型だけを使い、BE は implement(contract) で実装する
+export { HttpMethod, HttpStatus } from "./shared/constants";
+export { AiFailedError, NotFoundError, toBadRequestData, UnauthorizedError } from "./shared/errors";
+
+// FE と BE の間の API の契約。BE とモックの BE は implement(contract) で実装し、FE はクライアントの型とメソッドに使う
 export const contract = {
-  message: {
-    list: oc.output(z.array(MessageSchema)),
-    create: oc.input(z.object({ text: z.string().min(1) })).output(MessageSchema),
-  },
-  chat: {
-    // 返答を少しずつ返す
-    stream: oc
-      .input(z.object({ prompt: z.string().min(1) }))
-      .output(eventIterator(z.object({ delta: z.string() }))),
-  },
+  message: messageContract,
+  chat: chatContract,
 };
+
+// 手続きごとの出力の型。ContractOutputs["message"]["list"] のように引く
+export type ContractOutputs = InferContractRouterOutputs<typeof contract>;

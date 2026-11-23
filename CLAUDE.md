@@ -5,7 +5,7 @@ AI チャットを作りながら学ぶ、練習用のリポジトリ。pnpm の
 | 場所                | 中身                                                                    |
 | ------------------- | ----------------------------------------------------------------------- |
 | `apps/web`          | Void のアプリ。FE は `src/client/`、BE（Worker）は `src/server/` に置く |
-| `packages/contract` | FE と BE の間の API の約束（oRPC と zod）                               |
+| `packages/contract` | FE と BE の間の API の契約（oRPC と valibot）                           |
 
 ## コマンド
 
@@ -14,7 +14,7 @@ AI チャットを作りながら学ぶ、練習用のリポジトリ。pnpm の
 | コマンド              | すること                                         |
 | --------------------- | ------------------------------------------------ |
 | `vp install`          | 依存を入れる                                     |
-| `vp run dev`          | 開発サーバー（画面は偽物の BE と話す）           |
+| `vp run dev`          | 開発サーバー（画面はモックの BE と話す）         |
 | `vp check`            | フォーマット・lint・型チェック                   |
 | `vp run typecheck`    | 各パッケージの型チェック                         |
 | `vp run lint:deps`    | import の向きの検査                              |

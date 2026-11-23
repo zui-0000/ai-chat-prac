@@ -3,7 +3,7 @@
 AI チャットの画面を作る学習用リポジトリ。
 
 - 土台: [Void](https://void.cloud)（FE と BE を 1 つの Cloudflare Worker にまとめる）と [Vite+](https://viteplus.dev/)（`vp`）
-- API: [oRPC](https://orpc.dev/) の約束（contract）を先に書く
+- API: [oRPC](https://orpc.dev/) の契約（contract）を先に書く
 - FE: React + TanStack Router + TanStack Query
 - BE: [Hono](https://hono.dev/)（Void がルーティングに使う）+ Cloudflare D1
 
@@ -11,9 +11,9 @@ AI チャットの画面を作る学習用リポジトリ。
 
 ```text
 apps/web/              Void のアプリ
-├── src/client/        FE（ブラウザで動く）。TanStack Router のルートは src/client/routes、偽物の BE（MSW）は src/client/mocks
+├── src/client/        FE（ブラウザで動く）。TanStack Router のルートは src/client/routes、モックの BE（MSW）は src/client/mocks
 └── src/server/        BE（Worker で動く）。Void はここだけを読む
-packages/contract/     FE と BE の約束（oRPC + zod）
+packages/contract/     FE と BE の契約（oRPC + valibot）
 ```
 
 ## セットアップ（初回のみ）
@@ -26,9 +26,6 @@ vp env install                        # ルートの package.json（devEngines�
 vp install                            # 依存を入れる。Git フックも有効になる
 vp hooks status                       # 「Hooks dir: .vite-hooks」と出れば OK
 ```
-
-- `vp install` の途中で、`apps/web` の `postinstall` が `void prepare` を動かし、Void の型（`apps/web/.void/`）を作る
-- Cloudflare のアカウントは要らない。ローカルでは、Cloudflare のランタイムとローカルの D1 で動く
 
 ### VS Code を使うとき
 
@@ -46,17 +43,7 @@ PR にラベルを貼ると、GitHub Actions で Claude がレビューする。
 - `claude-review`: 最初のレビュー。このリポジトリのブランチから出した、開いていて下書きでない、既定のブランチに向いた PR だけで動く。外して貼り直すと、もう一度レビューする
 - `claude-re-review`: 指摘を直して push し、スレッドに返事してから貼る。このリポジトリのブランチから出した、開いていて下書きでない PR だけで動く。承認しなかったときは外れるので、直したらもう一度貼る
 
-動かすには、次の Secrets と Variables が要る。
-
-| 名前                       | 種類     | 中身                                                |
-| -------------------------- | -------- | --------------------------------------------------- |
-| `CLAUDE_CODE_OAUTH_TOKEN`  | Secret   | `claude setup-token` で作るトークン（1 年で切れる） |
-| `REVIEWER_APP_CLIENT_ID`   | Variable | レビューに使う GitHub App の Client ID              |
-| `REVIEWER_APP_PRIVATE_KEY` | Secret   | その App の秘密鍵                                   |
-| `SKILLS_REPO`              | Secret   | レビューの手順を置いた非公開のリポジトリの名前      |
-| `SKILLS_MARKETPLACE`       | Secret   | そのリポジトリのマーケットプレイスの名前            |
-
-App の権限は Contents（読み書き）と Pull requests（読み書き）だけにし、Webhook は使わない。権限を変えたら、インストール先で承認し直す。App は、このリポジトリと、レビューの手順を置いた非公開のリポジトリにインストールする。
+動かすための設定（Secrets・GitHub App）の手順は、オーナーが非公開のリポジトリで管理している。
 
 ## よく使うコマンド
 
@@ -64,7 +51,7 @@ App の権限は Contents（読み書き）と Pull requests（読み書き）�
 
 | やりたいこと                     | コマンド                              | 補足                                                                       |
 | -------------------------------- | ------------------------------------- | -------------------------------------------------------------------------- |
-| 開発サーバーを起動する           | `vp run dev`                          | 画面は偽物の BE（MSW）と話す（下の「開発サーバー」）                       |
+| 開発サーバーを起動する           | `vp run dev`                          | 画面はモックの BE（MSW）と話す（下の「開発サーバー」）                     |
 | 本番用にビルドする               | `vp run build`                        | 出力先は `apps/web/dist/`                                                  |
 | ビルドしたものを確かめる         | `vp run preview`                      | <http://localhost:4173/>。画面は本物の BE と話す。先に `vp run build` する |
 | lint + フォーマット + 型チェック | `vp check`                            | 確認だけ。`vp check --fix` で自動修正                                      |
@@ -82,7 +69,7 @@ App の権限は Contents（読み書き）と Pull requests（読み書き）�
 
 `vp run dev` で FE と BE が立ち上がる。開くのは <http://localhost:5173/> だけでよい。
 
-- 画面は、いつも偽物の BE（MSW）と話す。本物の BE を確かめるときは、`vp run build` してから `vp run preview` を使う
+- 画面は、いつもモックの BE（MSW）と話す。本物の BE を確かめるときは、`vp run build` してから `vp run preview` を使う
 - BE は本番と同じ Cloudflare Workers のランタイム（workerd）で動く。FE と同じオリジンなので、CORS の設定は要らない
 - 起動時に DB のマイグレーションが流れる。ローカルの D1 は `apps/web/.void/v3/d1/` にあり、消すと空に戻る
 

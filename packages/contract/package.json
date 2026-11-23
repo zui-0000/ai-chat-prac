@@ -2,12 +2,15 @@
   "name": "@ai-chat/contract",
   "private": true,
   "type": "module",
+  "imports": {
+    "#/*": "./src/*"
+  },
   "exports": {
     ".": "./src/index.ts"
   },
   "dependencies": {
     "@orpc/contract": "catalog:",
-    "zod": "catalog:"
+    "valibot": "catalog:"
   },
   "devDependencies": {
     "tsrs": "catalog:",

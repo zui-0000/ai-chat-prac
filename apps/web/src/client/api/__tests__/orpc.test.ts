@@ -1,74 +1,68 @@
-import { ORPCError } from "@orpc/client";
+import { isDefinedError, ORPCError, safe } from "@orpc/client";
 
 import { scenarios, server } from "#/client/mocks/node.ts";
 
 import { client } from "../orpc";
 
-const collectReply = async (prompt: string) => {
-  let reply = "";
-  for await (const { delta } of await client.chat.stream({ prompt })) {
-    reply += delta;
-  }
-  return reply;
+// モックの BE に届いたリクエストのメソッドを、パスごとに覚える
+const recordMethods = () => {
+  const methods = new Map<string, string>();
+  const listener = ({ request }: { request: Request }) => {
+    methods.set(new URL(request.url).pathname, request.method);
+  };
+  server.events.on("request:start", listener);
+  onTestFinished(() => {
+    server.events.removeListener("request:start", listener);
+  });
+  return methods;
 };
 
-describe("oRPC のクライアント（正常系）", () => {
-  test("作成したメッセージが一覧に入ること", async () => {
-    await client.message.create({ text: "こんにちは" });
+type MethodCase = { procedure: string; call: () => Promise<unknown>; method: string };
 
-    const messages = await client.message.list();
-    expect(messages.map((m) => m.text)).toEqual(["こんにちは"]);
+describe("client", () => {
+  test("手続きを呼ぶと、出力が返ること", async () => {
+    const message = await client.message.create({ text: "こんにちは" });
+
+    expect(message.text).toBe("こんにちは");
   });
 
-  test("テストごとに、偽物の BE の保管が空に戻ること", async () => {
-    expect(await client.message.list()).toEqual([]);
+  test.each`
+    procedure           | call                                                   | method
+    ${"message.list"}   | ${() => client.message.list()}                         | ${"GET"}
+    ${"message.create"} | ${() => client.message.create({ text: "こんにちは" })} | ${"POST"}
+  `(
+    "$procedure を呼んだ場合、契約に書いた $method で送ること",
+    async ({ procedure, call, method }: MethodCase) => {
+      const methods = recordMethods();
+
+      await call();
+
+      expect(methods.get(`/rpc/${procedure.replace(".", "/")}`)).toBe(method);
+    },
+  );
+
+  test("契約に書いたエラーの場合、コードで見分けられること", async () => {
+    server.use(scenarios["message.list.unauthorized"]);
+
+    const { error } = await safe(client.message.list());
+
+    expect(isDefinedError(error) && error.code).toBe("UNAUTHORIZED");
   });
 
-  test("返答を少しずつ受け取れること", async () => {
-    expect(await collectReply("やあ")).toBe("（偽物）「やあ」への返事です。");
-  });
-});
+  test("入力が正しくない場合、不正だったフィールドの名前が届くこと", async () => {
+    const { error } = await safe(client.message.create({ text: "" }));
 
-describe("oRPC のクライアント（シナリオ）", () => {
-  test("message.list.many の場合、30 件が返ること", async () => {
-    server.use(scenarios["message.list.many"]);
-
-    expect(await client.message.list()).toHaveLength(30);
+    expect(isDefinedError(error) && error.code === "BAD_REQUEST" && error.data).toEqual({
+      errors: [{ field: "text" }],
+    });
   });
 
-  test("message.list.error の場合、ORPCError になること", async () => {
+  test("契約に無いエラーの場合、ORPCError になること", async () => {
     server.use(scenarios["message.list.error"]);
 
-    await expect(client.message.list()).rejects.toThrow(
-      new ORPCError("INTERNAL_SERVER_ERROR", { message: "メッセージを読み込めませんでした" }),
-    );
-  });
+    const { error } = await safe(client.message.list());
 
-  test("message.create.error の場合、ORPCError になること", async () => {
-    server.use(scenarios["message.create.error"]);
-
-    const error = await client.message.create({ text: "x" }).catch((e: unknown) => e);
     expect(error).toBeInstanceOf(ORPCError);
-    expect((error as ORPCError<string, unknown>).message).toBe("メッセージを保存できませんでした");
-  });
-
-  test("上書きしていない API は、正常系のまま動くこと", async () => {
-    server.use(scenarios["message.create.error"]);
-
-    expect(await client.message.list()).toEqual([]);
-  });
-
-  test("chat.stream.error の場合、途中まで届いてから ORPCError になること", async () => {
-    server.use(scenarios["chat.stream.error"]);
-
-    let reply = "";
-    const error = await (async () => {
-      for await (const { delta } of await client.chat.stream({ prompt: "やあ" })) {
-        reply += delta;
-      }
-    })().catch((e: unknown) => e);
-
-    expect(reply).toBe("（偽物）「");
-    expect(error).toBeInstanceOf(ORPCError);
+    expect(isDefinedError(error)).toBe(false);
   });
 });

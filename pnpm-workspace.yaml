@@ -23,31 +23,31 @@ catalog:
   "@commitlint/cli": 21.2.4
   "@commitlint/config-conventional": 21.2.4
   "@commitlint/types": 21.2.3
-  "@orpc/client": 1.16.2
-  "@orpc/contract": 1.16.2
-  "@orpc/server": 1.16.2
-  "@orpc/tanstack-query": 1.16.2
+  "@orpc/client": 1.16.4
+  "@orpc/contract": 1.16.4
+  "@orpc/server": 1.16.4
+  "@orpc/tanstack-query": 1.16.4
   "@swc/core": 1.16.22
-  "@tanstack/react-query": 5.107.1
+  "@tanstack/react-query": 5.108.2
   "@tanstack/react-router": 1.170.46
   "@tanstack/router-plugin": 1.169.0
   "@types/node": 26.6.6
   "@types/react": 19.3.0
   "@types/react-dom": 19.3.0
-  "@vitejs/plugin-react": 6.2.1
-  dependency-cruiser: 18.7.2
-  jsdom: 31.0.0
-  msw: 3.0.4
+  "@vitejs/plugin-react": 6.3.0
+  dependency-cruiser: 18.8.0
+  jsdom: 31.0.1
+  msw: 3.0.7
   oxc-transform-react: 0.156.0
   react: 19.3.1
   react-dom: 19.3.1
   # Vite+ が持つ tsrs と同じ版にそろえる（npm view vite-plus@<版> dependencies.tsrs）
   tsrs: 7.1.0-beta.tsrs2
   typescript: 7.0.2
+  valibot: 1.5.0
   vite: npm:@voidzero-dev/vite-plus-core@8.3.8000
   vite-plus: 1.7.0
-  void: 1.6.2
-  zod: 4.6.7
+  void: 1.11.0
 
 # vite を Vite+ の vite-plus-core に置き換える。core の版は中の Vite の版を表す（8.3.8000 は Vite 8.3.8）ので、
 # プラグインの vite の peer の範囲をそのまま満たし、検査を緩めなくてよい

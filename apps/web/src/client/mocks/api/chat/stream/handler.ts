@@ -1,9 +1,9 @@
-import { os } from "#/client/mocks/utils/orpc-implementer.ts";
+import { os } from "#/client/mocks/utils/orpcImplementer.ts";
 
-import { fakeReply } from "./reply";
+import { mockReply } from "./mockReply";
 
 export const handler = os.chat.stream.handler(async function* ({ input }) {
-  for (const char of fakeReply(input.prompt)) {
+  for (const char of mockReply(input.prompt)) {
     yield { delta: char };
   }
 });

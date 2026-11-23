@@ -1,9 +1,7 @@
-import { contract } from "@ai-chat/contract";
-import { implement } from "@orpc/server";
 import { messages } from "@schema";
 import { db } from "void/db";
 
-const os = implement(contract);
+import { os } from "./os";
 
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -17,7 +15,7 @@ export const router = os.router({
     }),
   },
   chat: {
-    // TODO: AI の API につなぐ。今は固定の文を 1 文字ずつ返す
+    // TODO: AI の API につなぐ。今は固定の文を 1 文字ずつ返す。流し始める前に AI が失敗したら errors.AI_FAILED() を投げる
     stream: os.chat.stream.handler(async function* ({ input }) {
       for (const char of `「${input.prompt}」への返事です。少しずつ届きます。`) {
         await sleep(30);

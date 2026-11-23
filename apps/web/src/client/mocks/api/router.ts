@@ -1,11 +1,11 @@
-import { orpcHandler } from "#/client/mocks/utils/orpc-handler.ts";
-import { os } from "#/client/mocks/utils/orpc-implementer.ts";
+import { orpcHandler } from "#/client/mocks/utils/orpcHandler.ts";
+import { os } from "#/client/mocks/utils/orpcImplementer.ts";
 
 import { handler as chatStream } from "./chat/stream/handler";
 import { handler as messageCreate } from "./message/create/handler";
 import { handler as messageList } from "./message/list/handler";
 
-// 各 API の正常系を集める。約束（os.router）どおりに集めるので、API を作り忘れると型エラーになる
+// 各 API の正常系を集める。契約（os.router）どおりに集めるので、API を作り忘れると型エラーになる
 export const router = os.router({
   message: { list: messageList, create: messageCreate },
   chat: { stream: chatStream },

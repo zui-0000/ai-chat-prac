@@ -6,5 +6,5 @@ import { handlers } from "./api/router";
 export { scenarios } from "./api/scenarios";
 export { resetMockData } from "./api/reset";
 
-// 単体テスト用の偽物の BE。src/client/__setup__/setup.ts が立ち上げる
+// 単体テスト用のモックの BE。src/client/__setup__/setup.ts が立ち上げる
 export const server = setupServer(...handlers);
