@@ -1,9 +1,8 @@
 import type { InferContractRouterOutputs } from "@orpc/contract";
 
-import { chatContract } from "./contexts/chat/contract";
-import { messageContract } from "./contexts/message/contract";
+import { chatContract, messageContract } from "./contexts";
 
-export { HttpMethod } from "./shared/constants";
+export { HttpMethod, HttpStatus } from "./shared/constants";
 export { AiFailedError, NotFoundError, toBadRequestData, UnauthorizedError } from "./shared/errors";
 
 // FE と BE の間の API の契約。BE とモックの BE は implement(contract) で実装し、FE はクライアントの型とメソッドに使う

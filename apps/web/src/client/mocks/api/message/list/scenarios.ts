@@ -1,6 +1,6 @@
 import { ORPCError } from "@orpc/server";
 
-import { os } from "#/client/mocks/utils/orpc-implementer.ts";
+import { os } from "#/client/mocks/utils/orpcImplementer.ts";
 
 import type { handler } from "./handler";
 
