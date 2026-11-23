@@ -2,6 +2,7 @@ import { ORPCError, ValidationError } from "@orpc/contract";
 
 import type { BadRequestData } from "../BadRequestError";
 
+// TODO: 置き場所を見直す。本物の BE とモックの BE の両方が読める場所がここしか無いので、契約に置いている
 // oRPC の入力の検査のエラーなら、BAD_REQUEST に渡す data を返す。ほかのエラーなら undefined を返す。
 // oRPC がそのまま返す入力のエラーには、送られた値と検査の正規表現が入るので、本物の BE とモックの BE がこれで作り直す
 export const toBadRequestData = (error: unknown): BadRequestData | undefined => {

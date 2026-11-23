@@ -1,6 +1,8 @@
 import * as v from "valibot";
 
-import { MessageCreatedAtSchema, MessageIdSchema, MessageTextSchema } from "./model";
+import { MessageCreatedAtSchema } from "./model/MessageCreatedAt";
+import { MessageIdSchema } from "./model/MessageId";
+import { MessageTextSchema } from "./model/MessageText";
 
 export const ListMessagesResponseSchema = v.array(
   v.object({

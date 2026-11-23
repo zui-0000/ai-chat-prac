@@ -55,6 +55,8 @@ export default defineConfig({
       {
         files: ["packages/contract/src/**"],
         rules: {
+          // index.ts は名前で export する。export * だと、何を外に出しているかが読めない
+          "oxc/no-barrel-file": ["error", { threshold: 0 }],
           "no-restricted-imports": [
             "error",
             {

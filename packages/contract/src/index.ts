@@ -1,14 +1,16 @@
-import { chatContract } from "./contexts/chat";
-import { messageContract } from "./contexts/message";
+import type { InferContractRouterOutputs } from "@orpc/contract";
 
-export * from "./contexts/chat";
-export * from "./contexts/message";
-export * from "./shared/constants";
-export * from "./shared/errors";
-export * from "./shared/model";
+import { chatContract } from "./contexts/chat/contract";
+import { messageContract } from "./contexts/message/contract";
+
+export { HttpMethod } from "./shared/constants";
+export { AiFailedError, NotFoundError, toBadRequestData, UnauthorizedError } from "./shared/errors";
 
 // FE と BE の間の API の契約。BE とモックの BE は implement(contract) で実装し、FE はクライアントの型とメソッドに使う
 export const contract = {
   message: messageContract,
   chat: chatContract,
 };
+
+// 手続きごとの出力の型。ContractOutputs["message"]["list"] のように引く
+export type ContractOutputs = InferContractRouterOutputs<typeof contract>;

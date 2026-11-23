@@ -1,1 +1,0 @@
-export { toBadRequestData } from "./toBadRequestData";
