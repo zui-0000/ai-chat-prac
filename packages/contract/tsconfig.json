@@ -5,6 +5,8 @@
     "module": "esnext",
     "moduleResolution": "bundler",
     "moduleDetection": "force",
+    // scripts が Node.js の API でファイルを書く
+    "types": ["node"],
     "strict": true,
     "noEmit": true,
     "skipLibCheck": true,
@@ -13,5 +15,5 @@
     "noUnusedParameters": true,
     "erasableSyntaxOnly": true
   },
-  "include": ["src"]
+  "include": ["src", "scripts"]
 }

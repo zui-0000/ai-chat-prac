@@ -3,13 +3,15 @@
   "private": true,
   "type": "module",
   "exports": {
-    ".": "./src/index.ts"
+    ".": "./src/index.ts",
+    "./minified.json": "./src/minified.json"
   },
   "dependencies": {
     "@orpc/contract": "catalog:",
     "valibot": "catalog:"
   },
   "devDependencies": {
+    "@types/node": "catalog:",
     "tsrs": "catalog:",
     "typescript": "catalog:"
   }

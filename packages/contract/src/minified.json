@@ -1,0 +1,29 @@
+{
+  "message": {
+    "list": {
+      "~orpc": {
+        "errorMap": {},
+        "meta": {},
+        "route": {
+          "method": "GET"
+        }
+      }
+    },
+    "create": {
+      "~orpc": {
+        "errorMap": {},
+        "meta": {},
+        "route": {}
+      }
+    }
+  },
+  "chat": {
+    "stream": {
+      "~orpc": {
+        "errorMap": {},
+        "meta": {},
+        "route": {}
+      }
+    }
+  }
+}
