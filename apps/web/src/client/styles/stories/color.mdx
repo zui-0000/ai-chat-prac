@@ -1,0 +1,15 @@
+import { Meta } from "@storybook/addon-docs/blocks";
+
+import colorCss from "#/client/styles/tokens/color.css?raw";
+
+import { ColorTokens } from "./blocks/ColorTokens/index";
+
+<Meta title="DesignTokens/Color" />
+
+# 色
+
+`src/client/styles/tokens/color.css` のトークン。使い分けは `apps/web/DESIGN.md` の 2 にある。
+
+`Aa` は、その色の上にのせる文字の色（`-foreground`）。上のツールバーの「配色」で、明るい配色と暗い配色を切り替えられる。
+
+<ColorTokens css={colorCss} prefix="--color-" />

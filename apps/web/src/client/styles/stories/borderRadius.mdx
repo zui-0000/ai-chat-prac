@@ -1,0 +1,13 @@
+import { Meta } from "@storybook/addon-docs/blocks";
+
+import tokenCss from "#/client/styles/tokens/borderRadius.css?raw";
+
+import { ScaleTokens } from "./blocks/ScaleTokens/index";
+
+<Meta title="DesignTokens/Border Radius" />
+
+# 角丸
+
+`src/client/styles/tokens/borderRadius.css` のトークン。見本は、その角丸の箱。
+
+<ScaleTokens css={tokenCss} prefix="--border-radius-" kind="radius" />

@@ -1,0 +1,13 @@
+import { Meta } from "@storybook/addon-docs/blocks";
+
+import tokenCss from "#/client/styles/tokens/borderWidth.css?raw";
+
+import { ScaleTokens } from "./blocks/ScaleTokens/index";
+
+<Meta title="DesignTokens/Border Width" />
+
+# 線の太さ
+
+`src/client/styles/tokens/borderWidth.css` のトークン。見本は、その太さの線で囲んだ箱。
+
+<ScaleTokens css={tokenCss} prefix="--border-width-" kind="borderWidth" />

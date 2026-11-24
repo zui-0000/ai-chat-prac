@@ -1,0 +1,11 @@
+/*
+ * 一覧を囲む面。Storybook の docs の背景は配色に関係なく白いので、
+ * ここで今の配色の背景と文字の色を付け、トークンを正しい組み合わせで見せる
+ */
+.panel {
+  padding: var(--spacing-16);
+  border-radius: var(--border-radius-8);
+  font-family: var(--font-family-body);
+  color: var(--color-foreground);
+  background-color: var(--color-background);
+}
