@@ -1,6 +1,7 @@
 /* TODO: tokens/ の CSS は、まだどこからも読み込んでいない。スタイルの土台（全体の入口の CSS）を作るときに、tokens/ の下を全部読み込む */
 @import "./primitive/baseColor.css";
 
+/* 置くのは、このサイトの色と、2 つ以上の部品が使う役割の色だけ。部品 1 つだけの色は、その部品の CSS で、ここの色から作る */
 :root {
   color-scheme: light dark;
 
@@ -24,7 +25,7 @@
   /* オレンジ。赤い線に添える */
   --color-ai-chat-secondary: var(--color-primitive-orange-400);
 
-  /* 緑。使うのは 1 か所だけ */
+  /* 緑。使うのは、返答が流れている途中の印だけ */
   --color-ai-chat-accent: light-dark(
     var(--color-primitive-green-600),
     var(--color-primitive-green-400)
@@ -51,42 +52,12 @@
   --color-selected-foreground: var(--color-foreground);
 
   /* ------------------------------------------------------------
-   * 線と印
+   * 線
    * ------------------------------------------------------------ */
 
   --color-frame: var(--color-ai-chat-primary);
-  --color-frame-highlight: light-dark(
-    color-mix(in srgb, var(--color-ai-chat-secondary) 80%, transparent),
-    color-mix(in srgb, var(--color-ai-chat-secondary) 45%, transparent)
-  );
   --color-border: light-dark(var(--color-primitive-gray-200), var(--color-primitive-gray-800));
 
   /* 赤い線や赤いボタンに付いても見分けられるように、赤でなく文字の色にする */
   --color-ring: var(--color-foreground);
-
-  --color-streaming: var(--color-ai-chat-accent);
-
-  /* ------------------------------------------------------------
-   * コードの箱
-   * どちらの配色でも暗いままにするので、値を切り替えない
-   * ------------------------------------------------------------ */
-
-  --color-code: var(--color-primitive-gray-975);
-  --color-code-foreground: var(--color-primitive-gray-100);
-  --color-code-muted-foreground: var(--color-primitive-gray-400);
-  --color-code-border: var(--color-primitive-gray-800);
-
-  /* ------------------------------------------------------------
-   * 入力欄
-   * ------------------------------------------------------------ */
-
-  --color-composer-top: light-dark(var(--color-primitive-white), var(--color-primitive-red-900));
-  --color-composer-bottom: light-dark(
-    var(--color-primitive-white),
-    var(--color-primitive-gray-925)
-  );
-  --color-glow: light-dark(
-    color-mix(in srgb, var(--color-primitive-red-600) 12%, transparent),
-    color-mix(in srgb, var(--color-primitive-red-500) 14%, transparent)
-  );
 }
