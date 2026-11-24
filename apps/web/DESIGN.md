@@ -17,31 +17,35 @@
 
 ## 2. Color Palette & Roles
 
-色は、意味のトークンだけを使う。色の材料（`--color-primitive-*`）を部品に書かない。明るい配色と暗い配色は、トークンが切り替える。
+色のトークンは 3 段になっている。部品に書くのは、下の 2 段（このサイトの色と、役割の色）だけ。色の材料（`--color-primitive-*`）は書かない。明るい配色と暗い配色は、トークンが切り替える。
 
-### Primary（ブランドカラー）
+### Primary（このサイトの色）
 
-| トークン                                            | 役割                                            |
-| --------------------------------------------------- | ----------------------------------------------- |
-| `--color-primary`・`--color-primary-foreground`     | 主な操作のボタンの塗りと、その上の文字          |
-| `--color-primary-text`                              | 赤い文字（名前のラベル・リンク）                |
-| `--color-frame`                                     | 面を囲む線と、発言のカードのふちの線            |
-| `--color-frame-highlight`                           | 入力欄の赤い線に重ねる、オレンジの細い線        |
-| `--color-secondary`・`--color-secondary-foreground` | 選ばれている状態の面と、その上の文字            |
-| `--color-composer-top`・`--color-composer-bottom`   | 入力欄の面（上から下へのグラデーション）        |
-| `--color-glow`                                      | 入力欄の外に出す光（`--elevation-glow` が使う） |
+このサイトを表す 3 色。役割の色は、ここを指す。
 
-- 赤い文字には `--color-primary-text` を使う。`--color-primary` と `--color-frame` を文字の色にしない（暗い面の上で読めない）
-- `--color-frame` は線にだけ使い、面を塗らない
+| トークン                                                        | 色と使いどころ                             |
+| --------------------------------------------------------------- | ------------------------------------------ |
+| `--color-ai-chat-primary`・`--color-ai-chat-primary-foreground` | 赤。主な操作のボタンの塗りと、その上の文字 |
+| `--color-ai-chat-primary-text`                                  | 赤い文字（名前のラベル・リンク）           |
+| `--color-ai-chat-secondary`                                     | オレンジ。赤い線に添える                   |
+| `--color-ai-chat-accent`                                        | 緑。返答が流れている途中の印               |
 
-### Semantic（意味的な色）
+- 赤い文字には `--color-ai-chat-primary-text` を使う。`--color-ai-chat-primary` と `--color-frame` を文字の色にしない（暗い面の上で読めない）
+- 線・印のように役割の色があるものは、役割の色のほうを使う（線は `--color-frame`、印は `--color-streaming`）
 
-| トークン            | 役割                                                                     |
-| ------------------- | ------------------------------------------------------------------------ |
-| `--color-streaming` | 返答が流れている途中の印。緑を使うのはここだけ                           |
-| `--color-ring`      | フォーカスの輪。赤い線や赤いボタンと見分けるため、赤でなく文字の色にする |
+### Semantic（役割の色）
 
-エラー・成功・注意の色は、まだ無い。要る部品を作るときに足す。赤が主役の色なので、赤だけではエラーや危ない操作だと伝わらない。エラーと取り消せない操作は、アイコンと言葉で伝える。
+| トークン                                          | 役割                                                                     |
+| ------------------------------------------------- | ------------------------------------------------------------------------ |
+| `--color-frame`                                   | 面を囲む線と、発言のカードのふちの線。線にだけ使い、面を塗らない         |
+| `--color-frame-highlight`                         | 入力欄の赤い線に重ねる、オレンジの細い線                                 |
+| `--color-streaming`                               | 返答が流れている途中の印。緑を使うのはここだけ                           |
+| `--color-ring`                                    | フォーカスの輪。赤い線や赤いボタンと見分けるため、赤でなく文字の色にする |
+| `--color-selected`・`--color-selected-foreground` | 選ばれている状態の面と、その上の文字                                     |
+| `--color-composer-top`・`--color-composer-bottom` | 入力欄の面（上から下へのグラデーション）                                 |
+| `--color-glow`                                    | 入力欄の外に出す光（`--elevation-glow` が使う）                          |
+
+エラー・成功・注意の色は、まだ無い。要る部品を作るときに足す。赤がこのサイトの色なので、赤だけではエラーや危ない操作だと伝わらない。エラーと取り消せない操作は、アイコンと言葉で伝える。
 
 ### Neutral（ニュートラル）
 
@@ -54,7 +58,7 @@
 | `--color-code`・`--color-code-foreground`              | コードの箱と、その中の文字。明るい配色でも暗いまま                                       |
 | `--color-code-muted-foreground`・`--color-code-border` | コードの箱の中の、補足の文字と区切りの線                                                 |
 
-文字と背景は、4.5:1 以上のコントラストにする。形を見せる線と印は 3:1 以上にする。組ごとの比は、`color.css` のコメントにある。新しい組み合わせで使うときは、比を確かめる。
+文字と背景は、4.5:1 以上のコントラストにする。形を見せる線と印は 3:1 以上にする。色の値を変えるときと、新しい組み合わせで使うときは、比を計算して確かめる。
 
 ## 3. Typography Rules
 
@@ -93,6 +97,7 @@ Noto Sans JP。読み込めないときは、OS の書体（ヒラギノ角ゴ�
 
 - 行の高さは `--line-height-body`（`--line-height-180` と同じ値）。和文は欧文より行間を広く取る
 - 入力欄とコードだけは、少し詰めて `--line-height-170` にする
+- 行の高さの段は `--line-height-100` から `--line-height-180` まである。文字が大きいほど詰める（大きな見出しは `--line-height-120`〜`--line-height-150`）
 - 本文に字間は付けない。字間を付けるのは、英字の大文字で書く名前のラベル（`--letter-spacing-14`）と、アプリの名前（`--letter-spacing-2`）だけ
 
 ### 3.6 禁則処理・改行ルール
@@ -114,7 +119,7 @@ Noto Sans JP。読み込めないときは、OS の書体（ヒラギノ角ゴ�
 
 ### Buttons
 
-- 主な操作のボタンは、`--color-primary` で塗り、文字は `--color-primary-foreground`。角丸は `--border-radius-8`
+- 主な操作のボタンは、`--color-ai-chat-primary` で塗り、文字は `--color-ai-chat-primary-foreground`。角丸は `--border-radius-8`
 - 主な操作のボタンは、1 つの領域に 1 つだけ置く（一覧なら「新しい会話」、入力欄なら送る・止める）
 - アイコンだけのボタンは塗らず、色は `--color-muted-foreground`
 
@@ -134,12 +139,12 @@ Noto Sans JP。読み込めないときは、OS の書体（ヒラギノ角ゴ�
 - 面は `--color-card`。囲む線は付けない
 - 自分の発言は右に寄せ、右のふちに `--color-frame` の線を引く。AI の返答は列の幅いっぱいに置き、左のふちに線を引く
 - 線の側の角は丸めない。反対側の角は `--border-radius-12`
-- 上に、名前のラベルを `--color-primary-text` で置く
+- 上に、名前のラベルを `--color-ai-chat-primary-text` で置く
 
 ### そのほか
 
 - **面を囲む線**: 会話の一覧の右と、見出しの帯の下に、`--color-frame` の線を引く
-- **一覧の行**: 選ばれている行は、面を `--color-secondary`、囲む線を `--color-frame` にする。角丸は `--border-radius-8`
+- **一覧の行**: 選ばれている行は、面を `--color-selected`、囲む線を `--color-frame` にする。角丸は `--border-radius-8`
 - **コードの箱**: `--color-code` の面に `--color-code-border` の線。角丸は `--border-radius-8`。どちらの配色でも暗いままにするので、箱に `color-scheme: dark` を付ける（中のフォーカスの輪・スクロールバー・選んだ文字が、暗い配色で出る）。箱の中でフォーカスを受けるものは、輪を箱の内側に出し、箱の外にはみ出させない。文の中のコードは `--color-muted` の面で、角丸は `--border-radius-4`
 - **返答が流れている印**: 文の終わりに、`--color-streaming` の四角を置く
 - **フォーカスの輪**: `--color-ring` の輪を、太さ `--border-width-ring` で、部品のふちから同じ幅だけ離して出す。赤い線や赤い塗りと重ねない
@@ -149,7 +154,7 @@ Noto Sans JP。読み込めないときは、OS の書体（ヒラギノ角ゴ�
 
 ### Spacing Scale
 
-`--spacing-4` から `--spacing-24` まで。4px を基本の単位にする。関係のある要素は近づけ、別のまとまりとの間は広くあける。
+`--spacing-2` から `--spacing-64` まで。4px を基本の単位にする。関係のある要素は近づけ、別のまとまりとの間は広くあける。
 
 | 使いどころ               | トークン       |
 | ------------------------ | -------------- |
@@ -211,8 +216,8 @@ Noto Sans JP。読み込めないときは、OS の書体（ヒラギノ角ゴ�
 ### クイックリファレンス
 
 - 土台は `--color-background`、面は `--color-card`、文字は `--color-foreground`、補足は `--color-muted-foreground`
-- 面を囲む線は `--color-frame`。赤い文字は `--color-primary-text`
-- 主なボタンは `--color-primary` と `--color-primary-foreground`
+- 面を囲む線は `--color-frame`。赤い文字は `--color-ai-chat-primary-text`
+- 主なボタンは `--color-ai-chat-primary` と `--color-ai-chat-primary-foreground`
 - 角丸は、小さいものから `--border-radius-4`・`--border-radius-8`・`--border-radius-12`
 - 本文は `--font-size-15` と `--line-height-body`
 
@@ -220,7 +225,7 @@ Noto Sans JP。読み込めないときは、OS の書体（ヒラギノ角ゴ�
 
 ```text
 apps/web/DESIGN.md の決まりで、会話の一覧の行を作って。
-面は --color-card、選ばれている行は --color-secondary の面に --color-frame の線。
+面は --color-card、選ばれている行は --color-selected の面に --color-frame の線。
 色の値は書かず、トークンだけを使う。
 ```
 

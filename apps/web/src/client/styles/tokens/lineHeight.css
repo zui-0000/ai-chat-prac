@@ -1,5 +1,11 @@
 /* 名前は % の値。単位を付けない倍率にして、文字サイズが変わっても追従させる */
 :root {
+  --line-height-100: 1;
+  --line-height-120: 1.2;
+  --line-height-130: 1.3;
+  --line-height-140: 1.4;
+  --line-height-150: 1.5;
+  --line-height-160: 1.6;
   --line-height-170: 1.7;
   --line-height-180: 1.8;
 
