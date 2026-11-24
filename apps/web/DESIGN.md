@@ -80,17 +80,18 @@ Noto Sans JP。読み込めないときは、OS の書体（ヒラギノ角ゴ�
 
 ### 3.4 文字サイズ・ウェイト階層
 
-| 役割                       | サイズ           | 太さ                | 行の高さ             | 字間                  |
-| -------------------------- | ---------------- | ------------------- | -------------------- | --------------------- |
-| 見出し（会話の名前）       | `--font-size-16` | `--font-weight-700` | `--line-height-body` | なし                  |
-| 本文（発言）               | `--font-size-15` | `--font-weight-400` | `--line-height-body` | なし                  |
-| 入力欄                     | `--font-size-15` | `--font-weight-400` | `--line-height-170`  | なし                  |
-| 一覧の行                   | `--font-size-14` | `--font-weight-400` | `--line-height-body` | なし                  |
-| ボタンの文字               | `--font-size-14` | `--font-weight-700` | `--line-height-body` | なし                  |
-| コード                     | `--font-size-13` | `--font-weight-400` | `--line-height-170`  | なし                  |
-| 補足（日付の区切り・案内） | `--font-size-12` | `--font-weight-400` | `--line-height-body` | なし                  |
-| 名前のラベル（発言の上）   | `--font-size-12` | `--font-weight-700` | `--line-height-body` | `--letter-spacing-14` |
-| アプリの名前（一覧の上）   | `--font-size-15` | `--font-weight-700` | `--line-height-body` | `--letter-spacing-2`  |
+| 役割                           | サイズ                             | 太さ                | 行の高さ                                 | 字間                  |
+| ------------------------------ | ---------------------------------- | ------------------- | ---------------------------------------- | --------------------- |
+| 見出し（会話の名前）           | `--font-size-16`                   | `--font-weight-700` | `--line-height-body`                     | なし                  |
+| 本文（発言）                   | `--font-size-15`                   | `--font-weight-400` | `--line-height-body`                     | なし                  |
+| 入力欄                         | `--font-size-15`                   | `--font-weight-400` | `--line-height-170`                      | なし                  |
+| 一覧の行                       | `--font-size-14`                   | `--font-weight-400` | `--line-height-body`                     | なし                  |
+| ボタンの文字                   | `--font-size-14`                   | `--font-weight-700` | `--line-height-body`                     | なし                  |
+| コード                         | `--font-size-13`                   | `--font-weight-400` | `--line-height-170`                      | なし                  |
+| 補足（日付の区切り・案内）     | `--font-size-12`                   | `--font-weight-400` | `--line-height-body`                     | なし                  |
+| 名前のラベル（発言の上）       | `--font-size-12`                   | `--font-weight-700` | `--line-height-body`                     | `--letter-spacing-14` |
+| アプリの名前（一覧の上）       | `--font-size-15`                   | `--font-weight-700` | `--line-height-body`                     | `--letter-spacing-2`  |
+| 大きな見出し（ページの題など） | `--font-size-18`〜`--font-size-32` | `--font-weight-700` | `--line-height-120`〜`--line-height-150` | なし                  |
 
 - 強調は、太さ（`--font-weight-700`）で付ける。選ばれている行だけは `--font-weight-500` にする
 - `--font-size-12` は、補足とラベルにだけ使う。読ませる文には使わない
@@ -99,7 +100,10 @@ Noto Sans JP。読み込めないときは、OS の書体（ヒラギノ角ゴ�
 
 - 行の高さは `--line-height-body`（`--line-height-180` と同じ値）。和文は欧文より行間を広く取る
 - 入力欄とコードだけは、少し詰めて `--line-height-170` にする
-- 行の高さの段は `--line-height-100` から `--line-height-180` まである。文字が大きいほど詰める（大きな見出しは `--line-height-120`〜`--line-height-150`）
+- 行の高さの段は `--line-height-100` から `--line-height-180` まである。文字が大きいほど詰める
+  - `--line-height-100`: 1 行だけのラベルやアイコン
+  - `--line-height-120`〜`--line-height-150`: 大きな見出し
+  - `--line-height-160`: ボタンやメニューの、短い文
 - 本文に字間は付けない。字間を付けるのは、英字の大文字で書く名前のラベル（`--letter-spacing-14`）と、アプリの名前（`--letter-spacing-2`）だけ
 
 ### 3.6 禁則処理・改行ルール
@@ -129,7 +133,7 @@ Noto Sans JP。読み込めないときは、OS の書体（ヒラギノ角ゴ�
 
 入力欄は、この画面でいちばん目立たせる。
 
-- 面は `--color-card`。暗い配色では、上のほうにだけ `--color-ai-chat-primary` を少し混ぜ、下へ向かって抜く。角丸は `--border-radius-12`
+- 面は `--color-card`。上のほうにだけ `--color-ai-chat-primary` を少し混ぜ、下へ向かって抜く。どちらの配色でも同じ割合で混ぜ、配色ごとに書き分けない。角丸は `--border-radius-12`
 - 囲む線は `--color-frame`。上のふちだけ線を `--border-width-edge` に太くし、その下に、`--color-ai-chat-secondary` を薄めた細い線を重ねる
 - 外に `--elevation-glow` の光を出す
 - 案内の文字は `--color-muted-foreground`
@@ -159,13 +163,17 @@ Noto Sans JP。読み込めないときは、OS の書体（ヒラギノ角ゴ�
 
 `--spacing-2` から `--spacing-64` まで。4px を基本の単位にする。関係のある要素は近づけ、別のまとまりとの間は広くあける。
 
-| 使いどころ               | トークン       |
-| ------------------------ | -------------- |
-| 一覧の行と行の間         | `--spacing-4`  |
-| ボタンの中のアイコンと字 | `--spacing-8`  |
-| 発言の中の段落と段落の間 | `--spacing-12` |
-| 面の内側の余白           | `--spacing-16` |
-| 発言と発言の間           | `--spacing-24` |
+| 使いどころ                               | トークン                       |
+| ---------------------------------------- | ------------------------------ |
+| 一覧の行と行の間                         | `--spacing-4`                  |
+| ボタンの中のアイコンと字                 | `--spacing-8`                  |
+| 発言の中の段落と段落の間                 | `--spacing-12`                 |
+| 面の内側の余白                           | `--spacing-16`                 |
+| 発言と発言の間                           | `--spacing-24`                 |
+| アイコンと字の、細かいずれの調整         | `--spacing-2`                  |
+| 入力欄のように、広めに取る面の内側       | `--spacing-20`                 |
+| 列の上下・面の外側の余白                 | `--spacing-32`                 |
+| ページの大きな区切り・ページの外側の余白 | `--spacing-40`〜`--spacing-64` |
 
 ### Container
 
