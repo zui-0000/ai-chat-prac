@@ -8,11 +8,13 @@
   "scripts": {
     "dev": "vp dev",
     "preview": "vp preview",
+    "storybook": "storybook dev -p 6006 --exact-port --no-open",
     "db:generate": "void db generate",
     "postinstall": "void prepare"
   },
   "dependencies": {
     "@ai-chat/contract": "workspace:*",
+    "@fontsource-variable/jetbrains-mono": "catalog:",
     "@orpc/client": "catalog:",
     "@orpc/contract": "catalog:",
     "@orpc/server": "catalog:",
@@ -23,6 +25,10 @@
     "react-dom": "catalog:"
   },
   "devDependencies": {
+    "@storybook/addon-a11y": "catalog:",
+    "@storybook/addon-docs": "catalog:",
+    "@storybook/addon-mcp": "catalog:",
+    "@storybook/react-vite": "catalog:",
     "@swc/core": "catalog:",
     "@tanstack/router-plugin": "catalog:",
     "@types/react": "catalog:",
@@ -32,6 +38,9 @@
     "jsdom": "catalog:",
     "msw": "catalog:",
     "oxc-transform-react": "catalog:",
+    "storybook": "catalog:",
+    "stylelint": "catalog:",
+    "stylelint-value-no-unknown-custom-properties": "catalog:",
     "tsrs": "catalog:",
     "typescript": "catalog:",
     "vite": "catalog:",

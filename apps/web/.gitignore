@@ -9,3 +9,5 @@ dist
 !.env.example
 *.tsbuildinfo
 .DS_Store
+storybook-static
+*storybook.log

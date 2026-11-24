@@ -60,6 +60,10 @@ jobs:
         if: ${{ !cancelled() && steps.setup.outcome == 'success' }}
         run: vp run lint:deps
 
+      - name: CSS の lint
+        if: ${{ !cancelled() && steps.setup.outcome == 'success' }}
+        run: vp run lint:css
+
       - name: テスト（client）
         if: ${{ !cancelled() && steps.setup.outcome == 'success' }}
         run: vp run test:client
@@ -71,6 +75,10 @@ jobs:
       - name: ビルド
         if: ${{ !cancelled() && steps.setup.outcome == 'success' }}
         run: vp run build
+
+      - name: Storybook のビルド
+        if: ${{ !cancelled() && steps.setup.outcome == 'success' }}
+        run: vp run build-storybook
 
       # キャッシュに入るのは成功したタスクだけなので、どれかが落ちても保存する。キャッシュは書き換えられないので、キーは実行ごとに変える
       - name: Vite Task のキャッシュを保存する
