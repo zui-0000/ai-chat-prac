@@ -20,3 +20,5 @@ AI チャットを作りながら学ぶ、練習用のリポジトリ。pnpm の
 | `vp run lint:deps`    | import の向きの検査                              |
 | `vp run lint:actions` | GitHub Actions のワークフローの検査（uv が要る） |
 | `vp run test`         | 単体テスト                                       |
+| `vp run lint:css`     | CSS の lint（Stylelint）                         |
+| `vp run storybook`    | Storybook（部品とトークンの見本）                |

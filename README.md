@@ -60,7 +60,10 @@ PR にラベルを貼ると、GitHub Actions で Claude がレビューする。
 | client だけテストする            | `vp run test:client`                  | `apps/web/src/client` の `__tests__/`                                      |
 | server だけテストする            | `vp run test:server`                  | `apps/web/src/server` の `__tests__/`                                      |
 | import の向きを検査する          | `vp run lint:deps`                    | FE から BE を import していないか（`apps/web/.dependency-cruiser.jsonc`）  |
+| CSS を検査する                   | `vp run lint:css`                     | 色の値や、定義の無い CSS 変数を書いていないか（Stylelint）                 |
 | ワークフローを検査する           | `vp run lint:actions`                 | GitHub Actions の危ない書き方（zizmor）。uv が要る                         |
+| Storybook を起動する             | `vp run storybook`                    | <http://localhost:6006/>。部品とトークンの見本                             |
+| Storybook をビルドする           | `vp run build-storybook`              | 出力先は `apps/web/storybook-static/`                                      |
 | 依存を足す                       | `vp add <名前> --filter <パッケージ>` | `<パッケージ>` は `web` か `@ai-chat/contract`。版は catalog に固定で入る  |
 | DB のマイグレーションを作る      | `vp run db:generate`                  | `apps/web/src/server/db/schema.ts` から作る                                |
 | タスクのキャッシュを消す         | `vp cache clean`                      | 検査・テスト・ビルドは、変わっていなければ前の結果を出す                   |
