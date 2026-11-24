@@ -1,0 +1,549 @@
+/*
+ * kiso.css v1.2.4（https://github.com/tak-dcxi/kiso.css）を写し、コメントを日本語にしたもの。
+ * 何が指定されているかを、このファイルだけで読めるようにするため。
+ * 元と変えたのは、h1 の上下の余白を 0 にしたところだけ。
+ *
+ * ほとんどを :where() で書いて強さを 0 にしているので、部品のクラスに負ける。足すときも :where() で書く。
+ * 例外は、次のもの。
+ * - ::placeholder などの疑似要素は、要素の名前と同じ強さを持つ（部品のクラスには負ける）
+ * - 必ず効かせるものには !important を付けている（[hidden]、[tabindex="-1"]:focus、閉じている dialog と popover）
+ *
+ * main.css は、このファイルを reset の層（@layer）に入れて読み込む。なので、:where() の外のものも、層に入れていない部品の CSS には負ける。
+ * 逆に !important は、層に入れたことで、部品から !important を付けても勝てなくなる。
+ *
+ *
+ * MIT License
+ *
+ * Copyright (c) 2025 Takahiro Arai
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+/* ======================================================
+ * すべての要素
+ * ====================================================== */
+*,
+::before,
+::after {
+  /*
+   * width や height に、padding と border を含める。
+   * width: 100%; を指定したときにはみ出さないので、スタイルを書きやすくなる
+   */
+  box-sizing: border-box;
+}
+
+/* ======================================================
+ * 文書と body
+ * ====================================================== */
+:where(:root) {
+  /* Safari は font-family の指定がないと明朝体になるので、ゴシック体にしておく */
+  font-family: sans-serif;
+
+  /*
+   * 読みやすさのために、段落の行の高さは文字の大きさの 1.5 倍以上にする。
+   * @see https://waic.jp/translations/WCAG21/#visual-presentation
+   */
+  line-height: 1.5;
+
+  /* 約物（「。」や括弧）が続くときの余分な空きと、行の頭の空きを詰める */
+  text-spacing-trim: trim-start;
+
+  /* 和文と英数字の間を少しあけて、読みやすくする */
+  text-autospace: normal;
+
+  /* 厳しい禁則を使う（「。」や小さい「っ」を行の頭に置かない） */
+  line-break: strict;
+
+  /* 長い英単語を途中で折り返す。anywhere なら、flex や grid の中でもはみ出さない */
+  overflow-wrap: anywhere;
+
+  /* スマートフォンのブラウザが、文字の大きさを勝手に変えないようにする */
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+
+  /*
+   * スクロールバーが出たり消えたりしても、レイアウトがずれないようにする。
+   * Chrome 145 以降は、vw がスクロールバーの幅を除いて計算されるので、横スクロールも防げる
+   */
+  scrollbar-gutter: stable;
+
+  /* iOS で、タップしたときのハイライトを消す */
+  -webkit-tap-highlight-color: transparent;
+}
+
+:where(body) {
+  /* フッターを画面の一番下に置けるよう、少なくとも画面の高さを確保する（dvb はスマートフォンのアドレスバーの増減に追従する） */
+  min-block-size: 100dvb;
+
+  /* ブラウザが付ける margin は要らないことが多いので消す */
+  margin: unset;
+}
+
+/* ======================================================
+ * 見出しと区切り
+ * ====================================================== */
+:where(:is(h1, h2, h3, h4, h5, h6):lang(en)) {
+  /* 英語で、最後の行が 1 単語だけにならないようにする */
+  text-wrap: pretty;
+}
+
+:where(h1) {
+  /* 余白は部品とページの側で決めるので、ほかの見出しと同じく 0 にする（kiso.css は 0.67em を残している。ここだけ元と違う） */
+  margin-block: 0;
+
+  /*
+   * section などの中の h1 で、ブラウザの開発ツールに出る警告を避けるため、文字の大きさを指定する。
+   * @see https://html.spec.whatwg.org/#sections-and-headings
+   */
+  font-size: 2em;
+}
+
+:where(h2, h3, h4, h5, h6) {
+  /* ブラウザが付ける上下の余白は要らないことが多いので消す */
+  margin-block: unset;
+}
+
+:where(search) {
+  /* <search> は Safari 17 から。対応していないブラウザでも、インラインにならないようにする */
+  display: block flow;
+}
+
+/* ======================================================
+ * 文章のまとまり
+ * ====================================================== */
+:where(p, blockquote, figure, pre, address, ul, ol, dl, menu) {
+  /* ブラウザが付ける上下の余白は要らないことが多いので消す */
+  margin-block: unset;
+}
+
+:where(blockquote, figure) {
+  /* ブラウザが付ける左右の余白は要らないことが多いので消す */
+  margin-inline: unset;
+}
+
+:where(p:lang(en)) {
+  /* 英語で、最後の行が 1 単語だけにならないようにする（読みにくいとされている） */
+  text-wrap: pretty;
+}
+
+:where(address:lang(ja)) {
+  /* 日本語では斜体を使わないので、元に戻す */
+  font-style: unset;
+}
+
+:where(ul, ol, menu) {
+  /* ブラウザが付ける左の余白は要らないことが多いので消す */
+  padding-inline-start: unset;
+
+  /*
+   * Safari では list-style: none にすると、読み上げソフトにリストだと伝わらなくなる。
+   * list-style-type: "" なら、伝わったまま黒丸だけを消せる。
+   * @see https://matuzo.at/blog/2023/removing-list-styles-without-affecting-semantics
+   */
+  list-style-type: "";
+}
+
+:where(dt) {
+  /* <dt> は太字で見せることが多いので、初めから太くする */
+  font-weight: bolder;
+}
+
+:where(dd) {
+  /* ブラウザが付ける左の余白は要らないことが多いので消す */
+  margin-inline-start: unset;
+}
+
+:where(pre) {
+  /*
+   * text-spacing-trim は、初めの値でも <pre> の空きに影響し、書体によって見た目が変わる。
+   * 桁がそろうよう space-all を指定し、親から引き継がないようにする
+   */
+  text-spacing-trim: space-all;
+
+  /* 等幅の書体で桁がずれるので、和文と英数字の間をあけない */
+  text-autospace: no-autospace;
+}
+
+@media print {
+  :where(pre) {
+    /* 印刷では、紙からはみ出さないよう折り返す */
+    text-wrap-mode: unset;
+  }
+}
+
+/* ======================================================
+ * 文章の中の要素
+ * ====================================================== */
+:where(em:lang(ja)) {
+  /* 日本語の強調は太字で表すことが多いので、太くする */
+  font-weight: bolder;
+}
+
+:where(:is(i, cite, em, dfn):lang(ja)) {
+  /* 日本語では斜体を使わないので、元に戻す */
+  font-style: unset;
+}
+
+:where(u, s, del, ins) {
+  /* 下線が続くときに、線だけを少し離す */
+  text-decoration-inset: auto;
+}
+
+:where(code, kbd, samp) {
+  /*
+   * 等幅の書体を指定する（Tailwind と同じ並び）。
+   * @see https://tailwindcss.com/docs/font-family
+   */
+  font-family:
+    ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New",
+    monospace;
+
+  /* 書体の機能の設定は、等幅の書体に悪さをすることがあるので、親から引き継がない */
+  font-feature-settings: initial;
+  font-variation-settings: initial;
+
+  /* ブラウザが付ける文字の大きさを消して、親と同じ大きさにする */
+  font-size: unset;
+
+  /* プログラム用の書体（Fira Code など）で、=> が 1 つの記号（⇒）にならないようにする */
+  font-variant-ligatures: none;
+}
+
+:where(abbr[title]) {
+  /*
+   * title 付きの <abbr> は、読み上げなどの対応がばらばらで、一部の人にしか届かない。
+   * どのブラウザでも点線の下線を出し（Safari のバグへの対応）、カーソルを変えて、説明があることを示す。
+   * @see https://adrianroselli.com/2024/01/using-abbr-element-with-title-attribute.html
+   */
+  text-decoration-line: underline;
+  text-decoration-style: dotted;
+  text-decoration-inset: auto;
+  cursor: help;
+}
+
+:where(time) {
+  /* 日付の書き方には空きを入れないので、和文と英数字の間をあけない */
+  text-autospace: no-autospace;
+}
+
+@media (forced-colors: active) {
+  :where(mark) {
+    /*
+     * ハイコントラストモードで、<mark> の色が変わらないことがあるので、システムの色を使う。
+     * @see https://adrianroselli.com/2017/12/tweaking-text-level-styles.html#MarkWHCM
+     */
+    background-color: Highlight;
+    color: HighlightText;
+  }
+}
+
+@media print {
+  :where(mark) {
+    /*
+     * 白黒で印刷すると、背景の色だけでは見分けられない。文字に合わせた枠も付ける。
+     * @see https://adrianroselli.com/2017/12/tweaking-text-level-styles.html#MarkPrint
+     */
+    border-width: 1px;
+    border-style: dotted;
+  }
+}
+
+/* ======================================================
+ * リンク
+ * ====================================================== */
+:where(a) {
+  /*
+   * ブラウザが付ける色はそのまま使わないことが多いので消して、親の色を引き継ぐ。
+   * iOS の Firefox では、リンクでなくてもブラウザの文字の色が付くことがある。
+   * @see https://github.com/darkreader/darkreader/issues/9836
+   */
+  color: unset;
+}
+
+:where(a:any-link) {
+  /* 下線は邪魔になることが多いので、初めは消す。要るときは text-decoration-line: revert; で戻す */
+  text-decoration-line: unset;
+
+  /* 下線の太さを、書体が決めた太さにする */
+  text-decoration-thickness: from-font;
+
+  /* 下線が続くときに、線だけを少し離す */
+  text-decoration-inset: auto;
+}
+
+/* ======================================================
+ * 画像や動画など
+ * ====================================================== */
+:where(img, svg, picture, video, audio, canvas, model, iframe, embed, object) {
+  /* 親からはみ出さないよう、最大の幅を 100% にする */
+  max-inline-size: 100%;
+
+  /* 下に余計な隙間ができないようにする */
+  vertical-align: bottom;
+}
+
+:where(img, svg, picture, video, canvas, model, iframe, embed, object) {
+  /*
+   * 高さは中身に合わせる。
+   * <audio> は高さが auto だと消えてしまうので、除いている。
+   * @see https://github.com/tak-dcxi/kiso.css/issues/5
+   */
+  block-size: auto;
+}
+
+:where(iframe) {
+  /* ブラウザが付ける枠は要らないことが多いので消す */
+  border: unset;
+}
+
+/* ======================================================
+ * 表
+ * ====================================================== */
+:where(table) {
+  /* セルの枠線を重ねて 1 本にする */
+  border-collapse: collapse;
+}
+
+:where(caption, th) {
+  /* ブラウザが付ける文字の揃えは要らないことが多いので消す */
+  text-align: unset;
+}
+
+:where(caption:lang(en)) {
+  /* 英語で、最後の行が 1 単語だけにならないようにする */
+  text-wrap: pretty;
+}
+
+/* ======================================================
+ * フォーム
+ * ====================================================== */
+:where(button, input, select, textarea),
+::file-selector-button {
+  /*
+   * 枠を付けて使うことが多いので、初めから 1px の枠を付ける。スタイルを書く前でも見分けられる。
+   * 枠を消すときは、ハイコントラストモードのために、border: none ではなく border-color: transparent にする
+   */
+  border-width: 1px;
+  border-style: solid;
+
+  /* ブラウザが付けるものは要らないことが多いので消して、親から引き継ぐ */
+  border-color: unset;
+  border-radius: unset;
+  color: unset;
+  font: unset;
+  letter-spacing: unset;
+  text-align: unset;
+}
+
+:where(input:is([type="radio" i], [type="checkbox" i])) {
+  /* ブラウザが付ける margin は要らないことが多いので消す */
+  margin: unset;
+}
+
+:where(input[type="file" i]) {
+  /* 枠は要らないことが多いので消す */
+  border: unset;
+}
+
+:where(input[type="search" i]) {
+  /* macOS で検索欄の角が丸くなるのを消し、背景の色をそろえる */
+  -webkit-appearance: textfield;
+}
+
+@supports (-webkit-touch-callout: none) {
+  :where(input[type="search" i]) {
+    /* iOS で背景の色をそろえる */
+    background-color: Canvas;
+  }
+}
+
+:where(
+  input:is([type="tel" i], [type="url" i], [type="email" i], [type="number" i]):not(
+      :placeholder-shown
+    )
+) {
+  /*
+   * 電話番号や URL などは、右から左に書く言語でも左揃えのままにする。
+   * 値が入っているときだけ（プレースホルダーは右揃えのほうがよい）。
+   * @see https://rtlstyling.com/posts/rtl-styling#form-inputs
+   */
+  direction: ltr;
+}
+
+:where(textarea) {
+  /* Firefox が付ける上下の余白は要らないことが多いので消す */
+  margin-block: unset;
+
+  /* 縦にだけ大きさを変えられるようにする */
+  resize: block;
+}
+
+:where(
+  input:not([type="button" i], [type="submit" i], [type="reset" i]),
+  textarea,
+  [contenteditable]
+) {
+  /* 入力中に空きが入ると動きがおかしくなることがあるので、和文と英数字の間をあけない */
+  text-autospace: no-autospace;
+}
+
+:where(button, input:is([type="button" i], [type="submit" i], [type="reset" i])),
+::file-selector-button {
+  /* ブラウザが付ける背景の色は要らないことが多いので消す */
+  background-color: unset;
+}
+
+:where(
+  button,
+  input:is([type="button" i], [type="submit" i], [type="reset" i]),
+  [role="tab" i],
+  [role="button" i],
+  [role="option" i]
+),
+::file-selector-button {
+  /*
+   * iOS で、ボタンを 2 回続けてタップすると画面が拡大されてしまうのを止める。
+   * ライブラリ（Swiper など）が、これらの role を付けた div をボタンにすることがあるので、role にも付ける
+   */
+  touch-action: manipulation;
+}
+
+:where(
+  button:enabled,
+  label[for],
+  select:enabled,
+  input:is(
+      [type="button" i],
+      [type="submit" i],
+      [type="reset" i],
+      [type="radio" i],
+      [type="checkbox" i]
+    ):enabled,
+  [role="tab" i],
+  [role="button" i],
+  [role="option" i]
+),
+:where(:enabled)::file-selector-button {
+  /* 押せることが分かるよう、カーソルを指の形にする */
+  cursor: pointer;
+}
+
+:where(fieldset) {
+  /*
+   * 中身に押し広げられて、はみ出さないようにする（初めの値は min-content）。
+   * @see https://github.com/twbs/bootstrap/issues/12359
+   */
+  min-inline-size: 0;
+
+  /* ブラウザが付けるものは要らないことが多いので消す */
+  margin-inline: unset;
+  padding: unset;
+  border: unset;
+}
+
+:where(legend) {
+  /* ブラウザが付ける左右の余白は要らないことが多いので消す */
+  padding-inline: unset;
+}
+
+:where(progress) {
+  /* 縦の揃えを初めの値に戻す */
+  vertical-align: unset;
+}
+
+::placeholder {
+  /* プレースホルダーの濃さをそろえる（Firefox は初めから薄い） */
+  opacity: unset;
+}
+
+/* ======================================================
+ * 開け閉めする要素
+ * ====================================================== */
+:where(summary) {
+  /* 初めの三角の印は要らないことが多いので消す */
+  list-style-type: "";
+
+  /* 押せることが分かるよう、カーソルを指の形にする */
+  cursor: pointer;
+}
+
+:where(summary)::-webkit-details-marker {
+  /* Safari 18.4（2025 年 4 月）より前は、この書き方でないと三角の印が消えない */
+  display: none;
+}
+
+:where(dialog, [popover]) {
+  /* 中をスクロールしきったときに、後ろのページまで一緒にスクロールされないようにする */
+  overscroll-behavior-block: contain;
+
+  /* ブラウザが付けるものは要らないことが多いので消す */
+  padding: unset;
+  border: unset;
+}
+
+:where(dialog:not([open], [popover]), [popover]:not(:popover-open)) {
+  /* display を指定すると、閉じていても見えてしまう。閉じている間は必ず隠す */
+  display: none !important;
+}
+
+:where(dialog) {
+  /* 大きさはデザインで決めるので、ブラウザが付ける最大の大きさを消す（全画面にするときに邪魔になる） */
+  max-inline-size: unset;
+  max-block-size: unset;
+}
+
+:where(dialog)::backdrop {
+  /*
+   * 後ろの幕の色をそろえる。
+   * reset.css はトークンを使わないので、Stylelint の決まりの例外にする
+   */
+  /* stylelint-disable-next-line function-disallowed-list */
+  background-color: oklch(0% 0 0deg / 30%);
+}
+
+:where([popover]) {
+  /* <dialog> の margin は中央に置くのに役立つが、popover はアンカーで位置を決めることが多く、邪魔になる */
+  margin: unset;
+}
+
+/* ======================================================
+ * フォーカスの輪
+ * ====================================================== */
+:where(:focus-visible) {
+  /* 中身とフォーカスの輪の間をあける */
+  outline-offset: 3px;
+}
+
+[tabindex="-1"]:focus {
+  /* プログラムからフォーカスした、もともとフォーカスできない要素には、輪を出さない */
+  outline: none !important;
+}
+
+/* ======================================================
+ * そのほか
+ * ====================================================== */
+:where(:disabled, [aria-disabled="true" i]) {
+  /* 押せないことが分かるよう、カーソルを初めの形にする */
+  cursor: default;
+}
+
+[hidden]:not([hidden="until-found" i]) {
+  /* hidden を付けた要素は、必ず隠す */
+  display: none !important;
+}

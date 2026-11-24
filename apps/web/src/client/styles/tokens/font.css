@@ -1,11 +1,12 @@
 /* 文字サイズの名前は、ブラウザの文字サイズが初期設定（16px）のときの px の値 */
 :root {
-  /* 和文を先に書く。欧文も同じ書体で出して、和文と欧文の太さと大きさをそろえる */
+  /* 和文は OS の書体を使う（読み込まずに済み、出たあとに書体が差し替わってずれることもない） */
   --font-family-sans:
-    "Noto Sans JP", "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Yu Gothic UI", "Meiryo",
-    system-ui, sans-serif;
+    "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Yu Gothic UI", "Meiryo", "Noto Sans JP",
+    "Noto Sans CJK JP", system-ui, sans-serif;
+  /* 等幅は OS ごとの差が大きいので、JetBrains Mono を配る（main.css が読み込む） */
   --font-family-mono:
-    "JetBrains Mono", ui-monospace, "SFMono-Regular", "Menlo", "Consolas", monospace;
+    "JetBrains Mono Variable", ui-monospace, "SFMono-Regular", "Menlo", "Consolas", monospace;
 
   --font-family-body: var(--font-family-sans);
 

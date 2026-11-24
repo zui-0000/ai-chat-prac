@@ -1,0 +1,43 @@
+/*
+ * 層の順番。後ろの層ほど強い。層に入れていない CSS（部品の CSS Modules）は、どの層よりも強いので、
+ * 部品のクラスは、セレクターの強さに関係なく、トークン・reset.css・土台に勝つ
+ */
+@layer tokens, reset, base;
+
+@import "./tokens/color.css" layer(tokens);
+@import "./tokens/font.css" layer(tokens);
+@import "./tokens/lineHeight.css" layer(tokens);
+@import "./tokens/letterSpacing.css" layer(tokens);
+@import "./tokens/spacing.css" layer(tokens);
+@import "./tokens/size.css" layer(tokens);
+@import "./tokens/borderWidth.css" layer(tokens);
+@import "./tokens/borderRadius.css" layer(tokens);
+@import "./tokens/elevation.css" layer(tokens);
+
+@import "./reset.css" layer(reset);
+
+/* 等幅の書体。和文は OS の書体を使うので読み込まない */
+@import "@fontsource-variable/jetbrains-mono";
+
+/* 部品の見た目は、部品のフォルダの CSS Modules に書く。ここにはクラスを置かない */
+@layer base {
+  /*
+   * ダイアログなどのポップアップは、#root の外（body の直下）に出る。
+   * 重なりの区切りを作り、アプリの中の z-index がポップアップより上に出ないようにする
+   */
+  #root {
+    isolation: isolate;
+  }
+
+  /* reset.css は OS の等幅を並べるので、配っている等幅の書体に替える */
+  :where(code, kbd, samp, pre) {
+    font-family: var(--font-family-mono);
+  }
+
+  body {
+    font-family: var(--font-family-body);
+    line-height: var(--line-height-body);
+    color: var(--color-foreground);
+    background-color: var(--color-background);
+  }
+}
