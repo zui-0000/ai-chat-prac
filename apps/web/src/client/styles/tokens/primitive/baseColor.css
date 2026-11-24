@@ -1,0 +1,31 @@
+/* 色の材料。部品からは使わず、../color.css の意味のトークンから指す。使う段だけを置き、要るときに足す */
+:root {
+  --color-primitive-white: #ffffff;
+
+  /* 赤みのある灰色。暗い側は、面の重なりを明るさの差で見せるので、細かく刻む */
+  --color-primitive-gray-50: #f6f2f0;
+  --color-primitive-gray-100: #f3eeec;
+  --color-primitive-gray-200: #e3d9d6;
+  --color-primitive-gray-400: #a8a09f;
+  --color-primitive-gray-600: #6b6160;
+  --color-primitive-gray-800: #3a2e30;
+  --color-primitive-gray-850: #2a2022;
+  --color-primitive-gray-900: #211a1b;
+  --color-primitive-gray-925: #1a1517;
+  --color-primitive-gray-950: #111014;
+  --color-primitive-gray-975: #0b0a0d;
+
+  --color-primitive-red-50: #fbe9e7;
+  --color-primitive-red-400: #f05046;
+  --color-primitive-red-500: #e0312b;
+  --color-primitive-red-600: #d42a24;
+  --color-primitive-red-700: #c9261f;
+  --color-primitive-red-800: #b81f1a;
+  --color-primitive-red-900: #3a1a16;
+  --color-primitive-red-950: #2a1617;
+
+  --color-primitive-orange-400: #ff963c;
+
+  --color-primitive-green-400: #46e08a;
+  --color-primitive-green-600: #1f9d57;
+}

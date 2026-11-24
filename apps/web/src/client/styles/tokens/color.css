@@ -1,0 +1,80 @@
+/* TODO: tokens/ の CSS は、まだどこからも読み込んでいない。スタイルの土台（全体の入口の CSS）を作るときに、tokens/ の下を全部読み込む */
+@import "./primitive/baseColor.css";
+
+/*
+ * 部品が使う色。使い分けは apps/web/DESIGN.md にある。
+ * -foreground は、その色の上にのせる文字の色。背景と文字は組で決める。
+ * コメントの比は、明るいとき・暗いときのコントラスト。文字は 4.5:1 以上、形を見せる線と印は 3:1 以上にする
+ */
+:root {
+  color-scheme: light dark;
+
+  /* ページの土台と文字（15.4:1・16.5:1） */
+  --color-background: light-dark(var(--color-primitive-gray-50), var(--color-primitive-gray-950));
+  --color-foreground: light-dark(var(--color-primitive-gray-900), var(--color-primitive-gray-100));
+
+  /* 土台の上にのる面。会話の一覧・見出しの帯・発言のカード（17.1:1・15.7:1） */
+  --color-card: light-dark(var(--color-primitive-white), var(--color-primitive-gray-925));
+  --color-card-foreground: var(--color-foreground);
+
+  /* 控えめな面（文の中のコードなど）と、補足の文字（面の上で 6.0:1・7.0:1、土台の上で 5.4:1・7.4:1） */
+  --color-muted: light-dark(var(--color-primitive-gray-100), var(--color-primitive-gray-850));
+  --color-muted-foreground: light-dark(
+    var(--color-primitive-gray-600),
+    var(--color-primitive-gray-400)
+  );
+
+  /* 主な操作のボタンの塗り（5.6:1） */
+  --color-primary: var(--color-primitive-red-700);
+  --color-primary-foreground: var(--color-primitive-white);
+
+  /* 赤を文字に使うときの色。塗りの赤は、暗い面の上では文字として読めない（面の上で 6.5:1・5.1:1） */
+  --color-primary-text: light-dark(var(--color-primitive-red-800), var(--color-primitive-red-400));
+
+  /* 選ばれている状態の面（14.6:1・14.9:1） */
+  --color-secondary: light-dark(var(--color-primitive-red-50), var(--color-primitive-red-950));
+  --color-secondary-foreground: var(--color-foreground);
+
+  /* 面を囲む赤い線と、発言のカードのふちの線（面の上で 5.1:1・4.0:1、入力欄の面の上で 5.1:1・3.5:1） */
+  --color-frame: light-dark(var(--color-primitive-red-600), var(--color-primitive-red-500));
+
+  /* 入力欄の赤い線に重ねる、オレンジの細い線。飾りなので、コントラストは求めない */
+  --color-frame-highlight: light-dark(
+    color-mix(in srgb, var(--color-primitive-orange-400) 80%, transparent),
+    color-mix(in srgb, var(--color-primitive-orange-400) 45%, transparent)
+  );
+
+  /* 面の中を区切る、飾りの線。形を見せる線には使わない */
+  --color-border: light-dark(var(--color-primitive-gray-200), var(--color-primitive-gray-800));
+
+  /*
+   * フォーカスの輪。赤い線や赤いボタンに付いても見分けられるように、赤でなく文字の色にする
+   * （赤い線に対して 3.4:1・3.9:1、赤いボタンに対して 3.1:1・4.8:1）
+   */
+  --color-ring: var(--color-foreground);
+
+  /* 返答が流れている途中の印。緑を使うのは、ここだけ（面の上で 3.5:1・10.6:1） */
+  --color-streaming: light-dark(var(--color-primitive-green-600), var(--color-primitive-green-400));
+
+  /*
+   * コードの箱。どちらの配色でも暗いままにするので、値を切り替えない（文字は 17.2:1、補足の文字は 7.7:1）。
+   * 箱には color-scheme: dark を付ける。中で使うトークン（フォーカスの輪など）が、暗い配色の値になる
+   */
+  --color-code: var(--color-primitive-gray-975);
+  --color-code-foreground: var(--color-primitive-gray-100);
+  --color-code-muted-foreground: var(--color-primitive-gray-400);
+  --color-code-border: var(--color-primitive-gray-800);
+
+  /* 入力欄の面。暗い配色では、上から下へ赤みを抜く（文字は 13.6:1 以上、案内の文字は 6.0:1 以上） */
+  --color-composer-top: light-dark(var(--color-primitive-white), var(--color-primitive-red-900));
+  --color-composer-bottom: light-dark(
+    var(--color-primitive-white),
+    var(--color-primitive-gray-925)
+  );
+
+  /* 入力欄の外に出す、赤い光 */
+  --color-glow: light-dark(
+    color-mix(in srgb, var(--color-primitive-red-600) 12%, transparent),
+    color-mix(in srgb, var(--color-primitive-red-500) 14%, transparent)
+  );
+}

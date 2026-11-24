@@ -1,0 +1,7 @@
+/* 名前は % の値。単位を付けない倍率にして、文字サイズが変わっても追従させる */
+:root {
+  --line-height-170: 1.7;
+  --line-height-180: 1.8;
+
+  --line-height-body: var(--line-height-180);
+}

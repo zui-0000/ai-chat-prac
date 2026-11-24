@@ -1,0 +1,5 @@
+/* 名前は em の 100 倍の値 */
+:root {
+  --letter-spacing-2: 0.02em;
+  --letter-spacing-14: 0.14em;
+}
