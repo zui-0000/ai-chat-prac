@@ -1,0 +1,4 @@
+/* 面の重なりは線と面の明るさで見せるので、影は入力欄の光だけにする */
+:root {
+  --elevation-glow: 0 8px 24px color-mix(in srgb, var(--color-ai-chat-primary) 13%, transparent);
+}

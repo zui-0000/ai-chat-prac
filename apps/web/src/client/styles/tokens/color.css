@@ -1,0 +1,63 @@
+/* TODO: tokens/ の CSS は、まだどこからも読み込んでいない。スタイルの土台（全体の入口の CSS）を作るときに、tokens/ の下を全部読み込む */
+@import "./primitive/baseColor.css";
+
+/* 置くのは、このサイトの色と、2 つ以上の部品が使う役割の色だけ。部品 1 つだけの色は、その部品の CSS で、ここの色から作る */
+:root {
+  color-scheme: light dark;
+
+  /* ------------------------------------------------------------
+   * このサイトの色
+   * 下の役割の色は、ここを指す
+   * ------------------------------------------------------------ */
+
+  /* 赤。線と、主な操作のボタンの塗り */
+  --color-ai-chat-primary: light-dark(
+    var(--color-primitive-red-600),
+    var(--color-primitive-red-500)
+  );
+  --color-ai-chat-primary-foreground: var(--color-primitive-white);
+  /* 赤を文字に使うときは、こちら。上の赤は、暗い面の上で文字として読めない */
+  --color-ai-chat-primary-text: light-dark(
+    var(--color-primitive-red-800),
+    var(--color-primitive-red-400)
+  );
+
+  /* オレンジ。赤い線に添える */
+  --color-ai-chat-secondary: var(--color-primitive-orange-400);
+
+  /* 緑。使うのは、返答が流れている途中の印だけ */
+  --color-ai-chat-accent: light-dark(
+    var(--color-primitive-green-600),
+    var(--color-primitive-green-400)
+  );
+
+  /* ------------------------------------------------------------
+   * 土台と面
+   * -foreground は、その面の上にのせる文字の色
+   * ------------------------------------------------------------ */
+
+  --color-background: light-dark(var(--color-primitive-gray-50), var(--color-primitive-gray-950));
+  --color-foreground: light-dark(var(--color-primitive-gray-900), var(--color-primitive-gray-100));
+
+  --color-card: light-dark(var(--color-primitive-white), var(--color-primitive-gray-925));
+  --color-card-foreground: var(--color-foreground);
+
+  --color-muted: light-dark(var(--color-primitive-gray-100), var(--color-primitive-gray-850));
+  --color-muted-foreground: light-dark(
+    var(--color-primitive-gray-600),
+    var(--color-primitive-gray-400)
+  );
+
+  --color-selected: light-dark(var(--color-primitive-red-50), var(--color-primitive-red-950));
+  --color-selected-foreground: var(--color-foreground);
+
+  /* ------------------------------------------------------------
+   * 線
+   * ------------------------------------------------------------ */
+
+  --color-frame: var(--color-ai-chat-primary);
+  --color-border: light-dark(var(--color-primitive-gray-200), var(--color-primitive-gray-800));
+
+  /* 赤い線や赤いボタンに付いても見分けられるように、赤でなく文字の色にする */
+  --color-ring: var(--color-foreground);
+}

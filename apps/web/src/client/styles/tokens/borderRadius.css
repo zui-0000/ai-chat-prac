@@ -1,0 +1,6 @@
+/* 名前は、ブラウザの文字サイズが初期設定（16px）のときの px の値 */
+:root {
+  --border-radius-4: 0.25rem;
+  --border-radius-8: 0.5rem;
+  --border-radius-12: 0.75rem;
+}

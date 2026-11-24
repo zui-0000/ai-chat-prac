@@ -1,0 +1,8 @@
+/* 部品そのものの大きさ。値でなく、何に使うかの名前を付ける。部品と部品の間は spacing.css から選ぶ */
+:root {
+  /* 押せる部品の最小の大きさ。ブラウザの文字サイズを小さくしている人でも、44px を下回らないようにする */
+  --size-touch-target: max(2.75rem, 44px);
+
+  --size-sidebar: 16.25rem;
+  --size-message-column: 48.75rem;
+}

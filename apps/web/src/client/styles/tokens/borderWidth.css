@@ -1,0 +1,6 @@
+/* 線の太さ。値でなく、何に使うかの名前を付ける。文字サイズを変えても太さを変えないので、px で書く */
+:root {
+  --border-width-frame: 1px;
+  --border-width-edge: 3px;
+  --border-width-ring: 2px;
+}
