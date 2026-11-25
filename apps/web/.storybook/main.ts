@@ -1,7 +1,5 @@
 import type { StorybookConfig } from "@storybook/react-vite";
 
-import { CSS_TARGET } from "../vite.config.ts";
-
 // apps/web/vite.config.ts のうち、Storybook では動かさない plugin（名前の始まり）。
 // Void（中で Cloudflare の plugin も足す）は Worker と DB を立ち上げ、TanStack Router はルートの型を書き出し、
 // MSW は Service Worker を配る。どれも部品とトークンを見るのに要らず、Cloudflare の plugin は Storybook の設定では起動できない
@@ -20,7 +18,6 @@ const config: StorybookConfig = {
   },
   viteFinal: (viteConfig) => ({
     ...viteConfig,
-    build: { ...viteConfig.build, cssTarget: CSS_TARGET },
     plugins: viteConfig.plugins
       ?.flat()
       .filter(
