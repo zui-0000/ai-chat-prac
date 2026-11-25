@@ -52,10 +52,10 @@ const preview: Preview = {
       theme: window.matchMedia("(prefers-color-scheme: dark)").matches ? themes.dark : themes.light,
     },
     options: {
-      // サイドバーの並び。いちばん探される部品を上にし、トークンは main.css が読み込む順、部品から使わない材料を最後にする
+      // サイドバーの並び。はじめのページ、いちばん探される部品の順にし、トークンは main.css が読み込む順、部品から使わない材料を最後にする
       storySort: {
         order: [
-          "はじめに",
+          "AI Chat - UI Component Library",
           "UI",
           "Chat",
           "DesignTokens",
