@@ -4,9 +4,8 @@ import { msw } from "msw/vite";
 import { defineConfig } from "vite-plus";
 import { voidPlugin } from "void";
 
-// CSS を書き換える先のブラウザ。決まりで使ってよいブラウザ（Baseline の Newly available）に合わせる。
-// 既定の Widely available のままだと、CSS の light-dark() が OS の設定（prefers-color-scheme）でしか切り替わらない形に書き換えられ、
-// <html> や部品に付けた color-scheme（Storybook の配色の切り替え、暗いままのコードの箱）が効かない。
+// CSS を書き換える先のブラウザ（Baseline の Newly available）。
+// 既定のままだと light-dark() が OS の設定でしか切り替わらない形に書き換えられ、color-scheme が効かない。
 // Storybook は build を引き継がないので、.storybook/main.ts もこれを読む
 export const CSS_TARGET = ["chrome123", "edge123", "firefox120", "safari17.5"];
 
