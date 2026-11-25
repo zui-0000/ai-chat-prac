@@ -26,7 +26,7 @@
 
 .name {
   font-size: var(--font-size-14);
-  white-space: nowrap;
+  overflow-wrap: anywhere;
 }
 
 .value {

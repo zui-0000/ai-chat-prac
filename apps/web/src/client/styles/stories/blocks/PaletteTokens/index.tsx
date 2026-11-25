@@ -1,3 +1,5 @@
+import { Unstyled } from "@storybook/addon-docs/blocks";
+
 import { parseTokens } from "#/client/styles/stories/utils/parseTokens.ts";
 
 import panel from "../panel.module.css";
@@ -12,13 +14,15 @@ type PaletteTokensProps = {
 
 /** 色の材料。1 色の段階を 1 行に並べる */
 export const PaletteTokens = ({ css, prefix }: PaletteTokensProps) => (
-  <div className={`${panel.panel} ${styles.grid}`}>
-    {parseTokens(css, prefix).map((token) => (
-      <div key={token.name} className={styles.item}>
-        <div className={styles.swatch} style={{ backgroundColor: token.value }} />
-        <code className={styles.value}>{token.name.replace(prefix, "") || token.name}</code>
-        <code className={styles.value}>{token.value}</code>
-      </div>
-    ))}
-  </div>
+  <Unstyled>
+    <div className={`${panel.panel} ${styles.grid}`}>
+      {parseTokens(css, prefix).map((token) => (
+        <div key={token.name} className={styles.item}>
+          <div className={styles.swatch} style={{ backgroundColor: token.value }} />
+          <code className={styles.value}>{token.name.replace(prefix, "") || token.name}</code>
+          <code className={styles.value}>{token.value}</code>
+        </div>
+      ))}
+    </div>
+  </Unstyled>
 );

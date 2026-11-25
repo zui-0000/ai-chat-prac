@@ -1,11 +1,9 @@
-/* <table> にすると、Storybook の docs が付ける縞模様の色が勝つので、Grid で並べる */
 .rows {
   display: grid;
   grid-template-columns: max-content minmax(0, 1fr) minmax(0, 2fr);
   align-items: center;
 }
 
-/* 行の中の 3 つを、親の Grid の列にそのまま並べる */
 .row {
   display: grid;
   grid-column: 1 / -1;

@@ -1,3 +1,5 @@
+import { Unstyled } from "@storybook/addon-docs/blocks";
+
 import { parseTokens } from "#/client/styles/stories/utils/parseTokens.ts";
 import { toColorSwatches } from "#/client/styles/stories/utils/toColorSwatches.ts";
 
@@ -13,19 +15,21 @@ type ColorTokensProps = {
 
 /** 色のトークン。-foreground の組があれば、その色で「Aa」を重ねて見せる */
 export const ColorTokens = ({ css, prefix }: ColorTokensProps) => (
-  <div className={`${panel.panel} ${styles.grid}`}>
-    {toColorSwatches(parseTokens(css, prefix)).map(({ name, foreground }) => (
-      <div key={name} className={styles.item}>
-        <div className={styles.swatch} style={{ backgroundColor: `var(${name})` }}>
-          {foreground && (
-            <span className={styles.sample} style={{ color: `var(${foreground})` }}>
-              Aa
-            </span>
-          )}
+  <Unstyled>
+    <div className={`${panel.panel} ${styles.grid}`}>
+      {toColorSwatches(parseTokens(css, prefix)).map(({ name, foreground }) => (
+        <div key={name} className={styles.item}>
+          <div className={styles.swatch} style={{ backgroundColor: `var(${name})` }}>
+            {foreground && (
+              <span className={styles.sample} style={{ color: `var(${foreground})` }}>
+                Aa
+              </span>
+            )}
+          </div>
+          <code className={styles.name}>{name}</code>
+          {foreground && <code className={styles.value}>文字: {foreground}</code>}
         </div>
-        <code className={styles.name}>{name}</code>
-        {foreground && <code className={styles.value}>文字: {foreground}</code>}
-      </div>
-    ))}
-  </div>
+      ))}
+    </div>
+  </Unstyled>
 );
