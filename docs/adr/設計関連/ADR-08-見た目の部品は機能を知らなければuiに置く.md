@@ -7,7 +7,7 @@ consulted: Claude
 informed:
 ---
 
-# 見た目の部品はチャットを知らなければ ui に置く
+# 見た目の部品は機能を知らなければ ui に置く
 
 ## 背景と課題 (Context and Problem Statement)
 
@@ -24,15 +24,15 @@ ADR-03 では、Generative UI の部品をチャットの機能の中（`feature
 ## 検討した選択肢 (Considered Options)
 
 - 使う機能の数で決める（これまで）
-- チャットのことを知っているかで決める
+- 特定の機能を知っているかで決める
 
 ## 決定 (Decision Outcome)
 
-**選択: チャットのことを知っているかで決める**
+**選択: 特定の機能を知っているかで決める**
 
 決め手は、**見た目の部品が、使う機能の数に関係なく `UI/` にそろい、Storybook と MCP で探せる**こと。
 
-- チャットも契約（`@ai-chat/contract`）も知らない見た目の部品は、使うのがチャットだけでも `components/ui/` に置く
+- 特定の機能も契約（`@ai-chat/contract`）も知らない見た目の部品は、使う機能が 1 つだけ（チャットだけ、など）でも `components/ui/` に置く
 - `ui/` の部品は、props の型を自分で持つ。契約の型を import しない
 - 契約の形を `ui/` の props に詰め替える薄い部品、道具の名前から部品を選ぶカタログ、呼んでいる途中・結果・失敗の描き分けは、`features/Chat/ToolPart/` に置く
 - 返答は、文字のパーツと道具のパーツに分けて描く。文字のパーツは `ui/` の Markdown の部品で、道具のパーツは `ToolPart/` で描く
@@ -52,7 +52,7 @@ ADR-03 では、Generative UI の部品をチャットの機能の中（`feature
 
 ## 各選択肢の評価 (Pros and Cons of the Options)
 
-### チャットのことを知っているかで決める — 採用
+### 特定の機能を知っているかで決める — 採用
 
 - Good, because 部品が見た目だけかどうかは、作るときに決まり、あとから使う機能が増えても動かさずに済む
 - Good, because 見た目と組み立てが分かれ、Storybook でも見た目は `UI/`、組み立てた状態は `Chat/` と分けて見せられる
