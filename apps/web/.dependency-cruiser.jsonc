@@ -120,12 +120,13 @@
       "to": { "path": "^src/client/components/(features|layouts|pages)/" }
     },
     {
-      // API の形が変わっても、見た目の部品を直さずに済むように
+      // API の形が変わっても、見た目の部品を直さずに済むように。
+      // 契約は、解決できないと名前のまま、解決できると packages/contract のパスになるので、両方で止める
       "name": "ui-not-to-contract",
       "comment": "components/ui から契約（@ai-chat/contract）を読んでいます。ui の部品は props の型を自分で持ち、契約の形への詰め替えは features でしてください",
       "severity": "error",
       "from": { "path": "^src/client/components/ui/", "pathNot": "/__tests__/" },
-      "to": { "path": "^@ai-chat/contract" }
+      "to": { "path": "(^@ai-chat/contract|^\\.\\./\\.\\./packages/contract/)" }
     },
     {
       "name": "features-not-to-upper",
