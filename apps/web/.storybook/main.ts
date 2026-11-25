@@ -8,7 +8,7 @@ import { CSS_TARGET } from "../vite.config.ts";
 const APP_ONLY_PLUGIN_PREFIXES = ["void:", "vite-plugin-cloudflare", "tanstack", "msw"];
 
 const config: StorybookConfig = {
-  stories: ["../src/client/**/*.mdx", "../src/client/**/*.stories.tsx"],
+  stories: ["./index.mdx", "../src/client/**/*.mdx", "../src/client/**/*.stories.tsx"],
   addons: ["@storybook/addon-docs", "@storybook/addon-a11y", "@storybook/addon-mcp"],
   framework: "@storybook/react-vite",
   core: {

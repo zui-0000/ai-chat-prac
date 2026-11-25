@@ -47,24 +47,25 @@ const preview: Preview = {
   ],
   parameters: {
     options: {
-      // サイドバーの並び。トークンのページは、main.css が読み込む順にし、部品から使わない材料を最後にする
+      // サイドバーの並び。いちばん探される部品を上にし、トークンは main.css が読み込む順、部品から使わない材料を最後にする
       storySort: {
         order: [
+          "はじめに",
+          "UI",
+          "Chat",
           "DesignTokens",
           [
             "Color",
             "Font",
-            "Line Height",
-            "Letter Spacing",
+            "LineHeight",
+            "LetterSpacing",
             "Spacing",
             "Size",
-            "Border Width",
-            "Border Radius",
+            "BorderWidth",
+            "BorderRadius",
             "Elevation",
             "Primitive",
           ],
-          "UI",
-          "Chat",
           "Guidelines",
         ],
       },
