@@ -41,14 +41,14 @@ AI の返答の中に部品（選択肢・グラフなど）を出す。作り�
 - 部品の props は、契約（`packages/contract`）に valibot で書く（ライブラリ関連/ADR-05）
 - 最初の版の部品は「選択肢」（押せる部品）と「棒グラフ」（見せる部品）。表は部品にせず、Markdown の表で出す
 - 部品も保存し、会話を開き直したときに同じ部品を出す
-- 部品は、チャットの機能の中（`apps/web/src/client/components/features/Chat/GenUI/`）に置く
+- 部品は、チャットの機能の中（`apps/web/src/client/components/features/Chat/GenUI/`）に置く（置き場所は ADR-08 で置き換えた）
 - アプリの AI には Claude を使う。決められた部品と props を正しく選べるかが、カタログ型の要になる
 
 ### 結果 (Consequences)
 
 - Good, because 見た目がデザインシステムの外に出ない
 - Good, because BE が AI の出力を確かめ、FE が型つきで受け取れる
-- Bad, because 部品を足すたびに、契約とカタログの両方を足す
+- Bad, because 部品を足すたびに、契約とカタログの両方を足す（ADR-08 で、`ui/` の部品と詰め替えも足す 3 か所になった）
 - Bad, because 外のデータを使う部品（天気・地図）や入力フォームは、ツールの実行まで要るので、最初の版では作らない
 
 ## 各選択肢の評価 (Pros and Cons of the Options)

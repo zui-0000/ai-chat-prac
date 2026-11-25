@@ -114,10 +114,19 @@
     // 部品の向き: routes → pages・layouts → features → ui。下から上は読まない
     {
       "name": "ui-not-to-upper",
-      "comment": "components/ui から features・layouts・pages を読んでいます。ui にはどの機能でも使う部品だけを置いてください",
+      "comment": "components/ui から features・layouts・pages を読んでいます。ui には、特定の機能や契約を知らない見た目の部品だけを置いてください",
       "severity": "error",
       "from": { "path": "^src/client/components/ui/", "pathNot": "/__tests__/" },
       "to": { "path": "^src/client/components/(features|layouts|pages)/" }
+    },
+    {
+      // API の形が変わっても、見た目の部品を直さずに済むように。
+      // 契約は、解決できないと名前のまま、解決できると packages/contract のパスになるので、両方で止める
+      "name": "ui-not-to-contract",
+      "comment": "components/ui から契約（@ai-chat/contract）を読んでいます。ui の部品は props の型を自分で持ち、契約の形への詰め替えは features でしてください",
+      "severity": "error",
+      "from": { "path": "^src/client/components/ui/", "pathNot": "/__tests__/" },
+      "to": { "path": "(^@ai-chat/contract|^\\.\\./\\.\\./packages/contract/)" }
     },
     {
       "name": "features-not-to-upper",
@@ -127,9 +136,9 @@
       "to": { "path": "^src/client/components/(layouts|pages)/" }
     },
     {
-      // 別の機能で要るものは ui に下ろす
+      // 別の機能でも要る見た目の部品は ui に下ろす。特定の機能や契約を知る部品は ui に下ろさない
       "name": "features-not-to-other-features",
-      "comment": "components/features の機能から、ほかの機能を読んでいます。両方で要るものは components/ui に下ろしてください",
+      "comment": "components/features の機能から、ほかの機能を読んでいます。両方で要るもののうち、特定の機能も契約も知らない見た目の部品は components/ui に下ろしてください",
       "severity": "error",
       "from": { "path": "^src/client/components/features/([^/]+)/", "pathNot": "/__tests__/" },
       "to": {
