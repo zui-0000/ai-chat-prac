@@ -87,3 +87,13 @@ trustPolicy: no-downgrade
 #   provenance が github.com/oxc-project/tsrs の main の release.yml であることを確かめて許可した
 trustPolicyExclude:
   - "tsrs@7.1.0-beta.tsrs4"
+
+# 依存が配るエージェント向けのスキル（.claude/skills/ にリンクされる）は入れない。
+# エージェントに読ませる決まりは、このリポジトリの外でまとめて管理しているので、依存の決まりと混ぜない
+permissions:
+  "@tanstack/react-router":
+    skills: false
+  "@tanstack/router-plugin":
+    skills: false
+  void:
+    skills: false
