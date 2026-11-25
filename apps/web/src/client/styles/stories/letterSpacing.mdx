@@ -1,0 +1,13 @@
+import { Meta } from "@storybook/addon-docs/blocks";
+
+import tokenCss from "#/client/styles/tokens/letterSpacing.css?raw";
+
+import { ScaleTokens } from "./blocks/ScaleTokens/index";
+
+<Meta title="DesignTokens/LetterSpacing" />
+
+# 字間
+
+`src/client/styles/tokens/letterSpacing.css` のトークン。本文には付けず、英字の大文字のラベルとアプリの名前にだけ使う。
+
+<ScaleTokens css={tokenCss} prefix="--letter-spacing-" kind="letterSpacing" />

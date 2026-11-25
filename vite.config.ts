@@ -10,6 +10,7 @@ export default defineConfig({
     "*": "vp check --fix",
     // 関数にすると、ステージしたファイル名を引数に付けずに実行する
     "apps/web/**/*.{ts,tsx}": () => "vp run web#lint:deps",
+    "apps/web/**/*.css": () => "vp run web#lint:css",
     // ステージしたファイルだけでなく全体を型チェックする。contract の変更で実装が合わなくなったときも止める
     "{apps,packages}/**/*.{ts,tsx}": () => "vp run typecheck",
   },

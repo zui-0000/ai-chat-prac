@@ -21,7 +21,14 @@
     "erasableSyntaxOnly": true,
     "noFallthroughCasesInSwitch": true
   },
-  "include": ["src", "vite.config.ts", "void.config.ts"],
+  "include": [
+    "src",
+    ".storybook/*.ts",
+    ".storybook/*.tsx",
+    "cssTarget.ts",
+    "vite.config.ts",
+    "void.config.ts"
+  ],
   // テストとその準備は tsconfig.test.json で見る。ここで外すと、__tests__ の外に置いたテストは test・expect の型がなく型エラーになる
   "exclude": ["src/**/__tests__", "src/client/__setup__"]
 }

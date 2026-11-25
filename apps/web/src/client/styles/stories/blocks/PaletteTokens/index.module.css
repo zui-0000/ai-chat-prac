@@ -1,0 +1,22 @@
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(5rem, 100%), 1fr));
+  gap: var(--spacing-8);
+}
+
+.item {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2);
+}
+
+.swatch {
+  height: var(--spacing-40);
+  border: var(--border-width-frame) solid var(--color-border);
+  border-radius: var(--border-radius-4);
+}
+
+.value {
+  font-size: var(--font-size-14);
+  color: var(--color-muted-foreground);
+}

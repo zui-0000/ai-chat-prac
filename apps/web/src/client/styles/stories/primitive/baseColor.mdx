@@ -1,0 +1,31 @@
+import { Meta } from "@storybook/addon-docs/blocks";
+
+import paletteCss from "#/client/styles/tokens/primitive/baseColor.css?raw";
+
+import { PaletteTokens } from "../blocks/PaletteTokens/index";
+
+<Meta title="DesignTokens/Primitive/BaseColor" />
+
+# 色の材料
+
+`src/client/styles/tokens/primitive/baseColor.css` のトークン。**部品からは使わない。** DesignTokens/Color のトークンが指す材料。
+
+## 灰色（gray）
+
+<PaletteTokens css={paletteCss} prefix="--color-primitive-gray-" />
+
+## 赤（red）
+
+<PaletteTokens css={paletteCss} prefix="--color-primitive-red-" />
+
+## 橙（orange）
+
+<PaletteTokens css={paletteCss} prefix="--color-primitive-orange-" />
+
+## 緑（green）
+
+<PaletteTokens css={paletteCss} prefix="--color-primitive-green-" />
+
+## 白（white）
+
+<PaletteTokens css={paletteCss} prefix="--color-primitive-white" />

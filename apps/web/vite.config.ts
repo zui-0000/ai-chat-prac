@@ -4,6 +4,8 @@ import { msw } from "msw/vite";
 import { defineConfig } from "vite-plus";
 import { voidPlugin } from "void";
 
+import { CSS_TARGET } from "./cssTarget.ts";
+
 // 単体テストの共通の設定
 const unitTest = {
   // describe・test・expect を import せずに使う。型は tsconfig.test.json で __tests__ にだけ足す
@@ -31,6 +33,16 @@ export default defineConfig({
       // tsrs はファイルの読み込みを Vite Task が追える。Go の tsc に戻すと追えず、型エラーを見逃すので cache: false にする
       typecheck: "tsrs --noEmit -p tsconfig.app.json && tsrs --noEmit -p tsconfig.test.json",
       "lint:deps": "depcruise src --config .dependency-cruiser.jsonc --output-type err-long",
+      // 部品の CSS に、色の値・色の材料・定義の無い CSS 変数・配色ごとの書き分けを書いていないか（stylelint.config.js）
+      "lint:css": 'stylelint "src/**/*.css"',
+      // ストーリーとトークンのページが壊れていないか。開発サーバーの storybook は package.json のスクリプト（キャッシュしない）
+      "build-storybook": {
+        command: "storybook build --quiet",
+        cache: {
+          input: [{ auto: true }, "!.void/v3/**"],
+          output: [{ auto: true }, "!.void/v3/**"],
+        },
+      },
       test: {
         command: "vp test",
         cache: {
@@ -69,6 +81,9 @@ export default defineConfig({
     // 開発サーバーで MSW の Service Worker を配り、virtual:msw を使えるようにする
     msw(),
   ],
+  build: {
+    cssTarget: CSS_TARGET,
+  },
   test: {
     // extends: true で plugins を引き継ぐ。@schema・void/db などの解決に Void の plugin が要る
     projects: [

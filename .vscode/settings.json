@@ -25,10 +25,21 @@
   "editor.codeActionsOnSave": {
     "source.fixAll.oxc": "explicit"
   },
+  // 部品はどこでも index.tsx なので、タブにフォルダの名前を出す
+  "workbench.editor.customLabels.enabled": true,
+  "workbench.editor.customLabels.patterns": {
+    "**/index.tsx": "${dirname}",
+    "**/index.module.css": "${dirname}.module.css",
+    "**/index.stories.tsx": "${dirname}.stories",
+    "**/index.guide.mdx": "${dirname}.guide"
+  },
+  // CSS は Stylelint で検査する（apps/web/stylelint.config.js）
+  "stylelint.validate": ["css"],
   "files.watcherExclude": {
     "**/dist/**": true,
     "**/.void/**": true,
     "**/.wrangler/**": true,
-    "**/.cloudflare/**": true
+    "**/.cloudflare/**": true,
+    "**/storybook-static/**": true
   }
 }

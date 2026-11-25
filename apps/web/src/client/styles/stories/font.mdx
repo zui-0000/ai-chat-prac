@@ -1,0 +1,23 @@
+import { Meta } from "@storybook/addon-docs/blocks";
+
+import fontCss from "#/client/styles/tokens/font.css?raw";
+
+import { ScaleTokens } from "./blocks/ScaleTokens/index";
+
+<Meta title="DesignTokens/Font" />
+
+# 文字
+
+`src/client/styles/tokens/font.css` のトークン。役割ごとの組み合わせは `apps/web/DESIGN.md` の 3 にある。
+
+## 書体
+
+<ScaleTokens css={fontCss} prefix="--font-family-" kind="fontFamily" />
+
+## 文字サイズ
+
+<ScaleTokens css={fontCss} prefix="--font-size-" kind="fontSize" />
+
+## 文字の太さ
+
+<ScaleTokens css={fontCss} prefix="--font-weight-" kind="fontWeight" />
