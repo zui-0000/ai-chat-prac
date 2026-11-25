@@ -2,6 +2,7 @@ import "#/client/styles/main.css";
 import type { Preview } from "@storybook/react-vite";
 import { GLOBALS_UPDATED, SET_GLOBALS } from "storybook/internal/core-events";
 import { addons } from "storybook/preview-api";
+import { themes } from "storybook/theming";
 
 // トークンは light-dark() で書いてあるので、<html> の color-scheme を替えるだけで、どの部品も切り替わる
 const applyColorScheme = (scheme: unknown) => {
@@ -46,6 +47,10 @@ const preview: Preview = {
     },
   ],
   parameters: {
+    // 文書のページは、Storybook の画面と同じく OS の設定に合わせる。テーマは読み込むときに決まるので、ツールバーの「配色」とは連動しない
+    docs: {
+      theme: window.matchMedia("(prefers-color-scheme: dark)").matches ? themes.dark : themes.light,
+    },
     options: {
       // サイドバーの並び。いちばん探される部品を上にし、トークンは main.css が読み込む順、部品から使わない材料を最後にする
       storySort: {

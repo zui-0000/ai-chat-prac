@@ -1,6 +1,5 @@
 import path from "node:path";
 
-// エラーメッセージ。いくつかのルールで使う
 const colorTokenMessage =
   "このサイトの色（--color-ai-chat-*）か、役割の色（--color-foreground など）を使ってください。使い分けは apps/web/DESIGN.md にあります";
 
