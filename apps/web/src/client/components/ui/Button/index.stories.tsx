@@ -5,6 +5,7 @@ import { Button } from "./index";
 
 const meta = {
   title: "UI/Button",
+  tags: ["autodocs"],
   component: Button,
   args: {
     children: "保存する",
@@ -49,15 +50,4 @@ export const Disabled: Story = {
       </Button>
     </div>
   ),
-};
-
-// ツールバーの「配色」と同じ設定で、配色を決めて見せる
-export const Light: Story = {
-  ...WithIcon,
-  globals: { colorScheme: "light" },
-};
-
-export const Dark: Story = {
-  ...WithIcon,
-  globals: { colorScheme: "dark" },
 };
