@@ -20,6 +20,7 @@
 | [ADR-04](./ライブラリ関連/ADR-04-認証にBetterAuthを採用し最初の版に入れる.md) | 認証に Better Auth を採用し最初の版に入れる | all      | accepted   | 2026-11-15 |
 | [ADR-05](./ライブラリ関連/ADR-05-契約のスキーマにvalibotを採用.md)            | 契約のスキーマに valibot を採用             | contract | accepted   | 2026-11-23 |
 | [ADR-06](./ライブラリ関連/ADR-06-clientの単体テストはjsdomで動かす.md)        | client の単体テストは jsdom で動かす        | client   | accepted   | 2026-11-26 |
+| [ADR-07](./ライブラリ関連/ADR-07-アイコンにLucideを採用.md)                   | アイコンに Lucide を採用                    | client   | accepted   | 2026-11-26 |
 
 ### 設計関連
 

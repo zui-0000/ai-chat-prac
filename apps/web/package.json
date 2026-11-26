@@ -14,6 +14,7 @@
   },
   "dependencies": {
     "@ai-chat/contract": "workspace:*",
+    "@base-ui/react": "catalog:",
     "@fontsource-variable/jetbrains-mono": "catalog:",
     "@orpc/client": "catalog:",
     "@orpc/contract": "catalog:",
@@ -21,6 +22,7 @@
     "@orpc/tanstack-query": "catalog:",
     "@tanstack/react-query": "catalog:",
     "@tanstack/react-router": "catalog:",
+    "lucide-react": "catalog:",
     "react": "catalog:",
     "react-dom": "catalog:"
   },

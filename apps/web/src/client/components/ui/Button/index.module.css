@@ -1,0 +1,75 @@
+.button {
+  display: inline-flex;
+  gap: var(--spacing-8);
+  align-items: center;
+  justify-content: center;
+  min-inline-size: var(--size-touch-target);
+  min-block-size: var(--size-touch-target);
+  padding-inline: var(--spacing-16);
+  /* 強制配色のモードでは塗りが消えるので、透明の線を引き、見える線に替えてもらう */
+  border: var(--border-width-frame) solid transparent;
+  border-radius: var(--border-radius-8);
+  font-size: var(--font-size-14);
+  font-weight: var(--font-weight-700);
+  line-height: var(--line-height-body);
+  cursor: pointer;
+  transition: background-color 150ms ease-out;
+
+  & svg {
+    flex: none;
+    inline-size: var(--size-icon);
+    block-size: var(--size-icon);
+  }
+
+  &:focus-visible {
+    outline: var(--border-width-ring) solid var(--color-ring);
+    outline-offset: var(--border-width-ring);
+  }
+
+  &[data-disabled] {
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+
+  /* 押したことを、塗りの色に加えて、少し縮めて返す。動きを減らす設定では、塗りの色だけにする */
+  @media (prefers-reduced-motion: no-preference) {
+    transition:
+      background-color 150ms ease-out,
+      scale 150ms ease-out;
+
+    &:active:not([data-disabled]) {
+      scale: 0.97;
+    }
+  }
+}
+
+/* どちらの種類も、タッチの端末では指を離したあとも hover が残るので、hover の色はマウスのときだけにし、押している間は :active で変える */
+.button[data-variant="primary"] {
+  background-color: var(--color-ai-chat-primary);
+  color: var(--color-ai-chat-primary-foreground);
+
+  &:active:not([data-disabled]) {
+    background-color: var(--color-ai-chat-primary-hover);
+  }
+
+  @media (hover: hover) {
+    &:hover:not([data-disabled]) {
+      background-color: var(--color-ai-chat-primary-hover);
+    }
+  }
+}
+
+.button[data-variant="default"] {
+  background-color: var(--color-muted);
+  color: var(--color-foreground);
+
+  &:active:not([data-disabled]) {
+    background-color: color-mix(in srgb, var(--color-muted), var(--color-foreground) 10%);
+  }
+
+  @media (hover: hover) {
+    &:hover:not([data-disabled]) {
+      background-color: color-mix(in srgb, var(--color-muted), var(--color-foreground) 10%);
+    }
+  }
+}
