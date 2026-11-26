@@ -3,6 +3,9 @@
   /* 押せる部品の最小の大きさ。ブラウザの文字サイズを小さくしている人でも、44px を下回らないようにする */
   --size-touch-target: max(2.75rem, 44px);
 
+  /* ボタンの中で、文字と並べるアイコン */
+  --size-icon: 1rem;
+
   --size-sidebar: 16.25rem;
   --size-message-column: 48.75rem;
 }
