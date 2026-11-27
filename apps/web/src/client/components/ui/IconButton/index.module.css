@@ -3,8 +3,8 @@
   flex: none;
   align-items: center;
   justify-content: center;
-  inline-size: var(--size-touch-target);
-  block-size: var(--size-touch-target);
+  min-inline-size: var(--size-touch-target);
+  min-block-size: var(--size-touch-target);
   padding: 0;
   /* 強制配色のモードでは塗りが消えるので、透明の線を引き、見える線に替えてもらう */
   border: var(--border-width-frame) solid transparent;
