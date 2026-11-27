@@ -5,6 +5,8 @@
 
   /* ボタンの中で、文字と並べるアイコン */
   --size-icon: 1rem;
+  /* アイコンだけのボタンの中のアイコン。字が無いので、字と並べるものより大きくする */
+  --size-icon-standalone: 1.25rem;
 
   --size-sidebar: 16.25rem;
   --size-message-column: 48.75rem;

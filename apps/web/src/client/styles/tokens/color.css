@@ -15,8 +15,12 @@
     var(--color-primitive-red-500)
   );
   /* 赤く塗った主な操作のボタンに、マウスを乗せたときと押している間。どちらの配色でも、ふだんの赤より暗くする。
-   部品の CSS で混ぜると配色によって明るくなり、白い字との差が 4.5:1 を割るので、ここに持つ */
-  --color-ai-chat-primary-hover: var(--color-primitive-red-800);
+   部品の CSS で混ぜると配色によって明るくなり、白い字との差が 4.5:1 を割るので、ここに持つ。
+   暗い配色で暗くしすぎると、ボタンの形が背景に沈む（3:1 を割る）ので、一段だけ暗くする */
+  --color-ai-chat-primary-hover: light-dark(
+    var(--color-primitive-red-800),
+    var(--color-primitive-red-700)
+  );
   --color-ai-chat-primary-foreground: var(--color-primitive-white);
   /* 赤を文字に使うときは、こちら。上の赤は、暗い面の上で文字として読めない */
   --color-ai-chat-primary-text: light-dark(
