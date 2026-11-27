@@ -19,6 +19,15 @@ export default {
   ignoreFiles: ["src/client/styles/tokens/**"],
 
   rules: {
+    // CSS Modules は書いた名前のまま JS に渡すので、styles.iconButton と書けるロウワーキャメルにそろえる
+    "selector-class-pattern": [
+      "^[a-z][a-zA-Z0-9]*$",
+      {
+        message: (name) =>
+          `クラス名 ${name} は、ロウワーキャメル（iconButton など）で書いてください`,
+      },
+    ],
+
     // 打ち間違えた CSS 変数は、エラーにならずに黙って無視される
     "csstools/value-no-unknown-custom-properties": [
       true,
