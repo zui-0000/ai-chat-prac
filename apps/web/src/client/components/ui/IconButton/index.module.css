@@ -1,0 +1,77 @@
+.iconButton {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  inline-size: var(--size-touch-target);
+  block-size: var(--size-touch-target);
+  padding: 0;
+  /* 強制配色のモードでは塗りが消えるので、透明の線を引き、見える線に替えてもらう */
+  border: var(--border-width-frame) solid transparent;
+  border-radius: var(--border-radius-8);
+  cursor: pointer;
+  transition:
+    background-color 150ms ease-out,
+    color 150ms ease-out;
+
+  & svg {
+    flex: none;
+    inline-size: var(--size-icon-standalone);
+    block-size: var(--size-icon-standalone);
+  }
+
+  &:focus-visible {
+    outline: var(--border-width-ring) solid var(--color-ring);
+    outline-offset: var(--border-width-ring);
+  }
+
+  &[data-disabled] {
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+
+  /* 押したことを、色に加えて、少し縮めて返す。動きを減らす設定では、色だけにする */
+  @media (prefers-reduced-motion: no-preference) {
+    transition:
+      background-color 150ms ease-out,
+      color 150ms ease-out,
+      scale 150ms ease-out;
+
+    &:active:not([data-disabled]) {
+      scale: 0.97;
+    }
+  }
+}
+
+/* どちらの種類も、タッチの端末では指を離したあとも hover が残るので、hover の色はマウスのときだけにし、押している間は :active で変える */
+.iconButton[data-variant="default"] {
+  background-color: transparent;
+  color: var(--color-muted-foreground);
+
+  &:active:not([data-disabled]) {
+    background-color: var(--color-muted);
+    color: var(--color-foreground);
+  }
+
+  @media (hover: hover) {
+    &:hover:not([data-disabled]) {
+      background-color: var(--color-muted);
+      color: var(--color-foreground);
+    }
+  }
+}
+
+.iconButton[data-variant="primary"] {
+  background-color: var(--color-ai-chat-primary);
+  color: var(--color-ai-chat-primary-foreground);
+
+  &:active:not([data-disabled]) {
+    background-color: var(--color-ai-chat-primary-hover);
+  }
+
+  @media (hover: hover) {
+    &:hover:not([data-disabled]) {
+      background-color: var(--color-ai-chat-primary-hover);
+    }
+  }
+}
