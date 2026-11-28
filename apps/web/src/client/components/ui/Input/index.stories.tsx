@@ -14,8 +14,9 @@ const meta = {
     placeholder: "name@example.com",
   },
   parameters: { label: "メールアドレス" },
+  // 押せないことは Field.Root にも渡し、ラベルも一緒に薄くする（Field のガイドと同じ使い方）
   render: (args, { parameters }) => (
-    <Field.Root>
+    <Field.Root disabled={args.disabled}>
       <Field.Label>{parameters.label}</Field.Label>
       <Input {...args} />
     </Field.Root>
