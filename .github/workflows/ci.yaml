@@ -92,7 +92,7 @@ jobs:
       # zizmor の版は手元の lint:actions（vite.config.ts）とそろえる
       - name: ワークフローの検査（zizmor）
         if: ${{ !cancelled() }}
-        uses: zizmorcore/zizmor-action@v0.8.1
+        uses: zizmorcore/zizmor-action@v0.9.2
         with:
           version: v1.32.0
           advanced-security: false
