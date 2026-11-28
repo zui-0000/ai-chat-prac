@@ -1,0 +1,43 @@
+import { Canvas, Meta } from "@storybook/addon-docs/blocks";
+
+import * as FieldStories from "./index.stories";
+
+<Meta of={FieldStories} name="Guide" />
+
+# Field
+
+入力欄に、ラベル・説明・誤りの文を付ける枠。ログインや新規登録のフォームで、入力欄を 1 つずつ包む。
+
+<Canvas of={FieldStories.Invalid} />
+
+## 使い方
+
+- `import * as Field` で読み、`Field.Root` の中に `Field.Label`・入力欄（`Input`）・`Field.Description`・`Field.Error` を置く
+- ラベル・説明・誤りの文は、入力欄に自動でつながる。読み上げでは、ラベルが名前に、説明と誤りの文が補足になる
+
+## ラベル
+
+- ラベルは省かない。案内の文字（`placeholder`）を、ラベルの代わりにしない
+- ラベルは短い名詞にする（「メールアドレス」「パスワード」）
+
+## 説明
+
+- 書き方の決まりがあるときだけ置く（「12 文字以上で、英字と数字をまぜてください」）
+- 書き始める前に読めるよう、誤りの文とは別に、いつも出しておく
+
+## 誤り
+
+- 誤りの文には、アイコンが付く。このサイトの赤と同じ色なので、色だけで伝えない
+- 何が違って、どう直せばよいかを書く（「メールアドレスの形で入力してください」）。「入力が正しくありません」だけにしない
+- 誤りがあると、入力欄の線も誤りの色になる
+
+## 外の検証と使う
+
+- 検証は、Field でなくフォームの側で行う。Field の検証（`validate`）は使わない
+- 誤りがあるかは `Field.Root` の `invalid` に渡す
+- 誤りの文は、フォームの側に誤りがあるときだけ `Field.Error` を置き、`match` を付けて子に渡す。子を省かない（省くと、文の無いまま誤りの見た目だけが出ることがある）
+- 書いた値は、入力欄の `value` と `onValueChange`・`onBlur` で、フォームの側とつなぐ
+
+## 状態
+
+- 押せない・書けないときは、`Field.Root` に `disabled` を付ける。ラベルも入力欄も薄くなる
