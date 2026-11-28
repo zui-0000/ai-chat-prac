@@ -6,7 +6,7 @@
   min-inline-size: var(--size-touch-target);
   min-block-size: var(--size-touch-target);
   padding: 0;
-  /* 強制配色のモードでは塗りが消えるので、透明の線を引き、見える線に替えてもらう */
+  /* 強制配色のモードでは塗りや hover の面が消えて形がわからなくなるので、透明の線を引き、見える線に替えてもらう */
   border: var(--border-width-frame) solid transparent;
   border-radius: var(--border-radius-8);
   cursor: pointer;

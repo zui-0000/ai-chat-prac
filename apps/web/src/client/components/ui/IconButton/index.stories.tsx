@@ -26,7 +26,10 @@ export const Primary: Story = {
   },
 };
 
+// 主な操作は 1 つの領域に 1 つだけなので、並べる見本では種類を替えさせない
 export const Group: Story = {
+  args: { variant: "default" },
+  argTypes: { variant: { control: false } },
   render: (args) => (
     <div style={{ display: "flex", gap: "var(--spacing-4)" }}>
       <IconButton {...args} aria-label="コピーする">
@@ -42,13 +45,15 @@ export const Group: Story = {
   ),
 };
 
+// Group と同じく、並べる見本なので種類を替えさせない
 export const Disabled: Story = {
+  argTypes: { variant: { control: false } },
   render: (args) => (
-    <div style={{ display: "flex", gap: "var(--spacing-8)" }}>
+    <div style={{ display: "flex", gap: "var(--spacing-4)" }}>
       <IconButton {...args} variant="primary" aria-label="送る" disabled>
         <SendIcon />
       </IconButton>
-      <IconButton {...args} aria-label="コピーする" disabled>
+      <IconButton {...args} variant="default" aria-label="コピーする" disabled>
         <CopyIcon />
       </IconButton>
     </div>
