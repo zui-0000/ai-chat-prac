@@ -1,0 +1,42 @@
+.input {
+  inline-size: 100%;
+  min-block-size: var(--size-touch-target);
+  padding-inline: var(--spacing-12);
+  /* どこが入力欄かを見分けられるように、線はまわりの面との差を 3:1 以上にする */
+  border: var(--border-width-frame) solid var(--color-muted-foreground);
+  border-radius: var(--border-radius-8);
+  background-color: var(--color-card);
+  color: var(--color-foreground);
+  /* 16px より小さいと、iPhone の Safari が、押したときに画面を拡大する */
+  font-size: var(--font-size-16);
+  font-weight: var(--font-weight-400);
+  line-height: var(--line-height-170);
+  transition: border-color 150ms ease-out;
+
+  &::placeholder {
+    color: var(--color-muted-foreground);
+    opacity: 1;
+  }
+
+  /* タッチの端末では指を離したあとも hover が残るので、マウスのときだけにする */
+  @media (hover: hover) {
+    &:hover:not([data-disabled], [readonly]) {
+      border-color: var(--color-foreground);
+    }
+  }
+
+  &:focus-visible {
+    outline: var(--border-width-ring) solid var(--color-ring);
+    outline-offset: var(--border-width-ring);
+  }
+
+  /* 書けないことを、薄くする無効とは別に、面の色で見せる */
+  &[readonly]:not([data-disabled]) {
+    background-color: var(--color-muted);
+  }
+
+  &[data-disabled] {
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+}
