@@ -41,8 +41,9 @@
 | `--color-frame`                                   | 面を囲む線と、発言のカードのふちの線。線にだけ使い、面を塗らない         |
 | `--color-ring`                                    | フォーカスの輪。赤い線や赤いボタンと見分けるため、赤でなく文字の色にする |
 | `--color-selected`・`--color-selected-foreground` | 選ばれている状態の面と、その上の文字                                     |
+| `--color-error`                                   | 誤りの文字と、誤りのある入力欄の線                                       |
 
-エラー・成功・注意の色は、まだ無い。要る部品を作るときに足す。赤がこのサイトの色なので、赤だけではエラーや危ない操作だと伝わらない。エラーと取り消せない操作は、アイコンと言葉で伝える。
+成功・注意の色は、まだ無い。要る部品を作るときに足す。誤りの色（`--color-error`）は、このサイトの赤と同じ色なので、赤だけではエラーや危ない操作だと伝わらない。エラーと取り消せない操作は、アイコンと言葉で伝える。
 
 ### Neutral（ニュートラル）
 
@@ -87,6 +88,8 @@ OS の書体を使う（Mac・iPhone はヒラギノ角ゴシック、Windows �
 | 本文（発言）                   | `--font-size-15`                   | `--font-weight-400` | `--line-height-body`                     | なし                  |
 | 入力欄                         | `--font-size-16`                   | `--font-weight-400` | `--line-height-170`                      | なし                  |
 | 一覧の行                       | `--font-size-14`                   | `--font-weight-400` | `--line-height-body`                     | なし                  |
+| フォームのラベル               | `--font-size-14`                   | `--font-weight-700` | `--line-height-body`                     | なし                  |
+| フォームの説明・誤り           | `--font-size-14`                   | `--font-weight-400` | `--line-height-body`                     | なし                  |
 | ボタンの文字                   | `--font-size-14`                   | `--font-weight-700` | `--line-height-body`                     | なし                  |
 | コード                         | `--font-size-13`                   | `--font-weight-400` | `--line-height-170`                      | なし                  |
 | 補足（日付の区切り・案内）     | `--font-size-12`                   | `--font-weight-400` | `--line-height-body`                     | なし                  |
@@ -152,6 +155,8 @@ OS の書体を使う（Mac・iPhone はヒラギノ角ゴシック、Windows �
 - マウスを乗せたときは、線を `--color-foreground` にする
 - フォーカスの輪は、間をあけずに線に重ねる。入力欄は自分の線を持つので、あけて描くと線が 2 本に見える
 - 読み取り専用のときは、面を `--color-muted` にする
+- 誤りがあるときは、線を `--color-error` にする。色だけで伝えないよう、下に誤りの文をアイコンと一緒に出す（Field）
+- 誤りがあるときは、フォーカスの輪も `--color-error` にする。文字の色の輪だと、フォーカスのあいだ誤りの線が隠れる
 
 ### Cards
 
