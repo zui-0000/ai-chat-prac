@@ -12,7 +12,7 @@ type IconButtonProps = Omit<
   "aria-label": string;
   /** lucide-react のアイコンを 1 つ */
   children: ReactElement;
-  /** `primary` は入力欄の送る・止めるだけ。赤く塗る */
+  /** `primary` はチャットの入力欄の送る・止めるだけ。赤く塗る */
   variant?: "primary" | "default";
 };
 
