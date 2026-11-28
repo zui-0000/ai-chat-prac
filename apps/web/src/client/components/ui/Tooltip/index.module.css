@@ -1,0 +1,42 @@
+/* 押す部品がスクロールで見えなくなったら、どこを指しているかわからないので隠す */
+.positioner[data-anchor-hidden] {
+  visibility: hidden;
+}
+
+/* 影でなく面の明るさで重なりを見せるので、地の色と字の色を入れ替えて、どちらの配色でも周りから浮かせる */
+.popup {
+  max-inline-size: var(--size-tooltip);
+  padding-block: var(--spacing-4);
+  padding-inline: var(--spacing-8);
+  /* 強制配色のモードでは面の色が消えるので、透明の線を引き、見える線に替えてもらう */
+  border: var(--border-width-frame) solid transparent;
+  border-radius: var(--border-radius-4);
+  background-color: var(--color-foreground);
+  color: var(--color-background);
+  font-size: var(--font-size-12);
+  font-weight: var(--font-weight-400);
+  line-height: var(--line-height-body);
+  transition: opacity 150ms ease-out;
+
+  &[data-starting-style],
+  &[data-ending-style] {
+    opacity: 0;
+  }
+
+  /* 続けてほかのツールチップに移ったときは、すぐに出す */
+  &[data-instant] {
+    transition-duration: 0ms;
+  }
+
+  /* 少し大きくなって出る。動きを減らす設定では、薄く出し入れするだけにする */
+  @media (prefers-reduced-motion: no-preference) {
+    transition:
+      opacity 150ms ease-out,
+      scale 150ms ease-out;
+
+    &[data-starting-style],
+    &[data-ending-style] {
+      scale: 0.95;
+    }
+  }
+}

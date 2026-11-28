@@ -10,4 +10,7 @@
 
   --size-sidebar: 16.25rem;
   --size-message-column: 48.75rem;
+
+  /* ツールチップの最大の幅。これより長い文は折り返す */
+  --size-tooltip: 20rem;
 }

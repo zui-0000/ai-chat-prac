@@ -1,0 +1,35 @@
+import { Canvas, Meta } from "@storybook/addon-docs/blocks";
+
+import * as TooltipStories from "./index.stories";
+
+<Meta of={TooltipStories} name="Guide" />
+
+# Tooltip
+
+押す部品にマウスを乗せたときや、キーボードでフォーカスしたときに、何をする部品かを短く出す。アイコンだけのボタンの名前を、目で見てわかるようにするのが主な使い道。
+
+<Canvas of={TooltipStories.Open} />
+
+## 使い方
+
+- `import * as Tooltip` で読み、`Tooltip.Root` の中に `Tooltip.Trigger` と `Tooltip.Popup` を置く
+- 押す部品（`IconButton` など）は、`Tooltip.Trigger` の `render` に渡す。`Tooltip.Trigger` の中に置かない（ボタンが入れ子になる）
+- `render` に渡すのは、`ui/` の押す部品だけにする。`className` や `style` を付けた要素を渡して、見た目を変えない
+- ツールチップは、画面のほかの部分の外（`#root` の外）に描かれる。スクロールする箱や、はみ出しを隠す箱の中に置いても切れない
+
+## いつ使うか
+
+- 目で見る補足にだけ使う。タッチの端末では出ず、読み上げを使う人にも伝わらない
+- 見なくても困らないことだけを書く。操作に要る情報（入力のきまり・誤りの文など）は、ツールチップに置かず、画面に出しておく
+- 字のあるボタンには付けない。ボタンの字と同じことを 2 回見せるだけになる
+
+## 書き方
+
+- 押す部品には、ツールチップと同じ言葉の `aria-label` を付ける。読み上げでは、ツールチップでなく `aria-label` が名前として読まれる
+- 押すと何が起きるかを、短い動詞で書く（「コピーする」「消す」）
+- 1 行で収まる長さにする。長い説明が要るなら、ツールチップでなく画面に書く
+
+## 並べるとき
+
+- アイコンのボタンを並べる場所（ツールバーなど）は、まとめて `Tooltip.Provider` で包む。1 つ目が出たあとは、隣に移るとすぐに出る
+- `Tooltip.Provider` をどこに置くかは、使う画面で決める
