@@ -22,7 +22,7 @@ export const Description = (props: Without<ComponentProps<typeof BaseField.Descr
 // 赤がこのサイトの色なので、色だけでは誤りと伝わらない。アイコンを添える。
 // 子を渡さないときは Base UI がブラウザの検証の文を入れるので、子を直に置かず render で包み、どちらの文にもアイコンを付ける。
 // undefined の子を渡すと、その文を上書きして消すので、渡さない。文が無いときは、アイコンだけを出さない。
-// 文は span 1 つにまとめ、強調などを混ぜても、アイコンの横で 1 つの文として折り返す
+// 文は div 1 つにまとめ、強調などを混ぜても、アイコンの横で 1 つの文として折り返す。誤りが 2 つ以上だと Base UI はリストを渡すので、span では包まない
 export const Error = ({ children, ...props }: Without<ComponentProps<typeof BaseField.Error>>) => (
   <BaseField.Error
     {...props}
@@ -33,7 +33,7 @@ export const Error = ({ children, ...props }: Without<ComponentProps<typeof Base
         {message ? (
           <>
             <CircleAlertIcon />
-            <span>{message}</span>
+            <div>{message}</div>
           </>
         ) : null}
       </div>
