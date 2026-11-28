@@ -41,3 +41,13 @@ import * as FieldStories from "./index.stories";
 ## 状態
 
 - 押せない・書けないときは、`Field.Root` に `disabled` を付ける。ラベルも入力欄も薄くなる
+
+## ほかの入力部品と使う
+
+今の Field は、1 行の入力欄（Input）に合わせてある。チェックボックスやプルダウンを作るときは、次を足す。
+
+- 説明（`Field.Description`）と誤り（`Field.Error`）は、どの入力部品でもそのまま使える
+- プルダウン（Select）は、開くボタンが `<button>` なので、`Field.Label` を `<label>` でなく描けるようにする（Base UI の `nativeLabel`）。`<label>` のままだと、ラベルを押したときやマウスを乗せたときに、ボタンが余計に反応する
+- チェックボックスを 1 つ置くときは、箱の横にラベルを置く並べ方を足す。今の `Field.Root` は、ラベル・入力欄・説明を縦に並べる
+- チェックボックスやラジオの組は、組の名前を付ける Fieldset の部品を作り、選択肢ごとに `Field.Item` で包む（Base UI が勧める形）
+- 誤りの線は、Field でなく、入力部品の CSS に `[data-invalid]` で書く
