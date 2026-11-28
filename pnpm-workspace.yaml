@@ -57,7 +57,7 @@ catalog:
   valibot: 1.5.0
   vite: npm:@voidzero-dev/vite-plus-core@8.3.8001
   vite-plus: 1.8.0
-  void: 1.11.0
+  void: 1.12.2
 
 # vite を Vite+ の vite-plus-core に置き換える。core の版は中の Vite の版を表す（8.3.8000 は Vite 8.3.8）ので、
 # プラグインの vite の peer の範囲をそのまま満たし、検査を緩めなくてよい
