@@ -11,7 +11,7 @@ workflows:
     '.github/workflows/claude-review.yaml':
         - 'actions/checkout@v7.0.1'
         - 'actions/create-github-app-token@v3.4.0'
-        - 'anthropics/claude-code-action@v1.0.284'
+        - 'anthropics/claude-code-action@v1.0.290'
 dependencies:
     'actions/cache@v6.1.0':
         ref: 'v6.1.0'
@@ -28,9 +28,9 @@ dependencies:
         commit: 'sha1-f418cff399f7aef4c2f0ad47e25ca7a6abbdd6fc'
         owner_id: 44036562
         repo_id: 642580244
-    'anthropics/claude-code-action@v1.0.284':
-        ref: 'v1.0.284'
-        commit: 'sha1-c84e279f859e2591391e95bd309286eb111c345f'
+    'anthropics/claude-code-action@v1.0.290':
+        ref: 'v1.0.290'
+        commit: 'sha1-4411a9e9b0283becf4b924f7bce360fd7756c78c'
         owner_id: 76263028
         repo_id: 986421638
         uses:
