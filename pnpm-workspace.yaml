@@ -25,30 +25,30 @@ catalog:
   "@commitlint/config-conventional": 21.2.4
   "@commitlint/types": 21.2.3
   "@fontsource-variable/jetbrains-mono": 5.3.0
-  "@orpc/client": 1.16.5
-  "@orpc/contract": 1.16.5
-  "@orpc/server": 1.16.5
-  "@orpc/tanstack-query": 1.16.5
-  "@storybook/addon-a11y": 10.6.8
-  "@storybook/addon-docs": 10.6.8
-  "@storybook/addon-mcp": 10.6.8
-  "@storybook/react-vite": 10.6.8
+  "@orpc/client": 1.16.6
+  "@orpc/contract": 1.16.6
+  "@orpc/server": 1.16.6
+  "@orpc/tanstack-query": 1.16.6
+  "@storybook/addon-a11y": 10.6.9
+  "@storybook/addon-docs": 10.6.9
+  "@storybook/addon-mcp": 10.6.9
+  "@storybook/react-vite": 10.6.9
   "@swc/core": 1.16.22
   "@tanstack/react-query": 5.108.4
   "@tanstack/react-router": 1.170.46
   "@tanstack/router-plugin": 1.169.0
-  "@types/node": 26.6.6
-  "@types/react": 19.3.0
+  "@types/node": 26.6.11
+  "@types/react": 19.3.3
   "@types/react-dom": 19.3.0
   "@vitejs/plugin-react": 6.3.0
   dependency-cruiser: 18.9.0
   jsdom: 31.0.1
   lucide-react: 1.81.0
-  msw: 3.0.7
+  msw: 3.0.8
   oxc-transform-react: 0.156.0
   react: 19.3.1
   react-dom: 19.3.1
-  storybook: 10.6.8
+  storybook: 10.6.9
   stylelint: 18.1.0
   stylelint-value-no-unknown-custom-properties: 6.1.1
   # Vite+ が持つ tsrs と同じ版にそろえる（npm view vite-plus@<版> dependencies.tsrs）
@@ -57,7 +57,7 @@ catalog:
   valibot: 1.5.0
   vite: npm:@voidzero-dev/vite-plus-core@8.3.8001
   vite-plus: 1.8.0
-  void: 1.11.0
+  void: 1.12.2
 
 # vite を Vite+ の vite-plus-core に置き換える。core の版は中の Vite の版を表す（8.3.8000 は Vite 8.3.8）ので、
 # プラグインの vite の peer の範囲をそのまま満たし、検査を緩めなくてよい
