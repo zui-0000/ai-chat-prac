@@ -25,9 +25,10 @@
     }
   }
 
+  /* 入力欄は自分の線を持つので、輪をあけて描くと線が 2 本に見える。輪を線に重ね、太い線 1 本にする */
   &:focus-visible {
     outline: var(--border-width-ring) solid var(--color-ring);
-    outline-offset: var(--border-width-ring);
+    outline-offset: calc(var(--border-width-frame) * -1);
   }
 
   /* 書けないことを、薄くする無効とは別に、面の色で見せる */

@@ -150,6 +150,7 @@ OS の書体を使う（Mac・iPhone はヒラギノ角ゴシック、Windows �
 - 面は `--color-card`。囲む線は `--color-muted-foreground` で、まわりの面との差を 3:1 以上にする。角丸は `--border-radius-8`
 - 高さは `--size-touch-target` 以上。文字は、3.4 の入力欄の行に合わせる
 - マウスを乗せたときは、線を `--color-foreground` にする
+- フォーカスの輪は、間をあけずに線に重ねる。入力欄は自分の線を持つので、あけて描くと線が 2 本に見える
 - 読み取り専用のときは、面を `--color-muted` にする
 
 ### Cards
