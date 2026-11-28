@@ -41,6 +41,11 @@
     border-color: var(--color-error);
   }
 
+  /* 輪を文字の色にすると、フォーカスのあいだ誤りの赤い線が消える。誤りの欄は、赤い線が太くなることでフォーカスを見せる */
+  &[data-invalid]:focus-visible {
+    outline-color: var(--color-error);
+  }
+
   &[data-disabled] {
     cursor: not-allowed;
     opacity: 0.5;
