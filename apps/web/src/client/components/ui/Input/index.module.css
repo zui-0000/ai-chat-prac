@@ -20,7 +20,7 @@
 
   /* タッチの端末では指を離したあとも hover が残るので、マウスのときだけにする */
   @media (hover: hover) {
-    &:hover:not([data-disabled], [readonly]) {
+    &:hover:not([data-disabled], [readonly], [data-invalid]) {
       border-color: var(--color-foreground);
     }
   }
@@ -36,8 +36,20 @@
     background-color: var(--color-muted);
   }
 
+  /* 誤りは、色だけで伝えないよう、Field の誤りの文と一緒に出す */
+  &[data-invalid] {
+    border-color: var(--color-error);
+  }
+
   &[data-disabled] {
     cursor: not-allowed;
     opacity: 0.5;
+  }
+
+  /* 強制配色のモードでは面の色が消えるので、読み取り専用を線の形で見せる */
+  @media (forced-colors: active) {
+    &[readonly] {
+      border-style: dashed;
+    }
   }
 }

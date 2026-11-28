@@ -1,18 +1,25 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 
+import * as Field from "../Field";
 import { Input } from "./index";
 
-// TODO: 名前を付ける Field がまだ無いので、見本では aria-label で名前を付ける
+// 名前は、見本でも使うときと同じく、Field のラベルで付ける
 const meta = {
   title: "UI/Input",
   tags: ["autodocs"],
   component: Input,
   args: {
-    "aria-label": "メールアドレス",
     type: "email",
     autoComplete: "email",
     placeholder: "name@example.com",
   },
+  parameters: { label: "メールアドレス" },
+  render: (args, { parameters }) => (
+    <Field.Root>
+      <Field.Label>{parameters.label}</Field.Label>
+      <Input {...args} />
+    </Field.Root>
+  ),
 } satisfies Meta<typeof Input>;
 
 export default meta;
@@ -22,11 +29,11 @@ export const Default: Story = {};
 
 export const Password: Story = {
   args: {
-    "aria-label": "パスワード",
     type: "password",
     autoComplete: "current-password",
     placeholder: undefined,
   },
+  parameters: { label: "パスワード" },
 };
 
 export const Disabled: Story = {
