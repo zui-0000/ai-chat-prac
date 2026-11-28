@@ -115,7 +115,7 @@ export default defineConfig({
       // 版は CI（.github/workflows/ci.yaml）とそろえる。ネットにつなぐ検査は CI に任せる
       // zizmor は入力を探すためにリポジトリ全体を読み、どのファイルを変えてもキャッシュが外れるので、入力を .github だけにする
       "lint:actions": {
-        command: "uvx zizmor@1.32.0 --offline .",
+        command: "uvx zizmor@1.33.1 --offline .",
         cache: { input: [".github/**"] },
       },
     },

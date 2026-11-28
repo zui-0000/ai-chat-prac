@@ -94,7 +94,7 @@ jobs:
         if: ${{ !cancelled() }}
         uses: zizmorcore/zizmor-action@v0.9.2
         with:
-          version: v1.32.0
+          version: v1.33.1
           advanced-security: false
           annotations: true
 
